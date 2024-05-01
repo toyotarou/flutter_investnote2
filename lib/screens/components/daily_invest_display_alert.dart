@@ -36,10 +36,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.date.yyyymmdd),
-                  const Text('Invest'),
-                ],
+                children: [Text(widget.date.yyyymmdd), const Text('Invest')],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
             ],

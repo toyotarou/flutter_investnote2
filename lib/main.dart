@@ -7,8 +7,8 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'collections/invest.dart';
-import 'collections/shintaku.dart';
-import 'collections/stock.dart';
+import 'collections/shintaku_name.dart';
+import 'collections/stock_name.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -18,8 +18,8 @@ void main() async {
 
   final isar = await Isar.open([
     InvestSchema,
-    ShintakuSchema,
-    StockSchema,
+    StockNameSchema,
+    ShintakuNameSchema,
   ], directory: dir.path);
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])

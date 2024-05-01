@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'shintaku.dart';
+part of 'shintaku_name.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'shintaku.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetShintakuCollection on Isar {
-  IsarCollection<Shintaku> get shintakus => this.collection();
+extension GetShintakuNameCollection on Isar {
+  IsarCollection<ShintakuName> get shintakuNames => this.collection();
 }
 
-const ShintakuSchema = CollectionSchema(
-  name: r'Shintaku',
-  id: -3632947185007564370,
+const ShintakuNameSchema = CollectionSchema(
+  name: r'ShintakuName',
+  id: 6138166208977194995,
   properties: {
     r'frame': PropertySchema(
       id: 0,
@@ -28,22 +28,22 @@ const ShintakuSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _shintakuEstimateSize,
-  serialize: _shintakuSerialize,
-  deserialize: _shintakuDeserialize,
-  deserializeProp: _shintakuDeserializeProp,
+  estimateSize: _shintakuNameEstimateSize,
+  serialize: _shintakuNameSerialize,
+  deserialize: _shintakuNameDeserialize,
+  deserializeProp: _shintakuNameDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _shintakuGetId,
-  getLinks: _shintakuGetLinks,
-  attach: _shintakuAttach,
+  getId: _shintakuNameGetId,
+  getLinks: _shintakuNameGetLinks,
+  attach: _shintakuNameAttach,
   version: '3.1.0+1',
 );
 
-int _shintakuEstimateSize(
-  Shintaku object,
+int _shintakuNameEstimateSize(
+  ShintakuName object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -53,8 +53,8 @@ int _shintakuEstimateSize(
   return bytesCount;
 }
 
-void _shintakuSerialize(
-  Shintaku object,
+void _shintakuNameSerialize(
+  ShintakuName object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -63,20 +63,20 @@ void _shintakuSerialize(
   writer.writeString(offsets[1], object.name);
 }
 
-Shintaku _shintakuDeserialize(
+ShintakuName _shintakuNameDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Shintaku();
+  final object = ShintakuName();
   object.frame = reader.readString(offsets[0]);
   object.id = id;
   object.name = reader.readString(offsets[1]);
   return object;
 }
 
-P _shintakuDeserializeProp<P>(
+P _shintakuNameDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -92,28 +92,31 @@ P _shintakuDeserializeProp<P>(
   }
 }
 
-Id _shintakuGetId(Shintaku object) {
+Id _shintakuNameGetId(ShintakuName object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _shintakuGetLinks(Shintaku object) {
+List<IsarLinkBase<dynamic>> _shintakuNameGetLinks(ShintakuName object) {
   return [];
 }
 
-void _shintakuAttach(IsarCollection<dynamic> col, Id id, Shintaku object) {
+void _shintakuNameAttach(
+    IsarCollection<dynamic> col, Id id, ShintakuName object) {
   object.id = id;
 }
 
-extension ShintakuQueryWhereSort on QueryBuilder<Shintaku, Shintaku, QWhere> {
-  QueryBuilder<Shintaku, Shintaku, QAfterWhere> anyId() {
+extension ShintakuNameQueryWhereSort
+    on QueryBuilder<ShintakuName, ShintakuName, QWhere> {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
-  QueryBuilder<Shintaku, Shintaku, QAfterWhereClause> idEqualTo(Id id) {
+extension ShintakuNameQueryWhere
+    on QueryBuilder<ShintakuName, ShintakuName, QWhereClause> {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -122,7 +125,8 @@ extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idNotEqualTo(
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -144,7 +148,8 @@ extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idGreaterThan(
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -153,7 +158,7 @@ extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -162,7 +167,7 @@ extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterWhereClause> idBetween(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -179,9 +184,9 @@ extension ShintakuQueryWhere on QueryBuilder<Shintaku, Shintaku, QWhereClause> {
   }
 }
 
-extension ShintakuQueryFilter
-    on QueryBuilder<Shintaku, Shintaku, QFilterCondition> {
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameEqualTo(
+extension ShintakuNameQueryFilter
+    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -194,7 +199,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameGreaterThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      frameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -209,7 +215,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameLessThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -224,7 +230,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameBetween(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -243,7 +249,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameStartsWith(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      frameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -256,7 +263,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameEndsWith(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -269,7 +276,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameContains(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -281,7 +288,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameMatches(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -293,7 +300,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameIsEmpty() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      frameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'frame',
@@ -302,7 +310,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> frameIsNotEmpty() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      frameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'frame',
@@ -311,7 +320,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idEqualTo(
+      Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -320,7 +330,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -333,7 +343,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> idLessThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -346,7 +356,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> idBetween(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -363,7 +373,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -376,7 +386,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -391,7 +402,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -406,7 +417,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameBetween(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -425,7 +436,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -438,7 +450,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -451,7 +463,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameContains(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -463,7 +475,7 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameMatches(
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -475,7 +487,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -484,7 +497,8 @@ extension ShintakuQueryFilter
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+      nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -494,87 +508,88 @@ extension ShintakuQueryFilter
   }
 }
 
-extension ShintakuQueryObject
-    on QueryBuilder<Shintaku, Shintaku, QFilterCondition> {}
+extension ShintakuNameQueryObject
+    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {}
 
-extension ShintakuQueryLinks
-    on QueryBuilder<Shintaku, Shintaku, QFilterCondition> {}
+extension ShintakuNameQueryLinks
+    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {}
 
-extension ShintakuQuerySortBy on QueryBuilder<Shintaku, Shintaku, QSortBy> {
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> sortByFrame() {
+extension ShintakuNameQuerySortBy
+    on QueryBuilder<ShintakuName, ShintakuName, QSortBy> {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> sortByFrameDesc() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> sortByName() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension ShintakuQuerySortThenBy
-    on QueryBuilder<Shintaku, Shintaku, QSortThenBy> {
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenByFrame() {
+extension ShintakuNameQuerySortThenBy
+    on QueryBuilder<ShintakuName, ShintakuName, QSortThenBy> {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenByFrameDesc() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenById() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenByName() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension ShintakuQueryWhereDistinct
-    on QueryBuilder<Shintaku, Shintaku, QDistinct> {
-  QueryBuilder<Shintaku, Shintaku, QDistinct> distinctByFrame(
+extension ShintakuNameQueryWhereDistinct
+    on QueryBuilder<ShintakuName, ShintakuName, QDistinct> {
+  QueryBuilder<ShintakuName, ShintakuName, QDistinct> distinctByFrame(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'frame', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Shintaku, Shintaku, QDistinct> distinctByName(
+  QueryBuilder<ShintakuName, ShintakuName, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -582,21 +597,21 @@ extension ShintakuQueryWhereDistinct
   }
 }
 
-extension ShintakuQueryProperty
-    on QueryBuilder<Shintaku, Shintaku, QQueryProperty> {
-  QueryBuilder<Shintaku, int, QQueryOperations> idProperty() {
+extension ShintakuNameQueryProperty
+    on QueryBuilder<ShintakuName, ShintakuName, QQueryProperty> {
+  QueryBuilder<ShintakuName, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Shintaku, String, QQueryOperations> frameProperty() {
+  QueryBuilder<ShintakuName, String, QQueryOperations> frameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'frame');
     });
   }
 
-  QueryBuilder<Shintaku, String, QQueryOperations> nameProperty() {
+  QueryBuilder<ShintakuName, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });

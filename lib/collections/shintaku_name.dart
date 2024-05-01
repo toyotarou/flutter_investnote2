@@ -1,9 +1,9 @@
 import 'package:isar/isar.dart';
 
-part 'stock.g.dart';
+part 'shintaku_name.g.dart';
 
 @collection
-class Stock {
+class ShintakuName {
   Id id = Isar.autoIncrement;
 
   late String frame;

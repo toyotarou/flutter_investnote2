@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stock.dart';
+part of 'stock_name.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'stock.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetStockCollection on Isar {
-  IsarCollection<Stock> get stocks => this.collection();
+extension GetStockNameCollection on Isar {
+  IsarCollection<StockName> get stockNames => this.collection();
 }
 
-const StockSchema = CollectionSchema(
-  name: r'Stock',
-  id: 6740185341894042082,
+const StockNameSchema = CollectionSchema(
+  name: r'StockName',
+  id: -6796900676673029311,
   properties: {
     r'frame': PropertySchema(
       id: 0,
@@ -28,22 +28,22 @@ const StockSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _stockEstimateSize,
-  serialize: _stockSerialize,
-  deserialize: _stockDeserialize,
-  deserializeProp: _stockDeserializeProp,
+  estimateSize: _stockNameEstimateSize,
+  serialize: _stockNameSerialize,
+  deserialize: _stockNameDeserialize,
+  deserializeProp: _stockNameDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _stockGetId,
-  getLinks: _stockGetLinks,
-  attach: _stockAttach,
+  getId: _stockNameGetId,
+  getLinks: _stockNameGetLinks,
+  attach: _stockNameAttach,
   version: '3.1.0+1',
 );
 
-int _stockEstimateSize(
-  Stock object,
+int _stockNameEstimateSize(
+  StockName object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -53,8 +53,8 @@ int _stockEstimateSize(
   return bytesCount;
 }
 
-void _stockSerialize(
-  Stock object,
+void _stockNameSerialize(
+  StockName object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -63,20 +63,20 @@ void _stockSerialize(
   writer.writeString(offsets[1], object.name);
 }
 
-Stock _stockDeserialize(
+StockName _stockNameDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Stock();
+  final object = StockName();
   object.frame = reader.readString(offsets[0]);
   object.id = id;
   object.name = reader.readString(offsets[1]);
   return object;
 }
 
-P _stockDeserializeProp<P>(
+P _stockNameDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -92,28 +92,30 @@ P _stockDeserializeProp<P>(
   }
 }
 
-Id _stockGetId(Stock object) {
+Id _stockNameGetId(StockName object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _stockGetLinks(Stock object) {
+List<IsarLinkBase<dynamic>> _stockNameGetLinks(StockName object) {
   return [];
 }
 
-void _stockAttach(IsarCollection<dynamic> col, Id id, Stock object) {
+void _stockNameAttach(IsarCollection<dynamic> col, Id id, StockName object) {
   object.id = id;
 }
 
-extension StockQueryWhereSort on QueryBuilder<Stock, Stock, QWhere> {
-  QueryBuilder<Stock, Stock, QAfterWhere> anyId() {
+extension StockNameQueryWhereSort
+    on QueryBuilder<StockName, StockName, QWhere> {
+  QueryBuilder<StockName, StockName, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
-  QueryBuilder<Stock, Stock, QAfterWhereClause> idEqualTo(Id id) {
+extension StockNameQueryWhere
+    on QueryBuilder<StockName, StockName, QWhereClause> {
+  QueryBuilder<StockName, StockName, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -122,7 +124,7 @@ extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<StockName, StockName, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -144,7 +146,7 @@ extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<StockName, StockName, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -153,7 +155,7 @@ extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<StockName, StockName, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -162,7 +164,7 @@ extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterWhereClause> idBetween(
+  QueryBuilder<StockName, StockName, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -179,8 +181,9 @@ extension StockQueryWhere on QueryBuilder<Stock, Stock, QWhereClause> {
   }
 }
 
-extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameEqualTo(
+extension StockNameQueryFilter
+    on QueryBuilder<StockName, StockName, QFilterCondition> {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -193,7 +196,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameGreaterThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -208,7 +211,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameLessThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -223,7 +226,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameBetween(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -242,7 +245,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameStartsWith(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -255,7 +258,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameEndsWith(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -268,7 +271,8 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameContains(String value,
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -279,7 +283,8 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameMatches(String pattern,
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameMatches(
+      String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -290,7 +295,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameIsEmpty() {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'frame',
@@ -299,7 +304,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> frameIsNotEmpty() {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> frameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'frame',
@@ -308,7 +313,8 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> idEqualTo(
+      Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -317,7 +323,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -330,7 +336,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> idLessThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -343,7 +349,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> idBetween(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -360,7 +366,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -373,7 +379,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -388,7 +394,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -403,7 +409,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameBetween(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -422,7 +428,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -435,7 +441,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -448,7 +454,8 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameContains(String value,
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -459,7 +466,8 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameMatches(String pattern,
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameMatches(
+      String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -470,7 +478,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -479,7 +487,7 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<StockName, StockName, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -489,83 +497,87 @@ extension StockQueryFilter on QueryBuilder<Stock, Stock, QFilterCondition> {
   }
 }
 
-extension StockQueryObject on QueryBuilder<Stock, Stock, QFilterCondition> {}
+extension StockNameQueryObject
+    on QueryBuilder<StockName, StockName, QFilterCondition> {}
 
-extension StockQueryLinks on QueryBuilder<Stock, Stock, QFilterCondition> {}
+extension StockNameQueryLinks
+    on QueryBuilder<StockName, StockName, QFilterCondition> {}
 
-extension StockQuerySortBy on QueryBuilder<Stock, Stock, QSortBy> {
-  QueryBuilder<Stock, Stock, QAfterSortBy> sortByFrame() {
+extension StockNameQuerySortBy on QueryBuilder<StockName, StockName, QSortBy> {
+  QueryBuilder<StockName, StockName, QAfterSortBy> sortByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> sortByFrameDesc() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> sortByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> sortByName() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension StockQuerySortThenBy on QueryBuilder<Stock, Stock, QSortThenBy> {
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenByFrame() {
+extension StockNameQuerySortThenBy
+    on QueryBuilder<StockName, StockName, QSortThenBy> {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenByFrameDesc() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenById() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenByName() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Stock, Stock, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<StockName, StockName, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension StockQueryWhereDistinct on QueryBuilder<Stock, Stock, QDistinct> {
-  QueryBuilder<Stock, Stock, QDistinct> distinctByFrame(
+extension StockNameQueryWhereDistinct
+    on QueryBuilder<StockName, StockName, QDistinct> {
+  QueryBuilder<StockName, StockName, QDistinct> distinctByFrame(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'frame', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Stock, Stock, QDistinct> distinctByName(
+  QueryBuilder<StockName, StockName, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -573,20 +585,21 @@ extension StockQueryWhereDistinct on QueryBuilder<Stock, Stock, QDistinct> {
   }
 }
 
-extension StockQueryProperty on QueryBuilder<Stock, Stock, QQueryProperty> {
-  QueryBuilder<Stock, int, QQueryOperations> idProperty() {
+extension StockNameQueryProperty
+    on QueryBuilder<StockName, StockName, QQueryProperty> {
+  QueryBuilder<StockName, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Stock, String, QQueryOperations> frameProperty() {
+  QueryBuilder<StockName, String, QQueryOperations> frameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'frame');
     });
   }
 
-  QueryBuilder<Stock, String, QQueryOperations> nameProperty() {
+  QueryBuilder<StockName, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });

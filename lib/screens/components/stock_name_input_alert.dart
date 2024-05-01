@@ -3,21 +3,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:invest_note/enum/stock_frame.dart';
-import 'package:invest_note/state/stock_names/stock_names_notifier.dart';
 import 'package:isar/isar.dart';
 
-import '../../collections/stock.dart';
+import '../../collections/stock_name.dart';
+import '../../enum/stock_frame.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/stock_names_repository.dart';
+import '../../state/stock_names/stock_names_notifier.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class StockNameInputAlert extends ConsumerStatefulWidget {
-  StockNameInputAlert({super.key, required this.isar, this.stock});
+  StockNameInputAlert({super.key, required this.isar, this.stockName});
 
   final Isar isar;
-  Stock? stock;
+  StockName? stockName;
 
   ///
   @override
@@ -55,7 +56,7 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(),
-                  (widget.stock != null)
+                  (widget.stockName != null)
                       ? Column(
                           children: [
                             GestureDetector(
@@ -70,7 +71,7 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
                           ],
                         )
                       : TextButton(
-                          onPressed: _inputStock,
+                          onPressed: _inputStockName,
                           child: const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
                         ),
                 ],
@@ -137,7 +138,7 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
   }
 
   ///
-  Future<void> _inputStock() async {
+  Future<void> _inputStockName() async {
     var errFlg = false;
 
     if (_stockNameEditingController.text == '') {
@@ -162,6 +163,18 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
 
       return;
     }
+
+    final stockNamesState = ref.watch(stockNamesProvider);
+
+    final stockName = StockName()
+      ..frame = stockNamesState.stockFrame.japanName
+      ..name = _stockNameEditingController.text;
+
+    await StockNamesRepository().inputStockName(isar: widget.isar, stockName: stockName).then((value) {
+      _stockNameEditingController.clear();
+
+      Navigator.pop(context);
+    });
   }
 
   ///
