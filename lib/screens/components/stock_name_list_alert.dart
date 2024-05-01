@@ -49,7 +49,11 @@ class _StockNameListAlertState extends State<StockNameListAlert> {
                 children: [
                   Container(),
                   TextButton(
-                    onPressed: () => InvestDialog(context: context, widget: StockNameInputAlert(isar: widget.isar)),
+                    onPressed: () => InvestDialog(
+                      context: context,
+                      widget: StockNameInputAlert(isar: widget.isar),
+                      clearBarrierColor: true,
+                    ),
                     child: const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
                   ),
                 ],
@@ -80,7 +84,11 @@ class _StockNameListAlertState extends State<StockNameListAlert> {
             SizedBox(width: 80, child: Text(element.frame)),
             Expanded(child: Text(element.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
             GestureDetector(
-              onTap: () => InvestDialog(context: context, widget: StockNameInputAlert(isar: widget.isar, stockName: element)),
+              onTap: () => InvestDialog(
+                context: context,
+                widget: StockNameInputAlert(isar: widget.isar, stockName: element),
+                clearBarrierColor: true,
+              ),
               child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
             ),
           ],

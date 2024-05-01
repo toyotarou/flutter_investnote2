@@ -28,7 +28,26 @@ class StockNameInputAlert extends ConsumerStatefulWidget {
 class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
   final TextEditingController _stockNameEditingController = TextEditingController();
 
-  final StockFrame _selectedStockFrame = StockFrame.blank;
+  StockFrame _selectedStockFrame = StockFrame.blank;
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.stockName != null) {
+      _stockNameEditingController.text = widget.stockName!.name;
+
+      switch (widget.stockName!.frame) {
+        case '一般口座':
+          _selectedStockFrame = StockFrame.general;
+          break;
+        case '特定口座':
+          _selectedStockFrame = StockFrame.specific;
+          break;
+      }
+    }
+  }
 
   ///
   @override
@@ -60,7 +79,18 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
                       ? Column(
                           children: [
                             GestureDetector(
-                              onTap: _updateStock,
+                              onTap: () {
+                                switch (widget.stockName!.frame) {
+                                  case '一般口座':
+                                    ref.read(stockNamesProvider.notifier).setStockFrame(stockFrame: StockFrame.general);
+                                    break;
+                                  case '特定口座':
+                                    ref.read(stockNamesProvider.notifier).setStockFrame(stockFrame: StockFrame.specific);
+                                    break;
+                                }
+
+                                _updateStockName();
+                              },
                               child: Text('株式名称を更新する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                             ),
                             const SizedBox(height: 10),
@@ -178,7 +208,48 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
   }
 
   ///
-  Future<void> _updateStock() async {}
+  Future<void> _updateStockName() async {
+    final stockFrame = ref.watch(stockNamesProvider.select((value) => value.stockFrame));
+
+    var errFlg = false;
+
+    if (_stockNameEditingController.text == '' || (stockFrame == StockFrame.blank)) {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_stockNameEditingController.text, 30]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
+      Future.delayed(
+        Duration.zero,
+        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+      );
+
+      return;
+    }
+
+    await widget.isar.writeTxn(() async {
+      await StockNamesRepository().getStockName(isar: widget.isar, id: widget.stockName!.id).then((value) async {
+        value!
+          ..name = _stockNameEditingController.text
+          ..frame = stockFrame.japanName;
+
+        await StockNamesRepository().updateStockName(isar: widget.isar, stockName: value).then((value) {
+          _stockNameEditingController.clear();
+
+          Navigator.pop(context);
+        });
+      });
+    });
+  }
 
   ///
   void _showDeleteDialog() {
@@ -186,7 +257,7 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
 
     final Widget continueButton = TextButton(
         onPressed: () {
-          _deleteStock();
+          _deleteStockName();
 
           Navigator.pop(context);
         },
@@ -202,5 +273,6 @@ class _StockNameInputAlertState extends ConsumerState<StockNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteStock() async {}
+  Future<void> _deleteStockName() async =>
+      StockNamesRepository().deleteStockName(isar: widget.isar, id: widget.stockName!.id).then((value) => Navigator.pop(context));
 }
