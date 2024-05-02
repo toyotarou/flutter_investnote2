@@ -2,24 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
-import '../../collections/stock_name.dart';
+import '../../collections/invest_name.dart';
+import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
-import '../../repository/stock_names_repository.dart';
+import '../../repository/invest_names_repository.dart';
+import 'invest_name_input_alert.dart';
 import 'parts/invest_dialog.dart';
-import 'stock_name_input_alert.dart';
 
-class StockNameListAlert extends StatefulWidget {
-  const StockNameListAlert({super.key, required this.isar});
+class InvestNameListAlert extends StatefulWidget {
+  const InvestNameListAlert({super.key, required this.isar, required this.investKind});
 
   final Isar isar;
+  final InvestKind investKind;
 
   ///
   @override
-  State<StockNameListAlert> createState() => _StockNameListAlertState();
+  State<InvestNameListAlert> createState() => _InvestNameListAlertState();
 }
 
-class _StockNameListAlertState extends State<StockNameListAlert> {
-  List<StockName>? stockNameList = [];
+class _InvestNameListAlertState extends State<InvestNameListAlert> {
+  List<InvestName>? investNameList = [];
 
   ///
   @override
@@ -42,7 +44,7 @@ class _StockNameListAlertState extends State<StockNameListAlert> {
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              const Text('株式名称一覧'),
+              Text('${widget.investKind.japanName}名称一覧'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +53,7 @@ class _StockNameListAlertState extends State<StockNameListAlert> {
                   TextButton(
                     onPressed: () => InvestDialog(
                       context: context,
-                      widget: StockNameInputAlert(isar: widget.isar),
+                      widget: InvestNameInputAlert(isar: widget.isar, investKind: widget.investKind),
                       clearBarrierColor: true,
                     ),
                     child: const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
@@ -67,29 +69,40 @@ class _StockNameListAlertState extends State<StockNameListAlert> {
   }
 
   ///
-  Future<void> _makeStockNameList() async =>
-      StockNamesRepository().getStockNameList(isar: widget.isar).then((value) => setState(() => stockNameList = value));
+  Future<void> _makeStockNameList() async => InvestNamesRepository()
+      .getInvestNameList(isar: widget.isar, investKind: widget.investKind.name)
+      .then((value) => setState(() => investNameList = value));
 
   ///
   Widget _displayStockNames() {
     final list = <Widget>[];
 
-    stockNameList?.forEach((element) {
+    investNameList?.forEach((element) {
       list.add(Container(
         width: context.screenSize.width,
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
-        child: Row(
+        child: Column(
           children: [
-            SizedBox(width: 80, child: Text(element.frame)),
-            Expanded(child: Text(element.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
-            GestureDetector(
-              onTap: () => InvestDialog(
-                context: context,
-                widget: StockNameInputAlert(isar: widget.isar, stockName: element),
-                clearBarrierColor: true,
-              ),
-              child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+            Row(
+              children: [
+                SizedBox(width: 130, child: Text(element.frame)),
+                Expanded(child: Text(element.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(),
+                GestureDetector(
+                  onTap: () => InvestDialog(
+                    context: context,
+                    widget: InvestNameInputAlert(isar: widget.isar, investName: element, investKind: widget.investKind),
+                    clearBarrierColor: true,
+                  ),
+                  child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+                ),
+              ],
             ),
           ],
         ),

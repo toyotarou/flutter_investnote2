@@ -6,9 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'collections/invest.dart';
-import 'collections/shintaku_name.dart';
-import 'collections/stock_name.dart';
+import 'collections/invest_name.dart';
+import 'collections/invest_record.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -17,9 +16,8 @@ void main() async {
   final dir = await getApplicationSupportDirectory();
 
   final isar = await Isar.open([
-    InvestSchema,
-    StockNameSchema,
-    ShintakuNameSchema,
+    InvestRecordSchema,
+    InvestNameSchema,
   ], directory: dir.path);
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])

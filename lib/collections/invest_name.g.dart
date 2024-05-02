@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'shintaku_name.dart';
+part of 'invest_name.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,74 +9,82 @@ part of 'shintaku_name.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetShintakuNameCollection on Isar {
-  IsarCollection<ShintakuName> get shintakuNames => this.collection();
+extension GetInvestNameCollection on Isar {
+  IsarCollection<InvestName> get investNames => this.collection();
 }
 
-const ShintakuNameSchema = CollectionSchema(
-  name: r'ShintakuName',
-  id: 6138166208977194995,
+const InvestNameSchema = CollectionSchema(
+  name: r'InvestName',
+  id: -7031451711582071805,
   properties: {
     r'frame': PropertySchema(
       id: 0,
       name: r'frame',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'kind': PropertySchema(
       id: 1,
+      name: r'kind',
+      type: IsarType.string,
+    ),
+    r'name': PropertySchema(
+      id: 2,
       name: r'name',
       type: IsarType.string,
     )
   },
-  estimateSize: _shintakuNameEstimateSize,
-  serialize: _shintakuNameSerialize,
-  deserialize: _shintakuNameDeserialize,
-  deserializeProp: _shintakuNameDeserializeProp,
+  estimateSize: _investNameEstimateSize,
+  serialize: _investNameSerialize,
+  deserialize: _investNameDeserialize,
+  deserializeProp: _investNameDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _shintakuNameGetId,
-  getLinks: _shintakuNameGetLinks,
-  attach: _shintakuNameAttach,
+  getId: _investNameGetId,
+  getLinks: _investNameGetLinks,
+  attach: _investNameAttach,
   version: '3.1.0+1',
 );
 
-int _shintakuNameEstimateSize(
-  ShintakuName object,
+int _investNameEstimateSize(
+  InvestName object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.frame.length * 3;
+  bytesCount += 3 + object.kind.length * 3;
   bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
 
-void _shintakuNameSerialize(
-  ShintakuName object,
+void _investNameSerialize(
+  InvestName object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.frame);
-  writer.writeString(offsets[1], object.name);
+  writer.writeString(offsets[1], object.kind);
+  writer.writeString(offsets[2], object.name);
 }
 
-ShintakuName _shintakuNameDeserialize(
+InvestName _investNameDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ShintakuName();
+  final object = InvestName();
   object.frame = reader.readString(offsets[0]);
   object.id = id;
-  object.name = reader.readString(offsets[1]);
+  object.kind = reader.readString(offsets[1]);
+  object.name = reader.readString(offsets[2]);
   return object;
 }
 
-P _shintakuNameDeserializeProp<P>(
+P _investNameDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -87,36 +95,37 @@ P _shintakuNameDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _shintakuNameGetId(ShintakuName object) {
+Id _investNameGetId(InvestName object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _shintakuNameGetLinks(ShintakuName object) {
+List<IsarLinkBase<dynamic>> _investNameGetLinks(InvestName object) {
   return [];
 }
 
-void _shintakuNameAttach(
-    IsarCollection<dynamic> col, Id id, ShintakuName object) {
+void _investNameAttach(IsarCollection<dynamic> col, Id id, InvestName object) {
   object.id = id;
 }
 
-extension ShintakuNameQueryWhereSort
-    on QueryBuilder<ShintakuName, ShintakuName, QWhere> {
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhere> anyId() {
+extension InvestNameQueryWhereSort
+    on QueryBuilder<InvestName, InvestName, QWhere> {
+  QueryBuilder<InvestName, InvestName, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension ShintakuNameQueryWhere
-    on QueryBuilder<ShintakuName, ShintakuName, QWhereClause> {
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idEqualTo(Id id) {
+extension InvestNameQueryWhere
+    on QueryBuilder<InvestName, InvestName, QWhereClause> {
+  QueryBuilder<InvestName, InvestName, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -125,8 +134,7 @@ extension ShintakuNameQueryWhere
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<InvestName, InvestName, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -148,8 +156,7 @@ extension ShintakuNameQueryWhere
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idGreaterThan(
-      Id id,
+  QueryBuilder<InvestName, InvestName, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -158,7 +165,7 @@ extension ShintakuNameQueryWhere
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<InvestName, InvestName, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -167,7 +174,7 @@ extension ShintakuNameQueryWhere
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterWhereClause> idBetween(
+  QueryBuilder<InvestName, InvestName, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -184,9 +191,9 @@ extension ShintakuNameQueryWhere
   }
 }
 
-extension ShintakuNameQueryFilter
-    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameEqualTo(
+extension InvestNameQueryFilter
+    on QueryBuilder<InvestName, InvestName, QFilterCondition> {
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -199,8 +206,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      frameGreaterThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -215,7 +221,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameLessThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -230,7 +236,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameBetween(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -249,8 +255,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      frameStartsWith(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -263,7 +268,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameEndsWith(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -276,7 +281,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameContains(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -288,7 +293,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> frameMatches(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -300,8 +305,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      frameIsEmpty() {
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'frame',
@@ -310,7 +314,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
       frameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -320,7 +324,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idEqualTo(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -330,7 +334,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -343,7 +347,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idLessThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -356,7 +360,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> idBetween(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -373,7 +377,137 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'kind',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'kind',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'kind',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'kind',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> kindIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'kind',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -386,8 +520,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      nameGreaterThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -402,7 +535,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -417,7 +550,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameBetween(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -436,8 +569,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      nameStartsWith(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -450,7 +582,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -463,7 +595,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameContains(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -475,7 +607,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition> nameMatches(
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -487,8 +619,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      nameIsEmpty() {
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -497,8 +628,7 @@ extension ShintakuNameQueryFilter
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterFilterCondition>
-      nameIsNotEmpty() {
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -508,88 +638,119 @@ extension ShintakuNameQueryFilter
   }
 }
 
-extension ShintakuNameQueryObject
-    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {}
+extension InvestNameQueryObject
+    on QueryBuilder<InvestName, InvestName, QFilterCondition> {}
 
-extension ShintakuNameQueryLinks
-    on QueryBuilder<ShintakuName, ShintakuName, QFilterCondition> {}
+extension InvestNameQueryLinks
+    on QueryBuilder<InvestName, InvestName, QFilterCondition> {}
 
-extension ShintakuNameQuerySortBy
-    on QueryBuilder<ShintakuName, ShintakuName, QSortBy> {
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByFrame() {
+extension InvestNameQuerySortBy
+    on QueryBuilder<InvestName, InvestName, QSortBy> {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByFrameDesc() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByName() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByKind() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByKindDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.desc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension ShintakuNameQuerySortThenBy
-    on QueryBuilder<ShintakuName, ShintakuName, QSortThenBy> {
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByFrame() {
+extension InvestNameQuerySortThenBy
+    on QueryBuilder<InvestName, InvestName, QSortThenBy> {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByFrameDesc() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByFrameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.desc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenById() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByName() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByKind() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByKindDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.desc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension ShintakuNameQueryWhereDistinct
-    on QueryBuilder<ShintakuName, ShintakuName, QDistinct> {
-  QueryBuilder<ShintakuName, ShintakuName, QDistinct> distinctByFrame(
+extension InvestNameQueryWhereDistinct
+    on QueryBuilder<InvestName, InvestName, QDistinct> {
+  QueryBuilder<InvestName, InvestName, QDistinct> distinctByFrame(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'frame', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ShintakuName, ShintakuName, QDistinct> distinctByName(
+  QueryBuilder<InvestName, InvestName, QDistinct> distinctByKind(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'kind', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -597,21 +758,27 @@ extension ShintakuNameQueryWhereDistinct
   }
 }
 
-extension ShintakuNameQueryProperty
-    on QueryBuilder<ShintakuName, ShintakuName, QQueryProperty> {
-  QueryBuilder<ShintakuName, int, QQueryOperations> idProperty() {
+extension InvestNameQueryProperty
+    on QueryBuilder<InvestName, InvestName, QQueryProperty> {
+  QueryBuilder<InvestName, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<ShintakuName, String, QQueryOperations> frameProperty() {
+  QueryBuilder<InvestName, String, QQueryOperations> frameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'frame');
     });
   }
 
-  QueryBuilder<ShintakuName, String, QQueryOperations> nameProperty() {
+  QueryBuilder<InvestName, String, QQueryOperations> kindProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'kind');
+    });
+  }
+
+  QueryBuilder<InvestName, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
