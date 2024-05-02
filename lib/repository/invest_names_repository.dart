@@ -13,7 +13,13 @@ class InvestNamesRepository {
   }
 
   ///
-  Future<List<InvestName>?> getInvestNameList({required Isar isar, required String investKind}) async {
+  Future<List<InvestName>?> getInvestNameList({required Isar isar}) async {
+    final investNamesCollection = getCollection(isar: isar);
+    return investNamesCollection.where().findAll();
+  }
+
+  ///
+  Future<List<InvestName>?> getInvestNameListByInvestKind({required Isar isar, required String investKind}) async {
     final investNamesCollection = getCollection(isar: isar);
     return investNamesCollection.filter().kindEqualTo(investKind).findAll();
   }

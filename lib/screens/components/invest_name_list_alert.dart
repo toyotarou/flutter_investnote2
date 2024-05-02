@@ -70,7 +70,7 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
 
   ///
   Future<void> _makeStockNameList() async => InvestNamesRepository()
-      .getInvestNameList(isar: widget.isar, investKind: widget.investKind.name)
+      .getInvestNameListByInvestKind(isar: widget.isar, investKind: widget.investKind.name)
       .then((value) => setState(() => investNameList = value));
 
   ///

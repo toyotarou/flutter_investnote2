@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../collections/invest_name.dart';
 import '../enum/invest_kind.dart';
 import '../extensions/extensions.dart';
+import '../repository/invest_names_repository.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
 import '../utilities/utilities.dart';
@@ -36,11 +38,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  List<InvestName>? investNameList = [];
+
+  ///
+  void _init() {
+    _makeInvestNameList();
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
+    Future(_init);
+
     if (widget.baseYm != null) {
-      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
+      Future(() {
+        return ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm);
+      });
     }
 
     final calendarState = ref.watch(calendarProvider);
@@ -234,12 +247,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: GestureDetector(
             onTap: (_calendarDays[i] == '')
                 ? null
-                : () {
-                    InvestDialog(
+                : () => InvestDialog(
                       context: context,
-                      widget: DailyInvestDisplayAlert(date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar),
-                    );
-                  },
+                      widget: DailyInvestDisplayAlert(
+                        date: DateTime.parse('$generateYmd 00:00:00'),
+                        isar: widget.isar,
+                        investNameList: investNameList ?? [],
+                      ),
+                    ),
             child: Container(
               margin: const EdgeInsets.all(1),
               padding: const EdgeInsets.all(2),
@@ -292,4 +307,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: list);
   }
+
+  ///
+  Future<void> _makeInvestNameList() async =>
+      InvestNamesRepository().getInvestNameList(isar: widget.isar).then((value) => setState(() => investNameList = value));
 }
