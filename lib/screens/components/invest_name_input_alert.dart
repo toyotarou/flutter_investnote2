@@ -179,7 +179,14 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                 getDropdownButton(),
                 TextField(
                   controller: _investNameEditingController,
-                  decoration: const InputDecoration(labelText: '株式名称'),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    hintText: '${widget.investKind.japanName}名称(50文字以内)',
+                    filled: true,
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                  ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                   onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                 ),
@@ -245,7 +252,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     if (errFlg == false) {
       [
-        [_investNameEditingController.text, 30]
+        [_investNameEditingController.text, 50]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;

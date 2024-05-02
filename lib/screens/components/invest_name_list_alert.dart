@@ -82,27 +82,22 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
         width: context.screenSize.width,
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
-        child: Column(
+        child: Row(
           children: [
-            Row(
-              children: [
-                SizedBox(width: 130, child: Text(element.frame)),
-                Expanded(child: Text(element.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(element.frame), Text(element.name)],
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(),
-                GestureDetector(
-                  onTap: () => InvestDialog(
-                    context: context,
-                    widget: InvestNameInputAlert(isar: widget.isar, investName: element, investKind: widget.investKind),
-                    clearBarrierColor: true,
-                  ),
-                  child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
-                ),
-              ],
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () => InvestDialog(
+                context: context,
+                widget: InvestNameInputAlert(isar: widget.isar, investName: element, investKind: widget.investKind),
+                clearBarrierColor: true,
+              ),
+              child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
             ),
           ],
         ),
