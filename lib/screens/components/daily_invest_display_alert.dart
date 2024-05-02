@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invest_note/collections/invest_name.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/invest_name.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
+import 'parts/invest_record_input_parts.dart';
+import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
   const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList});
@@ -82,7 +84,19 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                       ),
                     ),
                     const SizedBox(width: 20),
-                    Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                    GestureDetector(
+                      onTap: () {
+                        InvestDialog(
+                          context: context,
+                          widget: InvestRecordInputParts(isar: widget.isar, date: widget.date, investName: element3),
+                          paddingTop: context.screenSize.height * 0.5,
+                          paddingLeft: 80,
+                          paddingRight: 20,
+                          clearBarrierColor: true,
+                        );
+                      },
+                      child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                    ),
                   ],
                 ),
               ],
@@ -130,7 +144,25 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           ),
                         ),
                         const SizedBox(width: 20),
-                        Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                        GestureDetector(
+                          onTap: () {
+                            InvestDialog(
+                              context: context,
+                              widget: InvestRecordInputParts(
+                                isar: widget.isar,
+                                date: widget.date,
+                                investName: InvestName()
+                                  ..kind = InvestKind.gold.name
+                                  ..name = 'gold',
+                              ),
+                              paddingTop: context.screenSize.height * 0.5,
+                              paddingLeft: 80,
+                              paddingRight: 20,
+                              clearBarrierColor: true,
+                            );
+                          },
+                          child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                        ),
                       ],
                     ),
                   ],

@@ -8,7 +8,6 @@ class InvestRecord {
 
   @Index()
   late String date;
-  late String time;
 
   late int? investId;
 
