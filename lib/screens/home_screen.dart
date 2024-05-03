@@ -239,7 +239,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : () => InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                          date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, investNameList: investNameList ?? []),
+                        date: DateTime.parse('$generateYmd 00:00:00'),
+                        isar: widget.isar,
+                        investNameList: investNameList ?? [],
+                        allInvestRecord: investRecordList ?? [],
+                      ),
                     ),
             child: Container(
               margin: const EdgeInsets.all(1),

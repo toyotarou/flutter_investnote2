@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invest_note/enum/invest_kind.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
@@ -13,12 +14,14 @@ import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestRecordInputAlert extends StatefulWidget {
-  const InvestRecordInputAlert({super.key, required this.isar, required this.date, required this.investName, this.investRecord});
+  const InvestRecordInputAlert(
+      {super.key, required this.isar, required this.date, required this.investName, this.investRecord, required this.allInvestRecord});
 
   final Isar isar;
   final DateTime date;
   final InvestName investName;
   final List<InvestRecord>? investRecord;
+  final List<InvestRecord> allInvestRecord;
 
   ///
   @override
@@ -62,6 +65,13 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(widget.date.yyyymmdd), Text(widget.investName.name)]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
+              if (widget.investName.kind == InvestKind.stock.name || widget.investName.kind == InvestKind.shintaku.name) ...[
+                ElevatedButton(
+                  onPressed: getLastCost,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                  child: const Text('get last cost'),
+                ),
+              ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -218,5 +228,27 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         });
       });
     });
+  }
+
+  ///
+  void getLastCost() {
+    final dateList = <String>[];
+
+    for (var i = 1; i < 10; i++) {
+      final day = widget.date.add(Duration(days: i * -1));
+
+      dateList.add(day.yyyymmdd);
+    }
+
+    var cost = 0;
+    widget.allInvestRecord.where((element) => element.investId == widget.investName.id).forEach((element2) {
+      if (dateList.contains(element2.date)) {
+        if (cost == 0) {
+          cost = element2.cost;
+        }
+      }
+    });
+
+    _costEditingController.text = cost.toString();
   }
 }

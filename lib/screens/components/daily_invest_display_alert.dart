@@ -11,11 +11,12 @@ import 'invest_record_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
-  const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList});
+  const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList, required this.allInvestRecord});
 
   final DateTime date;
   final Isar isar;
   final List<InvestName> investNameList;
+  final List<InvestRecord> allInvestRecord;
 
   ///
   @override
@@ -120,6 +121,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                             date: widget.date,
                             investName: element3,
                             investRecord: thisDayInvestRecordList?.where((element4) => element4.investId == element3.id).toList(),
+                            allInvestRecord: widget.allInvestRecord,
                           ),
                           clearBarrierColor: true,
                         );
@@ -194,6 +196,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                                 isar: widget.isar,
                                 date: widget.date,
                                 investRecord: thisDayInvestRecordList?.where((element4) => element4.investId == 0).toList(),
+                                allInvestRecord: widget.allInvestRecord,
                                 investName: InvestName()
                                   ..id = 0
                                   ..kind = InvestKind.gold.name
