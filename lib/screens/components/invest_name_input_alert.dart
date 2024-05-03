@@ -382,6 +382,9 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteInvestName() async =>
-      InvestNamesRepository().deleteInvestName(isar: widget.isar, id: widget.investName!.id).then((value) => Navigator.pop(context));
+  Future<void> _deleteInvestName() async {
+    await InvestNamesRepository().deleteInvestName(isar: widget.isar, id: widget.investName!.id).then((value) {
+      Navigator.pop(context);
+    });
+  }
 }

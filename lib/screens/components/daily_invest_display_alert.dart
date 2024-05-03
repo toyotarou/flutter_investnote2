@@ -10,11 +10,12 @@ import 'invest_record_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
-  const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList});
+  const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList, required this.investRecordList});
 
   final DateTime date;
   final Isar isar;
   final List<InvestName> investNameList;
+  final List<InvestRecord> investRecordList;
 
   ///
   @override
@@ -22,7 +23,15 @@ class DailyInvestDisplayAlert extends StatefulWidget {
 }
 
 class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
-  List<InvestRecord>? investRecordList = [];
+  List<InvestRecord> investRecordList = [];
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    investRecordList = widget.investRecordList.where((element) => element.date == widget.date.yyyymmdd).toList();
+  }
 
   ///
   @override
@@ -62,9 +71,13 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
 
     InvestKind.values.forEach((element) {
       if (element.japanName != InvestKind.blank.japanName) {
+        ///// gold
+
         //---------------------------------//
         final list2 = <Widget>[];
         widget.investNameList.where((element2) => element2.kind == element.name).forEach((element3) {
+          /////
+
           list2.add(Container(
             width: context.screenSize.width,
             margin: const EdgeInsets.all(2),
@@ -92,11 +105,11 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                       onTap: () {
                         InvestDialog(
                           context: context,
-                          widget: InvestRecordInputParts(
+                          widget: InvestRecordInputAlert(
                             isar: widget.isar,
                             date: widget.date,
                             investName: element3,
-                            investRecord: InvestRecord(),
+                            investRecord: investRecordList.where((element4) => element4.investId == element3.id).toList(),
                           ),
                           clearBarrierColor: true,
                         );
@@ -154,18 +167,15 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           onTap: () {
                             InvestDialog(
                               context: context,
-                              widget: InvestRecordInputParts(
+                              widget: InvestRecordInputAlert(
                                 isar: widget.isar,
                                 date: widget.date,
-                                investRecord: InvestRecord(),
+                                investRecord: investRecordList.where((element4) => element4.investId == 0).toList(),
                                 investName: InvestName()
                                   ..id = 0
                                   ..kind = InvestKind.gold.name
                                   ..name = 'gold',
                               ),
-                              paddingTop: context.screenSize.height * 0.5,
-                              paddingLeft: 80,
-                              paddingRight: 20,
                               clearBarrierColor: true,
                             );
                           },

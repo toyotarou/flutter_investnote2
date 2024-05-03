@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:invest_note/collections/invest_record.dart';
+import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/invest_name.dart';
@@ -40,9 +42,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   List<InvestName>? investNameList = [];
 
+  List<InvestRecord>? investRecordList = [];
+
+  Map<String, List<InvestRecord>> investRecordMap = {};
+
   ///
   void _init() {
     _makeInvestNameList();
+
+    _makeInvestRecordList();
   }
 
   ///
@@ -253,6 +261,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         date: DateTime.parse('$generateYmd 00:00:00'),
                         isar: widget.isar,
                         investNameList: investNameList ?? [],
+                        investRecordList: investRecordMap[generateYmd] ?? [],
                       ),
                     ),
             child: Container(
@@ -282,9 +291,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         const SizedBox(height: 5),
                         ConstrainedBox(
                           constraints: BoxConstraints(minHeight: context.screenSize.height / 5),
-                          child: const Column(
-
-                          ),
+                          child: const Column(),
                         ),
                       ],
                     ),
@@ -300,4 +307,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeInvestNameList() async =>
       InvestNamesRepository().getInvestNameList(isar: widget.isar).then((value) => setState(() => investNameList = value));
+
+  ///
+  Future<void> _makeInvestRecordList() async {
+    await InvestRecordsRepository().getInvestRecordList(isar: widget.isar).then((value) {
+      investRecordList = value;
+
+      if (value != null) {
+        value
+          ..forEach((element) => investRecordMap[element.date] = [])
+          ..forEach((element) => investRecordMap[element.date]?.add(element));
+      }
+    });
+  }
 }

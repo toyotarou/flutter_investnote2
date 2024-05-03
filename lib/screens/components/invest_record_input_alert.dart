@@ -12,23 +12,68 @@ import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
-class InvestRecordInputParts extends StatefulWidget {
-  InvestRecordInputParts({super.key, required this.isar, required this.date, required this.investName, this.investRecord});
+class InvestRecordInputAlert extends StatefulWidget {
+  const InvestRecordInputAlert({super.key, required this.isar, required this.date, required this.investName, this.investRecord});
 
   final Isar isar;
   final DateTime date;
   final InvestName investName;
-  InvestRecord? investRecord;
+  final List<InvestRecord>? investRecord;
 
   ///
   @override
-  State<InvestRecordInputParts> createState() => _InvestRecordInputPartsState();
+  State<InvestRecordInputAlert> createState() => _InvestRecordInputAlertState();
 }
 
-class _InvestRecordInputPartsState extends State<InvestRecordInputParts> {
+class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   final TextEditingController _unitEditingController = TextEditingController();
   final TextEditingController _costEditingController = TextEditingController();
   final TextEditingController _priceEditingController = TextEditingController();
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.investRecord != null) {
+      _unitEditingController.text = widget.investRecord![0].unit;
+      _costEditingController.text = widget.investRecord![0].cost.toString();
+      _priceEditingController.text = widget.investRecord![0].price.toString();
+    }
+
+    /*
+
+
+    print('ddddddd');
+    print(widget.date);
+    print(widget.investName.name);
+    print(widget.investRecord);
+    print('ddddddd');
+
+
+
+I/flutter (21056): ddddddd
+I/flutter (21056): 2024-05-01 00:00:00.000
+I/flutter (21056): ウィズダムツリー インド株収益ファンド
+I/flutter (21056): [Instance of 'InvestRecord']
+I/flutter (21056): ddddddd
+
+
+I/flutter (21056): ddddddd
+I/flutter (21056): 2024-05-01 00:00:00.000
+I/flutter (21056): インフォシス・テクノロジーズ
+I/flutter (21056): []
+I/flutter (21056): ddddddd
+
+
+I/flutter (21056): ddddddd
+I/flutter (21056): 2024-05-01 00:00:00.000
+I/flutter (21056): gold
+I/flutter (21056): [Instance of 'InvestRecord']
+I/flutter (21056): ddddddd
+
+    */
+  }
 
   ///
   @override
@@ -57,13 +102,9 @@ class _InvestRecordInputPartsState extends State<InvestRecordInputParts> {
                 children: [
                   Container(),
                   (widget.investRecord != null)
-                      ? Column(
-                          children: [
-                            GestureDetector(
-                              onTap: _updateInvestRecord,
-                              child: Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
-                            ),
-                          ],
+                      ? TextButton(
+                          onPressed: _updateInvestRecord,
+                          child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)),
                         )
                       : TextButton(
                           onPressed: _inputInvestRecord,
@@ -192,27 +233,23 @@ class _InvestRecordInputPartsState extends State<InvestRecordInputParts> {
       _priceEditingController.clear();
 
       Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 
   ///
   Future<void> _updateInvestRecord() async {
-    /*
-
-
-
-        final stockFrame = ref.watch(investNamesProvider.select((value) => value.stockFrame));
-    final shintakuFrame = ref.watch(investNamesProvider.select((value) => value.shintakuFrame));
-
     var errFlg = false;
 
-    if (_investNameEditingController.text == '' || (stockFrame == StockFrame.blank) || (shintakuFrame == ShintakuFrame.blank)) {
+    if (_unitEditingController.text == '' || _costEditingController.text == '' || _priceEditingController.text == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_investNameEditingController.text, 30]
+        [_unitEditingController.text, 30],
+        [_costEditingController.text, 30],
+        [_priceEditingController.text, 10]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -229,9 +266,24 @@ class _InvestRecordInputPartsState extends State<InvestRecordInputParts> {
       return;
     }
 
+    await widget.isar.writeTxn(() async {
+      await InvestRecordsRepository().getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id).then((value) async {
+        value!
+          ..date = widget.date.yyyymmdd
+          ..investId = widget.investName.id
+          ..unit = _unitEditingController.text
+          ..cost = _costEditingController.text.toInt()
+          ..price = _priceEditingController.text.toInt();
 
+        await InvestRecordsRepository().updateInvestRecord(isar: widget.isar, investRecord: value).then((value) {
+          _unitEditingController.clear();
+          _costEditingController.clear();
+          _priceEditingController.clear();
 
-
-    */
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      });
+    });
   }
 }
