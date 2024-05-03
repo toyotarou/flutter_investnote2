@@ -196,5 +196,42 @@ class _InvestRecordInputPartsState extends State<InvestRecordInputParts> {
   }
 
   ///
-  Future<void> _updateInvestRecord() async {}
+  Future<void> _updateInvestRecord() async {
+    /*
+
+
+
+        final stockFrame = ref.watch(investNamesProvider.select((value) => value.stockFrame));
+    final shintakuFrame = ref.watch(investNamesProvider.select((value) => value.shintakuFrame));
+
+    var errFlg = false;
+
+    if (_investNameEditingController.text == '' || (stockFrame == StockFrame.blank) || (shintakuFrame == ShintakuFrame.blank)) {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_investNameEditingController.text, 30]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
+      Future.delayed(
+        Duration.zero,
+        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+      );
+
+      return;
+    }
+
+
+
+
+    */
+  }
 }

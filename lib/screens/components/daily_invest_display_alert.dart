@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
 import 'invest_record_input_alert.dart';
@@ -21,6 +22,9 @@ class DailyInvestDisplayAlert extends StatefulWidget {
 }
 
 class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
+  List<InvestRecord>? investRecordList = [];
+
+  ///
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -88,7 +92,12 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                       onTap: () {
                         InvestDialog(
                           context: context,
-                          widget: InvestRecordInputParts(isar: widget.isar, date: widget.date, investName: element3),
+                          widget: InvestRecordInputParts(
+                            isar: widget.isar,
+                            date: widget.date,
+                            investName: element3,
+                            investRecord: InvestRecord(),
+                          ),
                           clearBarrierColor: true,
                         );
                       },
@@ -148,6 +157,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               widget: InvestRecordInputParts(
                                 isar: widget.isar,
                                 date: widget.date,
+                                investRecord: InvestRecord(),
                                 investName: InvestName()
                                   ..id = 0
                                   ..kind = InvestKind.gold.name
