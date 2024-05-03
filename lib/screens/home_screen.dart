@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/invest_name.dart';
+import '../collections/invest_record.dart';
 import '../enum/invest_kind.dart';
 import '../extensions/extensions.dart';
 import '../repository/invest_names_repository.dart';
+import '../repository/invest_records_repository.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
 import '../utilities/utilities.dart';
@@ -59,9 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Future(_init);
 
     if (widget.baseYm != null) {
-      Future(() {
-        return ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm);
-      });
+      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
     final calendarState = ref.watch(calendarProvider);
@@ -102,15 +100,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           const BackGroundImage(),
           Container(
-            width: context.screenSize.width,
-            height: context.screenSize.height,
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
-          ),
-          Column(
-            children: [
-              Expanded(child: _getCalendar()),
-            ],
-          ),
+              width: context.screenSize.width, height: context.screenSize.height, decoration: BoxDecoration(color: Colors.black.withOpacity(0.5))),
+          Column(children: [Expanded(child: _getCalendar())]),
         ],
       ),
       endDrawer: _dispDrawer(),
@@ -129,12 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: [
               const SizedBox(height: 60),
               GestureDetector(
-                onTap: () {
-                  InvestDialog(
-                    context: context,
-                    widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.stock),
-                  );
-                },
+                onTap: () => InvestDialog(context: context, widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.stock)),
                 child: Row(
                   children: [
                     const MenuHeadIcon(),
@@ -150,12 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  InvestDialog(
-                    context: context,
-                    widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.shintaku),
-                  );
-                },
+                onTap: () => InvestDialog(context: context, widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.shintaku)),
                 child: Row(
                   children: [
                     const MenuHeadIcon(),
@@ -258,11 +239,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : () => InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                        date: DateTime.parse('$generateYmd 00:00:00'),
-                        isar: widget.isar,
-                        investNameList: investNameList ?? [],
-                        investRecordList: investRecordMap[generateYmd] ?? [],
-                      ),
+                          date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, investNameList: investNameList ?? []),
                     ),
             child: Container(
               margin: const EdgeInsets.all(1),

@@ -25,6 +25,12 @@ class InvestRecordsRepository {
   }
 
   ///
+  Future<List<InvestRecord>?> getInvestRecordListByDate({required Isar isar, required String date}) async {
+    final investRecordsCollection = getCollection(isar: isar);
+    return investRecordsCollection.filter().dateEqualTo(date).sortByInvestId().findAll();
+  }
+
+  ///
   Future<void> inputInvestRecord({required Isar isar, required InvestRecord investRecord}) async {
     final investRecordsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investRecordsCollection.put(investRecord));

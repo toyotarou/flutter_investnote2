@@ -67,14 +67,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                 children: [
                   Container(),
                   (widget.investRecord != null)
-                      ? TextButton(
-                          onPressed: _updateInvestRecord,
-                          child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)),
-                        )
-                      : TextButton(
-                          onPressed: _inputInvestRecord,
-                          child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12)),
-                        ),
+                      ? TextButton(onPressed: _updateInvestRecord, child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
+                      : TextButton(onPressed: _inputInvestRecord, child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
               ),
             ],
@@ -87,11 +81,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   Widget _displayInputParts() {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
-        ],
-      ),
+      decoration: BoxDecoration(boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
@@ -181,7 +171,6 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       _priceEditingController.clear();
 
       Navigator.pop(context);
-      Navigator.pop(context);
     });
   }
 
@@ -225,7 +214,6 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           _costEditingController.clear();
           _priceEditingController.clear();
 
-          Navigator.pop(context);
           Navigator.pop(context);
         });
       });
