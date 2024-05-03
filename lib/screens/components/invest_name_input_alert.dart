@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
@@ -382,9 +383,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteInvestName() async {
-    await InvestNamesRepository().deleteInvestName(isar: widget.isar, id: widget.investName!.id).then((value) {
-      Navigator.pop(context);
-    });
-  }
+  Future<void> _deleteInvestName() async => InvestRecordsRepository()
+      .getInvestRecordListByInvestId(isar: widget.isar, investId: widget.investName!.id)
+      .then((value) async => InvestRecordsRepository().deleteInvestRecordList(isar: widget.isar, investRecordList: value).then((value2) async =>
+          InvestNamesRepository().deleteInvestName(isar: widget.isar, id: widget.investName!.id).then((value3) => Navigator.pop(context))));
 }

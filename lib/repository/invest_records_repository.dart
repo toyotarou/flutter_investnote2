@@ -19,6 +19,12 @@ class InvestRecordsRepository {
   }
 
   ///
+  Future<List<InvestRecord>?> getInvestRecordListByInvestId({required Isar isar, required int investId}) async {
+    final investRecordsCollection = getCollection(isar: isar);
+    return investRecordsCollection.filter().investIdEqualTo(investId).findAll();
+  }
+
+  ///
   Future<void> inputInvestRecord({required Isar isar, required InvestRecord investRecord}) async {
     final investRecordsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investRecordsCollection.put(investRecord));
