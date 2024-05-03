@@ -66,7 +66,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(),
-                  (widget.investRecord != null)
+                  (widget.investRecord != null && widget.investRecord!.length > 0)
                       ? TextButton(onPressed: _updateInvestRecord, child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
                       : TextButton(onPressed: _inputInvestRecord, child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
