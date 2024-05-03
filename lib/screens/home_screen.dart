@@ -245,7 +245,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       list.add(
         Expanded(
           child: GestureDetector(
-            onTap: (_calendarDays[i] == '')
+            onTap: ((_calendarDays[i] == '') || DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()))
                 ? null
                 : () => InvestDialog(
                       context: context,
@@ -269,7 +269,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 color: (_calendarDays[i] == '')
                     ? Colors.transparent
-                    : _utility.getYoubiColor(date: generateYmd, youbiStr: youbiStr, holidayMap: _holidayMap),
+                    : (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()))
+                        ? Colors.white.withOpacity(0.1)
+                        : _utility.getYoubiColor(date: generateYmd, youbiStr: youbiStr, holidayMap: _holidayMap),
               ),
               child: (_calendarDays[i] == '')
                   ? const Text('')
@@ -280,21 +282,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         const SizedBox(height: 5),
                         ConstrainedBox(
                           constraints: BoxConstraints(minHeight: context.screenSize.height / 5),
-                          child: Column(
-                            children: [
-                              const Text('aaa'),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              const Text('bbb'),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              const Text('ccc'),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                              Text(1234567.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
-                            ],
+                          child: const Column(
+
                           ),
                         ),
                       ],

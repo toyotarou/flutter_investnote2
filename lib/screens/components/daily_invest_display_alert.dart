@@ -5,7 +5,7 @@ import 'package:isar/isar.dart';
 import '../../collections/invest_name.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
-import 'parts/invest_record_input_parts.dart';
+import 'invest_record_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
@@ -89,9 +89,6 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                         InvestDialog(
                           context: context,
                           widget: InvestRecordInputParts(isar: widget.isar, date: widget.date, investName: element3),
-                          paddingTop: context.screenSize.height * 0.5,
-                          paddingLeft: 80,
-                          paddingRight: 20,
                           clearBarrierColor: true,
                         );
                       },
@@ -152,6 +149,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                                 isar: widget.isar,
                                 date: widget.date,
                                 investName: InvestName()
+                                  ..id = 0
                                   ..kind = InvestKind.gold.name
                                   ..name = 'gold',
                               ),
