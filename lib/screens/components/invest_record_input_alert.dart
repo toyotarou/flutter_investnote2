@@ -26,7 +26,6 @@ class InvestRecordInputAlert extends StatefulWidget {
 }
 
 class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
-  final TextEditingController _unitEditingController = TextEditingController();
   final TextEditingController _costEditingController = TextEditingController();
   final TextEditingController _priceEditingController = TextEditingController();
 
@@ -35,44 +34,10 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   void initState() {
     super.initState();
 
-    if (widget.investRecord != null) {
-      _unitEditingController.text = widget.investRecord![0].unit;
+    if (widget.investRecord!.isNotEmpty) {
       _costEditingController.text = widget.investRecord![0].cost.toString();
       _priceEditingController.text = widget.investRecord![0].price.toString();
     }
-
-    /*
-
-
-    print('ddddddd');
-    print(widget.date);
-    print(widget.investName.name);
-    print(widget.investRecord);
-    print('ddddddd');
-
-
-
-I/flutter (21056): ddddddd
-I/flutter (21056): 2024-05-01 00:00:00.000
-I/flutter (21056): ウィズダムツリー インド株収益ファンド
-I/flutter (21056): [Instance of 'InvestRecord']
-I/flutter (21056): ddddddd
-
-
-I/flutter (21056): ddddddd
-I/flutter (21056): 2024-05-01 00:00:00.000
-I/flutter (21056): インフォシス・テクノロジーズ
-I/flutter (21056): []
-I/flutter (21056): ddddddd
-
-
-I/flutter (21056): ddddddd
-I/flutter (21056): 2024-05-01 00:00:00.000
-I/flutter (21056): gold
-I/flutter (21056): [Instance of 'InvestRecord']
-I/flutter (21056): ddddddd
-
-    */
   }
 
   ///
@@ -143,20 +108,6 @@ I/flutter (21056): ddddddd
             child: Column(
               children: [
                 TextField(
-                  controller: _unitEditingController,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    hintText: '数量(30文字以内)',
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
-                  ),
-                  style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-                ),
-                const SizedBox(height: 10),
-                TextField(
                   controller: _costEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
@@ -195,13 +146,12 @@ I/flutter (21056): ddddddd
   Future<void> _inputInvestRecord() async {
     var errFlg = false;
 
-    if (_unitEditingController.text == '' || _costEditingController.text == '' || _priceEditingController.text == '') {
+    if (_costEditingController.text == '' || _priceEditingController.text == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_unitEditingController.text, 30],
         [_costEditingController.text, 30],
         [_priceEditingController.text, 10]
       ].forEach((element) {
@@ -223,12 +173,10 @@ I/flutter (21056): ddddddd
     final investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
       ..investId = widget.investName.id
-      ..unit = _unitEditingController.text
       ..cost = _costEditingController.text.toInt()
       ..price = _priceEditingController.text.toInt();
 
     await InvestRecordsRepository().inputInvestRecord(isar: widget.isar, investRecord: investRecord).then((value) {
-      _unitEditingController.clear();
       _costEditingController.clear();
       _priceEditingController.clear();
 
@@ -241,13 +189,12 @@ I/flutter (21056): ddddddd
   Future<void> _updateInvestRecord() async {
     var errFlg = false;
 
-    if (_unitEditingController.text == '' || _costEditingController.text == '' || _priceEditingController.text == '') {
+    if (_costEditingController.text == '' || _priceEditingController.text == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_unitEditingController.text, 30],
         [_costEditingController.text, 30],
         [_priceEditingController.text, 10]
       ].forEach((element) {
@@ -271,12 +218,10 @@ I/flutter (21056): ddddddd
         value!
           ..date = widget.date.yyyymmdd
           ..investId = widget.investName.id
-          ..unit = _unitEditingController.text
           ..cost = _costEditingController.text.toInt()
           ..price = _priceEditingController.text.toInt();
 
         await InvestRecordsRepository().updateInvestRecord(isar: widget.isar, investRecord: value).then((value) {
-          _unitEditingController.clear();
           _costEditingController.clear();
           _priceEditingController.clear();
 

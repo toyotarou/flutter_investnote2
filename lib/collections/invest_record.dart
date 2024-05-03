@@ -11,7 +11,6 @@ class InvestRecord {
 
   late int? investId;
 
-  late String unit;
   late int cost;
   late int price;
 }
