@@ -224,12 +224,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _getCalendarRow({required int week}) {
     final list = <Widget>[];
 
+    final stockIds = <int>[];
+    final shintakuIds = <int>[];
+
+    investNameList?.forEach((element) {
+      if (element.kind == InvestKind.stock.name) {
+        stockIds.add(element.id);
+      }
+
+      if (element.kind == InvestKind.shintaku.name) {
+        shintakuIds.add(element.id);
+      }
+    });
+
     for (var i = week * 7; i < ((week + 1) * 7); i++) {
       final generateYmd =
           (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).yyyymmdd;
 
       final youbiStr =
           (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).youbiStr;
+
+      //////////////////////////////////////////////////
+
+      var stockCost = 0;
+      var stockPrice = 0;
+      var stockSum = 0;
+
+      var shintakuCost = 0;
+      var shintakuPrice = 0;
+      var shintakuSum = 0;
+
+      var goldCost = 0;
+      var goldPrice = 0;
+      var goldSum = 0;
+
+      if (investRecordMap[generateYmd] != null) {
+        investRecordMap[generateYmd]!.forEach((element) {
+          if (stockIds.contains(element.investId)) {
+            stockCost += element.cost;
+            stockPrice += element.price;
+          }
+
+          if (shintakuIds.contains(element.investId)) {
+            shintakuCost += element.cost;
+            shintakuPrice += element.price;
+          }
+
+          if (element.investId == 0) {
+            goldCost += element.cost;
+            goldPrice += element.price;
+          }
+        });
+
+        stockSum = stockPrice - stockCost;
+        shintakuSum = shintakuPrice - shintakuCost;
+        goldSum = goldPrice - goldCost;
+      }
+
+      var allSum = 0;
+      [stockCost, stockPrice, shintakuCost, shintakuPrice, goldCost, goldPrice].forEach((element) {
+        allSum += element;
+      });
+
+      //////////////////////////////////////////////////
 
       list.add(
         Expanded(
@@ -271,8 +328,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Text(_calendarDays[i].padLeft(2, '0')),
                         const SizedBox(height: 5),
                         ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: context.screenSize.height / 5),
-                          child: const Column(),
+                          constraints: BoxConstraints(minHeight: context.screenSize.height / 4),
+                          child: (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()) || allSum == 0)
+                              ? Container()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                          gradient:
+                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.9, 1])),
+                                      child: const Text('stock'),
+                                    ),
+                                    Text(stockCost.toString().toCurrency()),
+                                    Text(stockPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                    Text(stockSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                    const SizedBox(height: 5),
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                          gradient:
+                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                                      child: const Text('shintaku'),
+                                    ),
+                                    Text(shintakuCost.toString().toCurrency()),
+                                    Text(shintakuPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                    Text(shintakuSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                    const SizedBox(height: 5),
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                          gradient:
+                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                                      child: const Text('gold'),
+                                    ),
+                                    Text(goldCost.toString().toCurrency()),
+                                    Text(goldPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                    Text(goldSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                    const SizedBox(height: 10),
+                                    Text((stockCost + shintakuCost + goldCost).toString().toCurrency()),
+                                    Text((stockPrice + shintakuPrice + goldPrice).toString().toCurrency(),
+                                        style: const TextStyle(color: Colors.yellowAccent)),
+                                    Text((stockSum + shintakuSum + goldSum).toString().toCurrency(),
+                                        style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                  ],
+                                ),
                         ),
                       ],
                     ),
