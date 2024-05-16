@@ -17,6 +17,16 @@ import 'components/parts/back_ground_image.dart';
 import 'components/parts/invest_dialog.dart';
 import 'components/parts/menu_head_icon.dart';
 
+class CalendarCellSumData {
+  CalendarCellSumData({required this.date, required this.stockSum, required this.shintakuSum, required this.goldSum, required this.allSum});
+
+  String date;
+  int stockSum;
+  int shintakuSum;
+  int goldSum;
+  int allSum;
+}
+
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerStatefulWidget {
   HomeScreen({super.key, this.baseYm, required this.isar});
@@ -46,6 +56,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<String, List<InvestRecord>> investRecordMap = {};
 
+  List<CalendarCellSumData> calendarCellSumDataList = [];
+
   ///
   void _init() {
     _makeInvestNameList();
@@ -64,6 +76,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final calendarState = ref.watch(calendarProvider);
 
+    if (investRecordList!.isNotEmpty) {
+      makeCalendarCellSumDataList();
+    }
+
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       key: _scaffoldKey,
@@ -81,7 +97,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
+                color:
+                    (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
                 size: 14,
               ),
             ),
@@ -100,7 +117,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           const BackGroundImage(),
           Container(
-              width: context.screenSize.width, height: context.screenSize.height, decoration: BoxDecoration(color: Colors.black.withOpacity(0.5))),
+              width: context.screenSize.width,
+              height: context.screenSize.height,
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.5))),
           Column(children: [Expanded(child: _getCalendar())]),
         ],
       ),
@@ -136,7 +155,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => InvestDialog(context: context, widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.shintaku)),
+                onTap: () =>
+                    InvestDialog(context: context, widget: InvestNameListAlert(isar: widget.isar, investKind: InvestKind.shintaku)),
                 child: Row(
                   children: [
                     const MenuHeadIcon(),
@@ -288,6 +308,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //////////////////////////////////////////////////
 
+      final index = calendarCellSumDataList.indexWhere((element) => element.date == generateYmd);
+
       list.add(
         Expanded(
           child: GestureDetector(
@@ -334,44 +356,108 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          gradient:
-                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.9, 1])),
-                                      child: const Text('stock'),
+                                    Stack(
+                                      children: [
+                                        if (index != 0) ...[
+                                          Positioned(
+                                            bottom: 0,
+                                            child: getUpDownMark(aPrice: stockSum, bPrice: calendarCellSumDataList[index - 1].stockSum),
+                                          ),
+                                        ],
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                      colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.9, 1])),
+                                              child: const Text('stock'),
+                                            ),
+                                            Text(stockCost.toString().toCurrency()),
+                                            Text(stockPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                            Text(stockSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Text(stockCost.toString().toCurrency()),
-                                    Text(stockPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                                    Text(stockSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                                     const SizedBox(height: 5),
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          gradient:
-                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
-                                      child: const Text('shintaku'),
+                                    Stack(
+                                      children: [
+                                        if (index != 0) ...[
+                                          Positioned(
+                                            bottom: 0,
+                                            child:
+                                                getUpDownMark(aPrice: shintakuSum, bPrice: calendarCellSumDataList[index - 1].shintakuSum),
+                                          ),
+                                        ],
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                      colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                                              child: const Text('shintaku'),
+                                            ),
+                                            Text(shintakuCost.toString().toCurrency()),
+                                            Text(shintakuPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                            Text(shintakuSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Text(shintakuCost.toString().toCurrency()),
-                                    Text(shintakuPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                                    Text(shintakuSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                                     const SizedBox(height: 5),
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          gradient:
-                                              LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
-                                      child: const Text('gold'),
+                                    Stack(
+                                      children: [
+                                        if (index != 0) ...[
+                                          Positioned(
+                                            bottom: 0,
+                                            child: getUpDownMark(aPrice: goldSum, bPrice: calendarCellSumDataList[index - 1].goldSum),
+                                          ),
+                                        ],
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                      colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                                              child: const Text('gold'),
+                                            ),
+                                            Text(goldCost.toString().toCurrency()),
+                                            Text(goldPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                                            Text(goldSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Text(goldCost.toString().toCurrency()),
-                                    Text(goldPrice.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                                    Text(goldSum.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                                     const SizedBox(height: 10),
-                                    Text((stockCost + shintakuCost + goldCost).toString().toCurrency()),
-                                    Text((stockPrice + shintakuPrice + goldPrice).toString().toCurrency(),
-                                        style: const TextStyle(color: Colors.yellowAccent)),
-                                    Text((stockSum + shintakuSum + goldSum).toString().toCurrency(),
-                                        style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                    Stack(
+                                      children: [
+                                        if (index != 0) ...[
+                                          Positioned(
+                                            bottom: 0,
+                                            child: getUpDownMark(
+                                              aPrice: stockSum + shintakuSum + goldSum,
+                                              bPrice: calendarCellSumDataList[index - 1].allSum,
+                                            ),
+                                          ),
+                                        ],
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Text((stockCost + shintakuCost + goldCost).toString().toCurrency()),
+                                            Text((stockPrice + shintakuPrice + goldPrice).toString().toCurrency(),
+                                                style: const TextStyle(color: Colors.yellowAccent)),
+                                            Text((stockSum + shintakuSum + goldSum).toString().toCurrency(),
+                                                style: const TextStyle(color: Color(0xFFFBB6CE))),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                         ),
@@ -401,5 +487,80 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ..forEach((element) => investRecordMap[element.date]?.add(element));
       }
     });
+  }
+
+  void makeCalendarCellSumDataList() {
+    final stockIds = <int>[];
+    final shintakuIds = <int>[];
+
+    investNameList?.forEach((element) {
+      if (element.kind == InvestKind.stock.name) {
+        stockIds.add(element.id);
+      }
+
+      if (element.kind == InvestKind.shintaku.name) {
+        shintakuIds.add(element.id);
+      }
+    });
+
+    final dateList = <String>[];
+    investRecordList!.forEach((element) {
+      if (!dateList.contains(element.date)) {
+        var stockCost = 0;
+        var stockPrice = 0;
+        var stockSum = 0;
+
+        var shintakuCost = 0;
+        var shintakuPrice = 0;
+        var shintakuSum = 0;
+
+        var goldCost = 0;
+        var goldPrice = 0;
+        var goldSum = 0;
+
+        var allSum = 0;
+
+        if (investRecordMap[element.date] != null) {
+          investRecordMap[element.date]!.forEach((element) {
+            if (stockIds.contains(element.investId)) {
+              stockCost += element.cost;
+              stockPrice += element.price;
+            }
+
+            if (shintakuIds.contains(element.investId)) {
+              shintakuCost += element.cost;
+              shintakuPrice += element.price;
+            }
+
+            if (element.investId == 0) {
+              goldCost += element.cost;
+              goldPrice += element.price;
+            }
+          });
+
+          stockSum = stockPrice - stockCost;
+          shintakuSum = shintakuPrice - shintakuCost;
+          goldSum = goldPrice - goldCost;
+
+          allSum = stockSum + shintakuSum + goldSum;
+        }
+
+        calendarCellSumDataList
+            .add(CalendarCellSumData(date: element.date, stockSum: stockSum, shintakuSum: shintakuSum, goldSum: goldSum, allSum: allSum));
+      }
+
+      dateList.add(element.date);
+    });
+  }
+
+  ///
+  Widget getUpDownMark({required int aPrice, required int bPrice}) {
+    if (aPrice > bPrice) {
+      return Icon(Icons.arrow_upward, color: Colors.greenAccent.withOpacity(0.6));
+    } else if (aPrice < bPrice) {
+      return Icon(Icons.arrow_downward, color: Colors.redAccent.withOpacity(0.6));
+    }
+
+    return const Icon(Icons.crop_square, color: Colors.transparent);
   }
 }
