@@ -101,7 +101,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                                 ? dispInvestRecord[0].cost.toString().toCurrency()
                                 : '0'),
                           ),
-                          Text(''),
+                          const Text(''),
                         ],
                       ),
                     ),
@@ -117,7 +117,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               style: const TextStyle(color: Colors.yellowAccent),
                             ),
                           ),
-                          Text(''),
+                          const Text(''),
                         ],
                       ),
                     ),
@@ -190,6 +190,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           allInvestRecord: widget.allInvestRecord,
                           calendarCellDateDataList: widget.calendarCellDateDataList,
                         ),
+                        clearBarrierColor: true,
                       );
                     },
                     child: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
@@ -218,7 +219,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                                     ? dispInvestRecordGold[0].cost.toString().toCurrency()
                                     : '0'),
                               ),
-                              Text(''),
+                              const Text(''),
                             ],
                           ),
                         ),
@@ -234,7 +235,7 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                                   style: const TextStyle(color: Colors.yellowAccent),
                                 ),
                               ),
-                              Text(''),
+                              const Text(''),
                             ],
                           ),
                         ),
