@@ -7,17 +7,24 @@ import '../../collections/invest_record.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/invest_records_repository.dart';
+import 'invest_graph_alert.dart';
 import 'invest_record_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
   const DailyInvestDisplayAlert(
-      {super.key, required this.date, required this.isar, required this.investNameList, required this.allInvestRecord});
+      {super.key,
+      required this.date,
+      required this.isar,
+      required this.investNameList,
+      required this.allInvestRecord,
+      required this.calendarCellDateDataList});
 
   final DateTime date;
   final Isar isar;
   final List<InvestName> investNameList;
   final List<InvestRecord> allInvestRecord;
+  final List<String> calendarCellDateDataList;
 
   ///
   @override
@@ -164,12 +171,32 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
         list.add(Column(
           children: [
             Container(
-                width: context.screenSize.width,
-                padding: const EdgeInsets.all(5),
-                margin: const EdgeInsets.only(top: 10),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
-                child: Row(children: [Text(element.japanName)])),
+              width: context.screenSize.width,
+              padding: const EdgeInsets.all(5),
+              margin: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(element.japanName),
+                  GestureDetector(
+                    onTap: () {
+                      InvestDialog(
+                        context: context,
+                        widget: InvestGraphAlert(
+                          kind: element.name,
+                          investNameList: widget.investNameList,
+                          allInvestRecord: widget.allInvestRecord,
+                          calendarCellDateDataList: widget.calendarCellDateDataList,
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
+                  ),
+                ],
+              ),
+            ),
 
             ///////////////////// GOLD
             if (element.name == InvestKind.gold.name) ...[

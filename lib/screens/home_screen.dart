@@ -324,6 +324,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         isar: widget.isar,
                         investNameList: investNameList ?? [],
                         allInvestRecord: investRecordList ?? [],
+                        calendarCellDateDataList: calendarCellDateDataList,
                       ),
                     ),
             child: Container(
