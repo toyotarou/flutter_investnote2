@@ -56,7 +56,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<String, List<InvestRecord>> investRecordMap = {};
 
-  List<CalendarCellSumData> calendarCellSumDataList = [];
+  List<String> calendarCellDateDataList = [];
+  Map<String, CalendarCellSumData> calendarCellSumDataMap = {};
 
   ///
   void _init() {
@@ -77,7 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final calendarState = ref.watch(calendarProvider);
 
     if (investRecordList!.isNotEmpty) {
-      makeCalendarCellSumDataList();
+      makeCalendarCellSumDataMap();
     }
 
     return Scaffold(
@@ -308,7 +309,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //////////////////////////////////////////////////
 
-      final index = calendarCellSumDataList.indexWhere((element) => element.date == generateYmd);
+      final index = calendarCellDateDataList.indexWhere((element) => element == generateYmd);
+      final beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
 
       list.add(
         Expanded(
@@ -358,10 +360,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   children: [
                                     Stack(
                                       children: [
-                                        if (index != 0) ...[
+                                        if (index > 0) ...[
                                           Positioned(
                                             bottom: 0,
-                                            child: getUpDownMark(aPrice: stockSum, bPrice: calendarCellSumDataList[index - 1].stockSum),
+                                            child: getUpDownMark(aPrice: stockSum, bPrice: calendarCellSumDataMap[beforeDate]!.stockSum),
                                           ),
                                         ],
                                         Column(
@@ -384,11 +386,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     const SizedBox(height: 5),
                                     Stack(
                                       children: [
-                                        if (index != 0) ...[
+                                        if (index > 0) ...[
                                           Positioned(
                                             bottom: 0,
                                             child:
-                                                getUpDownMark(aPrice: shintakuSum, bPrice: calendarCellSumDataList[index - 1].shintakuSum),
+                                                getUpDownMark(aPrice: shintakuSum, bPrice: calendarCellSumDataMap[beforeDate]!.shintakuSum),
                                           ),
                                         ],
                                         Column(
@@ -411,10 +413,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     const SizedBox(height: 5),
                                     Stack(
                                       children: [
-                                        if (index != 0) ...[
+                                        if (index > 0) ...[
                                           Positioned(
                                             bottom: 0,
-                                            child: getUpDownMark(aPrice: goldSum, bPrice: calendarCellSumDataList[index - 1].goldSum),
+                                            child: getUpDownMark(aPrice: goldSum, bPrice: calendarCellSumDataMap[beforeDate]!.goldSum),
                                           ),
                                         ],
                                         Column(
@@ -437,12 +439,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     const SizedBox(height: 10),
                                     Stack(
                                       children: [
-                                        if (index != 0) ...[
+                                        if (index > 0) ...[
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
                                               aPrice: stockSum + shintakuSum + goldSum,
-                                              bPrice: calendarCellSumDataList[index - 1].allSum,
+                                              bPrice: calendarCellSumDataMap[beforeDate]!.allSum,
                                             ),
                                           ),
                                         ],
@@ -489,7 +491,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  void makeCalendarCellSumDataList() {
+  void makeCalendarCellSumDataMap() {
     final stockIds = <int>[];
     final shintakuIds = <int>[];
 
@@ -502,6 +504,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         shintakuIds.add(element.id);
       }
     });
+
+    calendarCellDateDataList = [];
 
     final dateList = <String>[];
     investRecordList!.forEach((element) {
@@ -545,8 +549,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           allSum = stockSum + shintakuSum + goldSum;
         }
 
-        calendarCellSumDataList
-            .add(CalendarCellSumData(date: element.date, stockSum: stockSum, shintakuSum: shintakuSum, goldSum: goldSum, allSum: allSum));
+        calendarCellDateDataList.add(element.date);
+
+        calendarCellSumDataMap[element.date] =
+            CalendarCellSumData(date: element.date, stockSum: stockSum, shintakuSum: shintakuSum, goldSum: goldSum, allSum: allSum);
       }
 
       dateList.add(element.date);

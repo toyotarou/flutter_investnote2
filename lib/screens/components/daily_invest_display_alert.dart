@@ -11,7 +11,8 @@ import 'invest_record_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
-  const DailyInvestDisplayAlert({super.key, required this.date, required this.isar, required this.investNameList, required this.allInvestRecord});
+  const DailyInvestDisplayAlert(
+      {super.key, required this.date, required this.isar, required this.investNameList, required this.allInvestRecord});
 
   final DateTime date;
   final Isar isar;
@@ -85,30 +86,54 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        child:
-                            Text((dispInvestRecord != null && dispInvestRecord.isNotEmpty) ? dispInvestRecord[0].cost.toString().toCurrency() : '0'),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.topRight,
+                            child: Text((dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                                ? dispInvestRecord[0].cost.toString().toCurrency()
+                                : '0'),
+                          ),
+                          Text(''),
+                        ],
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          (dispInvestRecord != null && dispInvestRecord.isNotEmpty) ? dispInvestRecord[0].price.toString().toCurrency() : '0',
-                          style: const TextStyle(color: Colors.yellowAccent),
-                        ),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                                  ? dispInvestRecord[0].price.toString().toCurrency()
+                                  : '0',
+                              style: const TextStyle(color: Colors.yellowAccent),
+                            ),
+                          ),
+                          Text(''),
+                        ],
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                              ? (dispInvestRecord[0].price - dispInvestRecord[0].cost).toString().toCurrency()
-                              : '0',
-                          style: const TextStyle(color: Color(0xFFFBB6CE)),
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                                  ? (dispInvestRecord[0].price - dispInvestRecord[0].cost).toString().toCurrency()
+                                  : '0',
+                              style: const TextStyle(color: Color(0xFFFBB6CE)),
+                            ),
+                          ),
+                          Text(
+                            (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                                ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
+                                : '0',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -142,8 +167,8 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                 width: context.screenSize.width,
                 padding: const EdgeInsets.all(5),
                 margin: const EdgeInsets.only(top: 10),
-                decoration:
-                    BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
                 child: Row(children: [Text(element.japanName)])),
 
             ///////////////////// GOLD
@@ -158,33 +183,54 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            alignment: Alignment.topRight,
-                            child: Text((dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                ? dispInvestRecordGold[0].cost.toString().toCurrency()
-                                : '0'),
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.topRight,
+                                child: Text((dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                    ? dispInvestRecordGold[0].cost.toString().toCurrency()
+                                    : '0'),
+                              ),
+                              Text(''),
+                            ],
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                  ? dispInvestRecordGold[0].price.toString().toCurrency()
-                                  : '0',
-                              style: const TextStyle(color: Colors.yellowAccent),
-                            ),
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                      ? dispInvestRecordGold[0].price.toString().toCurrency()
+                                      : '0',
+                                  style: const TextStyle(color: Colors.yellowAccent),
+                                ),
+                              ),
+                              Text(''),
+                            ],
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                  ? (dispInvestRecordGold[0].price - dispInvestRecordGold[0].cost).toString().toCurrency()
-                                  : '0',
-                              style: const TextStyle(color: Color(0xFFFBB6CE)),
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                      ? (dispInvestRecordGold[0].price - dispInvestRecordGold[0].cost).toString().toCurrency()
+                                      : '0',
+                                  style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                ),
+                              ),
+                              Text(
+                                (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                    ? '${((dispInvestRecordGold[0].price / dispInvestRecordGold[0].cost) * 100).toString().split('.')[0]} %'
+                                    : '0',
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 20),
