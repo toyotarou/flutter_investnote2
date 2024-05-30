@@ -9,6 +9,7 @@ import '../../extensions/extensions.dart';
 import '../../repository/invest_records_repository.dart';
 import 'invest_graph_alert.dart';
 import 'invest_record_input_alert.dart';
+import 'invest_record_list_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends StatefulWidget {
@@ -144,6 +145,23 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                       ),
                     ),
                     const SizedBox(width: 20),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            InvestDialog(
+                              context: context,
+                              widget: InvestRecordListAlert(
+                                investName: element3,
+                                allInvestRecord: widget.allInvestRecord,
+                              ),
+                              clearBarrierColor: true,
+                            );
+                          },
+                          icon: Icon(Icons.info_outline, color: Colors.greenAccent.withOpacity(0.6)),
+                        ),
+                      ],
+                    ),
                     GestureDetector(
                       onTap: () {
                         InvestDialog(
