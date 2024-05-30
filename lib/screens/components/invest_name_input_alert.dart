@@ -247,13 +247,13 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   Future<void> _inputInvestName() async {
     var errFlg = false;
 
-    if (_investNameEditingController.text == '') {
+    if (_investNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_investNameEditingController.text, 50]
+        [_investNameEditingController.text.trim(), 50]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -290,7 +290,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     final investName = InvestName()
       ..frame = frame
-      ..name = _investNameEditingController.text
+      ..name = _investNameEditingController.text.trim()
       ..kind = widget.investKind.name;
 
     await InvestNamesRepository().inputInvestName(isar: widget.isar, investName: investName).then((value) {
@@ -307,13 +307,13 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     var errFlg = false;
 
-    if (_investNameEditingController.text == '' || (stockFrame == StockFrame.blank) || (shintakuFrame == ShintakuFrame.blank)) {
+    if (_investNameEditingController.text.trim() == '' || (stockFrame == StockFrame.blank) || (shintakuFrame == ShintakuFrame.blank)) {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_investNameEditingController.text, 30]
+        [_investNameEditingController.text.trim(), 30]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -349,7 +349,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await InvestNamesRepository().getInvestName(isar: widget.isar, id: widget.investName!.id).then((value) async {
         value!
-          ..name = _investNameEditingController.text
+          ..name = _investNameEditingController.text.trim()
           ..frame = frame;
 
         await InvestNamesRepository().updateInvestName(isar: widget.isar, investName: value).then((value) {
@@ -385,6 +385,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   ///
   Future<void> _deleteInvestName() async => InvestRecordsRepository()
       .getInvestRecordListByInvestId(isar: widget.isar, investId: widget.investName!.id)
-      .then((value) async => InvestRecordsRepository().deleteInvestRecordList(isar: widget.isar, investRecordList: value).then((value2) async =>
-          InvestNamesRepository().deleteInvestName(isar: widget.isar, id: widget.investName!.id).then((value3) => Navigator.pop(context))));
+      .then((value) async => InvestRecordsRepository().deleteInvestRecordList(isar: widget.isar, investRecordList: value).then(
+          (value2) async => InvestNamesRepository()
+              .deleteInvestName(isar: widget.isar, id: widget.investName!.id)
+              .then((value3) => Navigator.pop(context))));
 }

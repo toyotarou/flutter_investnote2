@@ -15,12 +15,7 @@ import 'parts/error_dialog.dart';
 // ignore: must_be_immutable
 class InvestRecordInputAlert extends StatefulWidget {
   const InvestRecordInputAlert(
-      {super.key,
-      required this.isar,
-      required this.date,
-      required this.investName,
-      this.investRecord,
-      required this.allInvestRecord});
+      {super.key, required this.isar, required this.date, required this.investName, this.investRecord, required this.allInvestRecord});
 
   final Isar isar;
   final DateTime date;
@@ -67,13 +62,10 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(widget.date.yyyymmdd), Text(widget.investName.name)]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(widget.date.yyyymmdd), Text(widget.investName.name)]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
-              if (widget.investName.kind == InvestKind.stock.name ||
-                  widget.investName.kind == InvestKind.shintaku.name) ...[
+              if (widget.investName.kind == InvestKind.stock.name || widget.investName.kind == InvestKind.shintaku.name) ...[
                 ElevatedButton(
                   onPressed: getLastCost,
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
@@ -85,12 +77,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                 children: [
                   Container(),
                   (widget.investRecord!.isNotEmpty)
-                      ? TextButton(
-                          onPressed: _updateInvestRecord,
-                          child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
-                      : TextButton(
-                          onPressed: _inputInvestRecord,
-                          child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
+                      ? TextButton(onPressed: _updateInvestRecord, child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
+                      : TextButton(onPressed: _inputInvestRecord, child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
               ),
             ],
@@ -103,8 +91,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   Widget _displayInputParts() {
     return DecoratedBox(
-      decoration:
-          BoxDecoration(boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
+      decoration: BoxDecoration(boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
@@ -159,14 +146,14 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _inputInvestRecord() async {
     var errFlg = false;
 
-    if (_costEditingController.text == '' || _priceEditingController.text == '') {
+    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_costEditingController.text, 30],
-        [_priceEditingController.text, 10]
+        [_costEditingController.text.trim(), 30],
+        [_priceEditingController.text.trim(), 10]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -186,8 +173,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     final investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
       ..investId = widget.investName.id
-      ..cost = _costEditingController.text.toInt()
-      ..price = _priceEditingController.text.toInt();
+      ..cost = _costEditingController.text.trim().toInt()
+      ..price = _priceEditingController.text.trim().toInt();
 
     await InvestRecordsRepository().inputInvestRecord(isar: widget.isar, investRecord: investRecord).then((value) {
       _costEditingController.clear();
@@ -201,14 +188,14 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _updateInvestRecord() async {
     var errFlg = false;
 
-    if (_costEditingController.text == '' || _priceEditingController.text == '') {
+    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_costEditingController.text, 30],
-        [_priceEditingController.text, 10]
+        [_costEditingController.text.trim(), 30],
+        [_priceEditingController.text.trim(), 10]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -226,14 +213,12 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     }
 
     await widget.isar.writeTxn(() async {
-      await InvestRecordsRepository()
-          .getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id)
-          .then((value) async {
+      await InvestRecordsRepository().getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id).then((value) async {
         value!
           ..date = widget.date.yyyymmdd
           ..investId = widget.investName.id
-          ..cost = _costEditingController.text.toInt()
-          ..price = _priceEditingController.text.toInt();
+          ..cost = _costEditingController.text.trim().toInt()
+          ..price = _priceEditingController.text.trim().toInt();
 
         await InvestRecordsRepository().updateInvestRecord(isar: widget.isar, investRecord: value).then((value) {
           _costEditingController.clear();
@@ -267,6 +252,6 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       });
     });
 
-    _costEditingController.text = cost.toString();
+    _costEditingController.text = cost.toString().trim();
   }
 }
