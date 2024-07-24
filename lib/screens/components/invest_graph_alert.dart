@@ -47,7 +47,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
         scrollDirection: Axis.horizontal,
         controller: _controller,
         child: SizedBox(
-          width: context.screenSize.width * (widget.calendarCellDateDataList.length / 10),
+          width: context.screenSize.width *
+              (widget.calendarCellDateDataList.length / 10),
           height: context.screenSize.height - 50,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,13 +59,17 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                    onPressed: () => _controller.jumpTo(_controller.position.maxScrollExtent),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                    onPressed: () => _controller
+                        .jumpTo(_controller.position.maxScrollExtent),
                     child: const Text('jump'),
                   ),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                    onPressed: () => _controller.jumpTo(_controller.position.minScrollExtent),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                    onPressed: () => _controller
+                        .jumpTo(_controller.position.minScrollExtent),
                     child: const Text('back'),
                   ),
                 ],
@@ -83,7 +88,9 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
     if (widget.kind == InvestKind.gold.name) {
       idList.add(0);
     } else {
-      widget.investNameList.where((element) => element.kind == widget.kind).forEach((element2) => idList.add(element2.id));
+      widget.investNameList
+          .where((element) => element.kind == widget.kind)
+          .forEach((element2) => idList.add(element2.id));
     }
 
     final map = <int, Map<String, int>>{};
@@ -94,8 +101,15 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
       map[element] = map2;
     });
 
-    widget.allInvestRecord.forEach(
-        (element) => map[element.investId]?[element.date] = ((element.price / element.cost) * 100).toString().split('.')[0].toInt());
+    widget.allInvestRecord.forEach((element) {
+      map[element.investId]?[element.date] =
+          (element.price != 0 && element.cost != 0)
+              ? ((element.price / element.cost) * 100)
+                  .toString()
+                  .split('.')[0]
+                  .toInt()
+              : 0;
+    });
 
     final flspotsList = <List<FlSpot>>[];
 
@@ -116,13 +130,11 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
       flspotsList.add(flspots);
     });
 
-    final maxPoint = (points.isNotEmpty) ? points.reduce(max) : 300;
     final minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
 
-    final roundMax = (maxPoint / 10).round();
     final roundMin = (minPoint / 10).round();
 
-    final graphYMax = (roundMax + 5) * 10;
+    const graphYMax = 300;
     final graphYMin = (roundMin - 1) * 10;
 
     final twelveColor = _utility.getTwelveColor();
@@ -132,7 +144,9 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
       minY: graphYMin.toDouble(),
 
       ///
-      lineTouchData: LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
+      lineTouchData: LineTouchData(
+          touchTooltipData:
+              LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
 
       ///
       gridData: _utility.getFlGridData(),
@@ -155,7 +169,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
                   style: const TextStyle(fontSize: 10),
                   child: Column(
                     children: [
-                      Text(widget.calendarCellDateDataList[value.toInt()].split('-')[0]),
+                      Text(widget.calendarCellDateDataList[value.toInt()]
+                          .split('-')[0]),
                       Text(
                         '${widget.calendarCellDateDataList[value.toInt()].split('-')[1]}-${widget.calendarCellDateDataList[value.toInt()].split('-')[2]}',
                       ),
@@ -173,7 +188,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 60,
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(fontSize: 12)),
+            getTitlesWidget: (value, meta) => Text(value.toInt().toString(),
+                style: const TextStyle(fontSize: 12)),
           ),
         ),
         //-------------------------// 左側の目盛り
@@ -183,7 +199,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 60,
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(fontSize: 12)),
+            getTitlesWidget: (value, meta) => Text(value.toInt().toString(),
+                style: const TextStyle(fontSize: 12)),
           ),
         ),
         //-------------------------// 右側の目盛り
@@ -209,7 +226,11 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
 
     touchedSpots.forEach((element) {
       final textStyle = TextStyle(
-          color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 12);
+          color: element.bar.gradient?.colors.first ??
+              element.bar.color ??
+              Colors.blueGrey,
+          fontWeight: FontWeight.bold,
+          fontSize: 12);
 
       final price = element.y.round().toString().split('.')[0].toCurrency();
 //      final month = usageGuideList[element.barIndex].mm;
