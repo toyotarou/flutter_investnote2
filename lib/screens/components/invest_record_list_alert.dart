@@ -34,7 +34,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
       contentPadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: SizedBox(
-          height: context.screenSize.height - 50,
+          height: context.screenSize.height,
           child: DefaultTextStyle(
             style: const TextStyle(fontSize: 12),
             child: Column(
@@ -48,7 +48,6 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
                 SizedBox(height: 150, child: LineChart(graphData)),
                 const SizedBox(height: 20),
                 Expanded(child: _displayInvestRecordList()),
-                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -114,6 +113,8 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
         lastCost = element.cost;
       });
+
+    list.add(const SizedBox(height: 200));
 
     return SingleChildScrollView(child: Column(children: list));
   }
