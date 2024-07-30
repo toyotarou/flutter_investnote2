@@ -1,3 +1,5 @@
+// ignore_for_file: use_named_constants
+
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
@@ -125,8 +127,26 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
     final points = <int>[];
 
+    var startPrice = 0.0;
+    var endPrice = 0.0;
+
+    var startSpot = const FlSpot(0, 0);
+    var endSpot = const FlSpot(0, 0);
+    var flspotsTrend = <FlSpot>[];
+
     for (var i = 0; i < widget.allInvestRecord.length; i++) {
       if (widget.allInvestRecord[i].investId == widget.investName.id) {
+        if (startPrice == 0) {
+          startPrice =
+              (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
+                  .toDouble();
+
+          startSpot = FlSpot(
+              i.toDouble(),
+              (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
+                  .toDouble());
+        }
+
         flspots.add(
           FlSpot(
               i.toDouble(),
@@ -136,10 +156,23 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
         points.add(
             widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost);
+
+        endPrice =
+            (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
+                .toDouble();
+
+        endSpot = FlSpot(
+            i.toDouble(),
+            (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
+                .toDouble());
       }
     }
 
+    flspotsTrend = [startSpot, endSpot];
+
     final maxPoint = (points.isNotEmpty) ? points.reduce(max) : 0;
+
+    final minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
 
     var devide = 0;
     switch (maxPoint.toString().length) {
@@ -160,45 +193,86 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
         break;
     }
 
-    final graphYMax = (maxPoint / devide).round() * devide;
-    const graphYMin = 0;
+    if (devide != 0) {
+      final graphYMax = (maxPoint / devide).round() * devide;
+      final graphYMin = (minPoint < 0) ? minPoint : 0;
 
-    graphData = LineChartData(
-      maxY: graphYMax.toDouble(),
-      minY: graphYMin.toDouble(),
+      graphData = LineChartData(
+        maxY: graphYMax.toDouble(),
+        minY: graphYMin.toDouble(),
 
-      ///
-      lineTouchData: const LineTouchData(enabled: false),
+        ///
+        lineTouchData: const LineTouchData(enabled: false),
 
-      ///
-      titlesData: const FlTitlesData(
-        //-------------------------// 上部の目盛り
-        topTitles: AxisTitles(),
-        //-------------------------// 上部の目盛り
+        ///
+        titlesData: FlTitlesData(
+          //-------------------------// 上部の目盛り
+          topTitles: const AxisTitles(),
+          //-------------------------// 上部の目盛り
 
-        //-------------------------// 下部の目盛り
-        bottomTitles: AxisTitles(),
-        //-------------------------// 下部の目盛り
+          //-------------------------// 下部の目盛り
+          bottomTitles: AxisTitles(
+            axisNameWidget: DefaultTextStyle(
+              style: const TextStyle(
+                color: Colors.orangeAccent,
+                fontSize: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(startPrice.toString().split('.')[0].toCurrency()),
+                  RichText(
+                    text: TextSpan(
+                      text: endPrice.toString().split('.')[0].toCurrency(),
+                      style: const TextStyle(
+                          fontSize: 10, color: Colors.orangeAccent),
+                      children: <TextSpan>[
+                        const TextSpan(
+                            text: ' / ', style: TextStyle(color: Colors.white)),
+                        TextSpan(
+                          text:
+                              '${(endPrice - startPrice) > 0 ? '+' : '-'} ${(endPrice - startPrice).toString().split('.')[0].toCurrency()}',
+                          style: TextStyle(
+                              color: ((endPrice - startPrice) > 0)
+                                  ? const Color(0xFFFBB6CE)
+                                  : Colors.yellowAccent),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          //-------------------------// 下部の目盛り
 
-        //-------------------------// 左側の目盛り
-        leftTitles: AxisTitles(),
-        //-------------------------// 左側の目盛り
+          //-------------------------// 左側の目盛り
+          leftTitles: const AxisTitles(),
+          //-------------------------// 左側の目盛り
 
-        //-------------------------// 右側の目盛り
-        rightTitles: AxisTitles(),
-        //-------------------------// 右側の目盛り
-      ),
-
-      ///
-      lineBarsData: [
-        LineChartBarData(
-          spots: flspots,
-          barWidth: 1,
-          isStrokeCapRound: true,
-          color: Colors.yellowAccent,
-          dotData: const FlDotData(show: false),
+          //-------------------------// 右側の目盛り
+          rightTitles: const AxisTitles(),
+          //-------------------------// 右側の目盛り
         ),
-      ],
-    );
+
+        ///
+        lineBarsData: [
+          LineChartBarData(
+            spots: flspots,
+            barWidth: 1,
+            isStrokeCapRound: true,
+            color: Colors.yellowAccent,
+            dotData: const FlDotData(show: false),
+          ),
+          LineChartBarData(
+            spots: flspotsTrend,
+            barWidth: 1,
+            isStrokeCapRound: true,
+            color: Colors.redAccent,
+            dotData: const FlDotData(show: false),
+          ),
+        ],
+      );
+    }
   }
 }
