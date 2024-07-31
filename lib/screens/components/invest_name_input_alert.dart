@@ -18,7 +18,11 @@ import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestNameInputAlert extends ConsumerStatefulWidget {
-  InvestNameInputAlert({super.key, required this.isar, this.investName, required this.investKind});
+  InvestNameInputAlert(
+      {super.key,
+      required this.isar,
+      this.investName,
+      required this.investKind});
 
   final Isar isar;
   InvestName? investName;
@@ -26,11 +30,13 @@ class InvestNameInputAlert extends ConsumerStatefulWidget {
 
   ///
   @override
-  ConsumerState<InvestNameInputAlert> createState() => _InvestNameInputAlertState();
+  ConsumerState<InvestNameInputAlert> createState() =>
+      _InvestNameInputAlertState();
 }
 
 class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
-  final TextEditingController _investNameEditingController = TextEditingController();
+  final TextEditingController _investNameEditingController =
+      TextEditingController();
 
   StockFrame _selectedStockFrame = StockFrame.blank;
   ShintakuFrame _selectedShintakuFrame = ShintakuFrame.blank;
@@ -105,45 +111,79 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                                 if (widget.investKind == InvestKind.stock) {
                                   switch (widget.investName!.frame) {
                                     case '一般口座':
-                                      ref.read(investNamesProvider.notifier).setStockFrame(stockFrame: StockFrame.general);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setStockFrame(
+                                              stockFrame: StockFrame.general);
                                       break;
                                     case '特定口座':
-                                      ref.read(investNamesProvider.notifier).setStockFrame(stockFrame: StockFrame.specific);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setStockFrame(
+                                              stockFrame: StockFrame.specific);
                                       break;
                                   }
-                                } else if (widget.investKind == InvestKind.shintaku) {
+                                } else if (widget.investKind ==
+                                    InvestKind.shintaku) {
                                   switch (widget.investName!.frame) {
                                     case '特定口座':
-                                      ref.read(investNamesProvider.notifier).setShintakuFrame(shintakuFrame: ShintakuFrame.specific);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setShintakuFrame(
+                                              shintakuFrame:
+                                                  ShintakuFrame.specific);
                                       break;
                                     case 'NISAつみたて投資枠':
-                                      ref.read(investNamesProvider.notifier).setShintakuFrame(shintakuFrame: ShintakuFrame.nisaAccumulated);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setShintakuFrame(
+                                              shintakuFrame: ShintakuFrame
+                                                  .nisaAccumulated);
                                       break;
                                     case 'NISA成長投資枠':
-                                      ref.read(investNamesProvider.notifier).setShintakuFrame(shintakuFrame: ShintakuFrame.nisaGrowth);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setShintakuFrame(
+                                              shintakuFrame:
+                                                  ShintakuFrame.nisaGrowth);
                                       break;
                                     case 'つみたてNISA':
-                                      ref.read(investNamesProvider.notifier).setShintakuFrame(shintakuFrame: ShintakuFrame.nisaFreshly);
+                                      ref
+                                          .read(investNamesProvider.notifier)
+                                          .setShintakuFrame(
+                                              shintakuFrame:
+                                                  ShintakuFrame.nisaFreshly);
                                       break;
                                   }
                                 }
 
                                 _updateInvestName();
                               },
-                              child: Text('${widget.investKind.japanName}名称を更新する',
-                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text(
+                                  '${widget.investKind.japanName}名称を更新する',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary)),
                             ),
                             const SizedBox(height: 10),
                             GestureDetector(
                               onTap: _showDeleteDialog,
-                              child: Text('${widget.investKind.japanName}名称を削除する',
-                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text(
+                                  '${widget.investKind.japanName}名称を削除する',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary)),
                             ),
                           ],
                         )
                       : TextButton(
                           onPressed: _inputInvestName,
-                          child: Text('${widget.investKind.japanName}名称を追加する', style: const TextStyle(fontSize: 12)),
+                          child: Text('${widget.investKind.japanName}名称を追加する',
+                              style: const TextStyle(fontSize: 12)),
                         ),
                 ],
               ),
@@ -159,7 +199,10 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -173,7 +216,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               children: [
@@ -182,14 +226,17 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                   controller: _investNameEditingController,
                   decoration: InputDecoration(
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '${widget.investKind.japanName}名称(50文字以内)',
                     filled: true,
                     border: const OutlineInputBorder(),
-                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (event) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
             ),
@@ -215,9 +262,13 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
               child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
             );
           }).toList(),
-          value: (_selectedStockFrame != StockFrame.blank) ? _selectedStockFrame : investNamesState.stockFrame,
+          value: (_selectedStockFrame != StockFrame.blank)
+              ? _selectedStockFrame
+              : investNamesState.stockFrame,
           onChanged: (value) {
-            ref.read(investNamesProvider.notifier).setStockFrame(stockFrame: value!);
+            ref
+                .read(investNamesProvider.notifier)
+                .setStockFrame(stockFrame: value!);
           },
         );
       case InvestKind.shintaku:
@@ -231,9 +282,13 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
               child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
             );
           }).toList(),
-          value: (_selectedShintakuFrame != ShintakuFrame.blank) ? _selectedShintakuFrame : investNamesState.shintakuFrame,
+          value: (_selectedShintakuFrame != ShintakuFrame.blank)
+              ? _selectedShintakuFrame
+              : investNamesState.shintakuFrame,
           onChanged: (value) {
-            ref.read(investNamesProvider.notifier).setShintakuFrame(shintakuFrame: value!);
+            ref
+                .read(investNamesProvider.notifier)
+                .setShintakuFrame(shintakuFrame: value!);
           },
         );
 
@@ -255,7 +310,9 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
       [
         [_investNameEditingController.text.trim(), 50]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int) ==
+            false) {
           errFlg = true;
         }
       });
@@ -264,7 +321,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
@@ -293,7 +351,9 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
       ..name = _investNameEditingController.text.trim()
       ..kind = widget.investKind.name;
 
-    await InvestNamesRepository().inputInvestName(isar: widget.isar, investName: investName).then((value) {
+    await InvestNamesRepository()
+        .inputInvestName(isar: widget.isar, investName: investName)
+        .then((value) {
       _investNameEditingController.clear();
 
       Navigator.pop(context);
@@ -302,20 +362,39 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   Future<void> _updateInvestName() async {
-    final stockFrame = ref.watch(investNamesProvider.select((value) => value.stockFrame));
-    final shintakuFrame = ref.watch(investNamesProvider.select((value) => value.shintakuFrame));
+    final stockFrame =
+        ref.watch(investNamesProvider.select((value) => value.stockFrame));
+    final shintakuFrame =
+        ref.watch(investNamesProvider.select((value) => value.shintakuFrame));
 
     var errFlg = false;
 
-    if (_investNameEditingController.text.trim() == '' || (stockFrame == StockFrame.blank) || (shintakuFrame == ShintakuFrame.blank)) {
-      errFlg = true;
+    switch (widget.investKind) {
+      case InvestKind.stock:
+        if (_investNameEditingController.text.trim() == '' ||
+            (stockFrame == StockFrame.blank)) {
+          errFlg = true;
+        }
+        break;
+      case InvestKind.shintaku:
+        if (_investNameEditingController.text.trim() == '' ||
+            (shintakuFrame == ShintakuFrame.blank)) {
+          errFlg = true;
+        }
+        break;
+
+      case InvestKind.gold:
+      case InvestKind.blank:
+        break;
     }
 
     if (errFlg == false) {
       [
         [_investNameEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int) ==
+            false) {
           errFlg = true;
         }
       });
@@ -324,7 +403,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
@@ -347,12 +427,16 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     }
 
     await widget.isar.writeTxn(() async {
-      await InvestNamesRepository().getInvestName(isar: widget.isar, id: widget.investName!.id).then((value) async {
+      await InvestNamesRepository()
+          .getInvestName(isar: widget.isar, id: widget.investName!.id)
+          .then((value) async {
         value!
           ..name = _investNameEditingController.text.trim()
           ..frame = frame;
 
-        await InvestNamesRepository().updateInvestName(isar: widget.isar, investName: value).then((value) {
+        await InvestNamesRepository()
+            .updateInvestName(isar: widget.isar, investName: value)
+            .then((value) {
           _investNameEditingController.clear();
 
           Navigator.pop(context);
@@ -363,7 +447,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   void _showDeleteDialog() {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -384,9 +469,11 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   Future<void> _deleteInvestName() async => InvestRecordsRepository()
-      .getInvestRecordListByInvestId(isar: widget.isar, investId: widget.investName!.id)
-      .then((value) async => InvestRecordsRepository().deleteInvestRecordList(isar: widget.isar, investRecordList: value).then(
-          (value2) async => InvestNamesRepository()
+      .getInvestRecordListByInvestId(
+          isar: widget.isar, investId: widget.investName!.id)
+      .then((value) async => InvestRecordsRepository()
+          .deleteInvestRecordList(isar: widget.isar, investRecordList: value)
+          .then((value2) async => InvestNamesRepository()
               .deleteInvestName(isar: widget.isar, id: widget.investName!.id)
               .then((value3) => Navigator.pop(context))));
 }
