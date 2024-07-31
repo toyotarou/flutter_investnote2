@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
@@ -12,7 +14,7 @@ import 'invest_record_input_alert.dart';
 import 'invest_record_list_alert.dart';
 import 'parts/invest_dialog.dart';
 
-class DailyInvestDisplayAlert extends StatefulWidget {
+class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
   const DailyInvestDisplayAlert(
       {super.key,
       required this.date,
@@ -29,10 +31,12 @@ class DailyInvestDisplayAlert extends StatefulWidget {
 
   ///
   @override
-  State<DailyInvestDisplayAlert> createState() => _DailyInvestDisplayAlertState();
+  ConsumerState<DailyInvestDisplayAlert> createState() =>
+      _DailyInvestDisplayAlertState();
 }
 
-class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
+class _DailyInvestDisplayAlertState
+    extends ConsumerState<DailyInvestDisplayAlert> {
   List<InvestRecord>? thisDayInvestRecordList = [];
 
   ///
@@ -75,22 +79,38 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
   Widget _displayDailyInvest() {
     final list = <Widget>[];
 
+    var selectedInvestName = ref.watch(
+        dailyInvestDisplayProvider.select((value) => value.selectedInvestName));
+
     InvestKind.values.forEach((element) {
       if (element.japanName != InvestKind.blank.japanName) {
-        final dispInvestRecordGold = thisDayInvestRecordList?.where((element4) => element4.investId == 0).toList();
+        final dispInvestRecordGold = thisDayInvestRecordList
+            ?.where((element4) => element4.investId == 0)
+            .toList();
 
         //---------------------------------//
         final list2 = <Widget>[];
-        widget.investNameList.where((element2) => element2.kind == element.name).forEach((element3) {
-          final dispInvestRecord = thisDayInvestRecordList?.where((element4) => element4.investId == element3.id).toList();
+        widget.investNameList
+            .where((element2) => element2.kind == element.name)
+            .forEach((element3) {
+          final dispInvestRecord = thisDayInvestRecordList
+              ?.where((element4) => element4.investId == element3.id)
+              .toList();
 
           list2.add(Container(
             width: context.screenSize.width,
             margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: Colors.white.withOpacity(0.2), width: 2))),
             child: Column(
               children: [
-                Row(children: [Expanded(child: Text(element3.name, maxLines: 1, overflow: TextOverflow.ellipsis))]),
+                Row(children: [
+                  Expanded(
+                      child: Text(element3.name,
+                          maxLines: 1, overflow: TextOverflow.ellipsis))
+                ]),
                 Row(
                   children: [
                     Expanded(
@@ -98,8 +118,12 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                         children: [
                           Container(
                             alignment: Alignment.topRight,
-                            child: Text((dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                                ? dispInvestRecord[0].cost.toString().toCurrency()
+                            child: Text((dispInvestRecord != null &&
+                                    dispInvestRecord.isNotEmpty)
+                                ? dispInvestRecord[0]
+                                    .cost
+                                    .toString()
+                                    .toCurrency()
                                 : '0'),
                           ),
                           const Text(''),
@@ -112,10 +136,15 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           Container(
                             alignment: Alignment.topRight,
                             child: Text(
-                              (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                                  ? dispInvestRecord[0].price.toString().toCurrency()
+                              (dispInvestRecord != null &&
+                                      dispInvestRecord.isNotEmpty)
+                                  ? dispInvestRecord[0]
+                                      .price
+                                      .toString()
+                                      .toCurrency()
                                   : '0',
-                              style: const TextStyle(color: Colors.yellowAccent),
+                              style:
+                                  const TextStyle(color: Colors.yellowAccent),
                             ),
                           ),
                           const Text(''),
@@ -129,14 +158,19 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           Container(
                             alignment: Alignment.topRight,
                             child: Text(
-                              (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                                  ? (dispInvestRecord[0].price - dispInvestRecord[0].cost).toString().toCurrency()
+                              (dispInvestRecord != null &&
+                                      dispInvestRecord.isNotEmpty)
+                                  ? (dispInvestRecord[0].price -
+                                          dispInvestRecord[0].cost)
+                                      .toString()
+                                      .toCurrency()
                                   : '0',
                               style: const TextStyle(color: Color(0xFFFBB6CE)),
                             ),
                           ),
                           Text(
-                            (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                            (dispInvestRecord != null &&
+                                    dispInvestRecord.isNotEmpty)
                                 ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
                                 : '0',
                             style: const TextStyle(color: Colors.grey),
@@ -149,6 +183,11 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                       children: [
                         IconButton(
                           onPressed: () {
+                            ref
+                                .read(dailyInvestDisplayProvider.notifier)
+                                .setSelectedInvestName(
+                                    selectedInvestName: element3.name);
+
                             InvestDialog(
                               context: context,
                               widget: InvestRecordListAlert(
@@ -158,7 +197,10 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               clearBarrierColor: true,
                             );
                           },
-                          icon: Icon(Icons.info_outline, color: Colors.greenAccent.withOpacity(0.6)),
+                          icon: Icon(Icons.info_outline,
+                              color: (element3.name == selectedInvestName)
+                                  ? Colors.redAccent.withOpacity(0.6)
+                                  : Colors.greenAccent.withOpacity(0.6)),
                         ),
                       ],
                     ),
@@ -170,13 +212,17 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                             isar: widget.isar,
                             date: widget.date,
                             investName: element3,
-                            investRecord: thisDayInvestRecordList?.where((element4) => element4.investId == element3.id).toList(),
+                            investRecord: thisDayInvestRecordList
+                                ?.where((element4) =>
+                                    element4.investId == element3.id)
+                                .toList(),
                             allInvestRecord: widget.allInvestRecord,
                           ),
                           clearBarrierColor: true,
                         );
                       },
-                      child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                      child: Icon(Icons.input,
+                          color: Colors.greenAccent.withOpacity(0.6)),
                     ),
                   ],
                 ),
@@ -193,7 +239,13 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
               padding: const EdgeInsets.all(5),
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [Colors.indigo.withOpacity(0.8), Colors.transparent], stops: const [0.7, 1])),
+                  gradient: LinearGradient(colors: [
+                Colors.indigo.withOpacity(0.8),
+                Colors.transparent
+              ], stops: const [
+                0.7,
+                1
+              ])),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -206,12 +258,14 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                           kind: element.name,
                           investNameList: widget.investNameList,
                           allInvestRecord: widget.allInvestRecord,
-                          calendarCellDateDataList: widget.calendarCellDateDataList,
+                          calendarCellDateDataList:
+                              widget.calendarCellDateDataList,
                         ),
                         clearBarrierColor: true,
                       );
                     },
-                    child: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
+                    child: Icon(Icons.graphic_eq,
+                        color: Colors.white.withOpacity(0.6), size: 20),
                   ),
                 ],
               ),
@@ -222,10 +276,17 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
               Container(
                 width: context.screenSize.width,
                 margin: const EdgeInsets.all(2),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Colors.white.withOpacity(0.2), width: 2))),
                 child: Column(
                   children: [
-                    const Row(children: [Expanded(child: Text('gold', maxLines: 1, overflow: TextOverflow.ellipsis))]),
+                    const Row(children: [
+                      Expanded(
+                          child: Text('gold',
+                              maxLines: 1, overflow: TextOverflow.ellipsis))
+                    ]),
                     Row(
                       children: [
                         Expanded(
@@ -233,8 +294,12 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                             children: [
                               Container(
                                 alignment: Alignment.topRight,
-                                child: Text((dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                    ? dispInvestRecordGold[0].cost.toString().toCurrency()
+                                child: Text((dispInvestRecordGold != null &&
+                                        dispInvestRecordGold.isNotEmpty)
+                                    ? dispInvestRecordGold[0]
+                                        .cost
+                                        .toString()
+                                        .toCurrency()
                                     : '0'),
                               ),
                               const Text(''),
@@ -247,10 +312,15 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                      ? dispInvestRecordGold[0].price.toString().toCurrency()
+                                  (dispInvestRecordGold != null &&
+                                          dispInvestRecordGold.isNotEmpty)
+                                      ? dispInvestRecordGold[0]
+                                          .price
+                                          .toString()
+                                          .toCurrency()
                                       : '0',
-                                  style: const TextStyle(color: Colors.yellowAccent),
+                                  style: const TextStyle(
+                                      color: Colors.yellowAccent),
                                 ),
                               ),
                               const Text(''),
@@ -264,14 +334,20 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                      ? (dispInvestRecordGold[0].price - dispInvestRecordGold[0].cost).toString().toCurrency()
+                                  (dispInvestRecordGold != null &&
+                                          dispInvestRecordGold.isNotEmpty)
+                                      ? (dispInvestRecordGold[0].price -
+                                              dispInvestRecordGold[0].cost)
+                                          .toString()
+                                          .toCurrency()
                                       : '0',
-                                  style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                  style:
+                                      const TextStyle(color: Color(0xFFFBB6CE)),
                                 ),
                               ),
                               Text(
-                                (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                (dispInvestRecordGold != null &&
+                                        dispInvestRecordGold.isNotEmpty)
                                     ? '${((dispInvestRecordGold[0].price / dispInvestRecordGold[0].cost) * 100).toString().split('.')[0]} %'
                                     : '0',
                                 style: const TextStyle(color: Colors.grey),
@@ -287,7 +363,10 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               widget: InvestRecordInputAlert(
                                 isar: widget.isar,
                                 date: widget.date,
-                                investRecord: thisDayInvestRecordList?.where((element4) => element4.investId == 0).toList(),
+                                investRecord: thisDayInvestRecordList
+                                    ?.where(
+                                        (element4) => element4.investId == 0)
+                                    .toList(),
                                 allInvestRecord: widget.allInvestRecord,
                                 investName: InvestName()
                                   ..id = 0
@@ -297,7 +376,8 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
                               clearBarrierColor: true,
                             );
                           },
-                          child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
+                          child: Icon(Icons.input,
+                              color: Colors.greenAccent.withOpacity(0.6)),
                         ),
                       ],
                     ),
@@ -308,14 +388,18 @@ class _DailyInvestDisplayAlertState extends State<DailyInvestDisplayAlert> {
             ///////////////////// GOLD
 
             if (element.name != InvestKind.gold.name) ...[
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: list2),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: list2),
             ],
           ],
         ));
       }
     });
 
-    return SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: list));
+    return SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: list));
   }
 
   ///
