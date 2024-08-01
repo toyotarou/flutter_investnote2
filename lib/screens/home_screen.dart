@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/invest_name.dart';
@@ -475,7 +476,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     DateTime.parse('$generateYmd 00:00:00')
                         .isAfter(DateTime.now()))
                 ? null
-                : () => InvestDialog(
+                : () {
+                    ref
+                        .read(dailyInvestDisplayProvider.notifier)
+                        .setSelectedInvestName(selectedInvestName: '');
+
+                    InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
                         date: DateTime.parse('$generateYmd 00:00:00'),
@@ -484,7 +490,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         allInvestRecord: investRecordList ?? [],
                         calendarCellDateDataList: calendarCellDateDataList,
                       ),
-                    ),
+                    );
+                  },
             child: Container(
               margin: const EdgeInsets.all(1),
               padding: const EdgeInsets.all(2),

@@ -79,7 +79,7 @@ class _DailyInvestDisplayAlertState
   Widget _displayDailyInvest() {
     final list = <Widget>[];
 
-    var selectedInvestName = ref.watch(
+    final selectedInvestName = ref.watch(
         dailyInvestDisplayProvider.select((value) => value.selectedInvestName));
 
     InvestKind.values.forEach((element) {
