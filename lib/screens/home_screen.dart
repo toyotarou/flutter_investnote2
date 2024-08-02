@@ -386,7 +386,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return DefaultTextStyle(
-        style: const TextStyle(fontSize: 10),
+        style: const TextStyle(fontSize: 11),
         child: SingleChildScrollView(child: Column(children: list)));
   }
 
@@ -471,6 +471,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       list.add(
         Expanded(
+          flex: (i % 7 == 0 || i % 7 == 6) ? 1 : 2,
           child: GestureDetector(
             onTap: ((_calendarDays[i] == '') ||
                     DateTime.parse('$generateYmd 00:00:00')
@@ -484,12 +485,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                        date: DateTime.parse('$generateYmd 00:00:00'),
-                        isar: widget.isar,
-                        investNameList: investNameList ?? [],
-                        allInvestRecord: investRecordList ?? [],
-                        calendarCellDateDataList: calendarCellDateDataList,
-                      ),
+                          date: DateTime.parse('$generateYmd 00:00:00'),
+                          isar: widget.isar,
+                          investNameList: investNameList ?? [],
+                          allInvestRecord: investRecordList ?? [],
+                          calendarCellDateDataList: calendarCellDateDataList,
+                          totalPrice: stockPrice + shintakuPrice + goldPrice,
+                          totalDiff: stockSum + shintakuSum + goldSum),
                     );
                   },
             child: Container(

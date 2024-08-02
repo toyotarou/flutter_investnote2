@@ -21,13 +21,17 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
       required this.isar,
       required this.investNameList,
       required this.allInvestRecord,
-      required this.calendarCellDateDataList});
+      required this.calendarCellDateDataList,
+      required this.totalPrice,
+      required this.totalDiff});
 
   final DateTime date;
   final Isar isar;
   final List<InvestName> investNameList;
   final List<InvestRecord> allInvestRecord;
   final List<String> calendarCellDateDataList;
+  final int totalPrice;
+  final int totalDiff;
 
   ///
   @override
@@ -65,7 +69,26 @@ class _DailyInvestDisplayAlertState
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Text(widget.date.yyyymmdd),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.date.yyyymmdd),
+                  RichText(
+                    text: TextSpan(
+                      text: widget.totalPrice.toString().toCurrency(),
+                      style: const TextStyle(color: Colors.yellowAccent),
+                      children: <TextSpan>[
+                        const TextSpan(
+                            text: ' / ', style: TextStyle(color: Colors.white)),
+                        TextSpan(
+                          text: widget.totalDiff.toString().toCurrency(),
+                          style: const TextStyle(color: Color(0xFFFBB6CE)),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayDailyInvest()),
             ],
@@ -89,6 +112,10 @@ class _DailyInvestDisplayAlertState
             .toList();
 
         //---------------------------------//
+
+        var totalPrice = 0;
+        var totalDiff = 0;
+
         final list2 = <Widget>[];
         widget.investNameList
             .where((element2) => element2.kind == element.name)
@@ -97,138 +124,135 @@ class _DailyInvestDisplayAlertState
               ?.where((element4) => element4.investId == element3.id)
               .toList();
 
-          list2.add(Container(
-            width: context.screenSize.width,
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.white.withOpacity(0.2), width: 2))),
-            child: Column(
-              children: [
-                Row(children: [
-                  Expanded(
-                      child: Text(element3.name,
-                          maxLines: 1, overflow: TextOverflow.ellipsis))
-                ]),
-                Row(
-                  children: [
+          if (dispInvestRecord != null &&
+              dispInvestRecord.isNotEmpty &&
+              (dispInvestRecord[0].cost > 0 && dispInvestRecord[0].price > 0)) {
+            list2.add(Container(
+              width: context.screenSize.width,
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.white.withOpacity(0.2), width: 2))),
+              child: Column(
+                children: [
+                  Row(children: [
                     Expanded(
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text((dispInvestRecord != null &&
-                                    dispInvestRecord.isNotEmpty)
-                                ? dispInvestRecord[0]
-                                    .cost
-                                    .toString()
-                                    .toCurrency()
-                                : '0'),
-                          ),
-                          const Text(''),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecord != null &&
-                                      dispInvestRecord.isNotEmpty)
-                                  ? dispInvestRecord[0]
-                                      .price
-                                      .toString()
-                                      .toCurrency()
-                                  : '0',
-                              style:
-                                  const TextStyle(color: Colors.yellowAccent),
+                        child: Text(element3.name,
+                            maxLines: 1, overflow: TextOverflow.ellipsis))
+                  ]),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text(dispInvestRecord[0]
+                                  .cost
+                                  .toString()
+                                  .toCurrency()),
                             ),
-                          ),
-                          const Text(''),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecord != null &&
-                                      dispInvestRecord.isNotEmpty)
-                                  ? (dispInvestRecord[0].price -
-                                          dispInvestRecord[0].cost)
-                                      .toString()
-                                      .toCurrency()
-                                  : '0',
-                              style: const TextStyle(color: Color(0xFFFBB6CE)),
-                            ),
-                          ),
-                          Text(
-                            (dispInvestRecord != null &&
-                                    dispInvestRecord.isNotEmpty)
-                                ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
-                                : '0',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            ref
-                                .read(dailyInvestDisplayProvider.notifier)
-                                .setSelectedInvestName(
-                                    selectedInvestName: element3.name);
-
-                            InvestDialog(
-                              context: context,
-                              widget: InvestRecordListAlert(
-                                investName: element3,
-                                allInvestRecord: widget.allInvestRecord,
-                              ),
-                              clearBarrierColor: true,
-                            );
-                          },
-                          icon: Icon(Icons.info_outline,
-                              color: (element3.name == selectedInvestName)
-                                  ? Colors.redAccent.withOpacity(0.6)
-                                  : Colors.greenAccent.withOpacity(0.6)),
+                            const Text(''),
+                          ],
                         ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        InvestDialog(
-                          context: context,
-                          widget: InvestRecordInputAlert(
-                            isar: widget.isar,
-                            date: widget.date,
-                            investName: element3,
-                            investRecord: thisDayInvestRecordList
-                                ?.where((element4) =>
-                                    element4.investId == element3.id)
-                                .toList(),
-                            allInvestRecord: widget.allInvestRecord,
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                dispInvestRecord[0]
+                                    .price
+                                    .toString()
+                                    .toCurrency(),
+                                style:
+                                    const TextStyle(color: Colors.yellowAccent),
+                              ),
+                            ),
+                            const Text(''),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                (dispInvestRecord[0].price -
+                                        dispInvestRecord[0].cost)
+                                    .toString()
+                                    .toCurrency(),
+                                style:
+                                    const TextStyle(color: Color(0xFFFBB6CE)),
+                              ),
+                            ),
+                            Text(
+                              '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              ref
+                                  .read(dailyInvestDisplayProvider.notifier)
+                                  .setSelectedInvestName(
+                                      selectedInvestName: element3.name);
+
+                              InvestDialog(
+                                context: context,
+                                widget: InvestRecordListAlert(
+                                  investName: element3,
+                                  allInvestRecord: widget.allInvestRecord,
+                                ),
+                                clearBarrierColor: true,
+                              );
+                            },
+                            icon: Icon(Icons.info_outline,
+                                color: (element3.name == selectedInvestName)
+                                    ? Colors.redAccent.withOpacity(0.6)
+                                    : Colors.greenAccent.withOpacity(0.6)),
                           ),
-                          clearBarrierColor: true,
-                        );
-                      },
-                      child: Icon(Icons.input,
-                          color: Colors.greenAccent.withOpacity(0.6)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ));
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          InvestDialog(
+                            context: context,
+                            widget: InvestRecordInputAlert(
+                              isar: widget.isar,
+                              date: widget.date,
+                              investName: element3,
+                              investRecord: thisDayInvestRecordList
+                                  ?.where((element4) =>
+                                      element4.investId == element3.id)
+                                  .toList(),
+                              allInvestRecord: widget.allInvestRecord,
+                            ),
+                            clearBarrierColor: true,
+                          );
+                        },
+                        child: Icon(Icons.input,
+                            color: Colors.greenAccent.withOpacity(0.6)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ));
+
+            totalPrice += dispInvestRecord[0].price;
+
+            totalDiff += dispInvestRecord[0].price - dispInvestRecord[0].cost;
+          }
         });
         //---------------------------------//
 
@@ -249,7 +273,29 @@ class _DailyInvestDisplayAlertState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(element.japanName),
+                  Row(
+                    children: [
+                      SizedBox(width: 60, child: Text(element.japanName)),
+                      if (element.name != InvestKind.gold.name) ...[
+                        RichText(
+                          text: TextSpan(
+                            text: totalPrice.toString().toCurrency(),
+                            style: const TextStyle(color: Colors.yellowAccent),
+                            children: <TextSpan>[
+                              const TextSpan(
+                                  text: ' / ',
+                                  style: TextStyle(color: Colors.white)),
+                              TextSpan(
+                                text: totalDiff.toString().toCurrency(),
+                                style:
+                                    const TextStyle(color: Color(0xFFFBB6CE)),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
                       InvestDialog(
