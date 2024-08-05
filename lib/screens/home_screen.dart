@@ -469,15 +469,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           .indexWhere((element) => element == generateYmd);
       final beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
 
+      var tapFlag = true;
+      if (i % 7 == 0 || i % 7 == 6) {
+        tapFlag = false;
+      }
+      if (_calendarDays[i] == '') {
+        tapFlag = false;
+      } else if (DateTime.parse('$generateYmd 00:00:00')
+          .isAfter(DateTime.now())) {
+        tapFlag = false;
+      }
+
       list.add(
         Expanded(
           flex: (i % 7 == 0 || i % 7 == 6) ? 1 : 2,
           child: GestureDetector(
-            onTap: ((_calendarDays[i] == '') ||
-                    DateTime.parse('$generateYmd 00:00:00')
-                        .isAfter(DateTime.now()))
-                ? null
-                : () {
+            onTap: tapFlag
+                ? () {
                     ref
                         .read(dailyInvestDisplayProvider.notifier)
                         .setSelectedInvestName(selectedInvestName: '');
@@ -485,17 +493,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                        date: DateTime.parse('$generateYmd 00:00:00'),
-                        isar: widget.isar,
-                        investNameList: investNameList ?? [],
-                        allInvestRecord: investRecordList ?? [],
-                        calendarCellDateDataList: calendarCellDateDataList,
-                        // totalPrice: stockPrice + shintakuPrice + goldPrice,
-                        // totalDiff: stockSum + shintakuSum + goldSum
-                        //
-                      ),
+                          date: DateTime.parse('$generateYmd 00:00:00'),
+                          isar: widget.isar,
+                          investNameList: investNameList ?? [],
+                          allInvestRecord: investRecordList ?? [],
+                          calendarCellDateDataList: calendarCellDateDataList,
+                          totalPrice: stockPrice + shintakuPrice + goldPrice,
+                          totalDiff: stockSum + shintakuSum + goldSum),
                     );
-                  },
+                  }
+                : null,
             child: Container(
               margin: const EdgeInsets.all(1),
               padding: const EdgeInsets.all(2),

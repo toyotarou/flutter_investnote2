@@ -21,13 +21,17 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
       required this.isar,
       required this.investNameList,
       required this.allInvestRecord,
-      required this.calendarCellDateDataList});
+      required this.calendarCellDateDataList,
+      required this.totalPrice,
+      required this.totalDiff});
 
   final DateTime date;
   final Isar isar;
   final List<InvestName> investNameList;
   final List<InvestRecord> allInvestRecord;
   final List<String> calendarCellDateDataList;
+  final int totalPrice;
+  final int totalDiff;
 
   ///
   @override
@@ -65,7 +69,26 @@ class _DailyInvestDisplayAlertState
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Text(widget.date.yyyymmdd),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.date.yyyymmdd),
+                  RichText(
+                    text: TextSpan(
+                      text: widget.totalPrice.toString().toCurrency(),
+                      style: const TextStyle(color: Colors.yellowAccent),
+                      children: <TextSpan>[
+                        const TextSpan(
+                            text: ' / ', style: TextStyle(color: Colors.white)),
+                        TextSpan(
+                          text: widget.totalDiff.toString().toCurrency(),
+                          style: const TextStyle(color: Color(0xFFFBB6CE)),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayDailyInvest()),
             ],
@@ -89,6 +112,10 @@ class _DailyInvestDisplayAlertState
             .toList();
 
         //---------------------------------//
+
+        var totalPrice = 0;
+        var totalDiff = 0;
+
         final list2 = <Widget>[];
         widget.investNameList
             .where((element2) => element2.kind == element.name)
@@ -229,6 +256,12 @@ class _DailyInvestDisplayAlertState
               ],
             ),
           ));
+
+          if (dispInvestRecord != null && dispInvestRecord.isNotEmpty) {
+            totalPrice += dispInvestRecord[0].price;
+
+            totalDiff += dispInvestRecord[0].price - dispInvestRecord[0].cost;
+          }
         });
         //---------------------------------//
 
@@ -249,7 +282,29 @@ class _DailyInvestDisplayAlertState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(element.japanName),
+                  Row(
+                    children: [
+                      SizedBox(width: 60, child: Text(element.japanName)),
+                      if (element.name != InvestKind.gold.name) ...[
+                        RichText(
+                          text: TextSpan(
+                            text: totalPrice.toString().toCurrency(),
+                            style: const TextStyle(color: Colors.yellowAccent),
+                            children: <TextSpan>[
+                              const TextSpan(
+                                  text: ' / ',
+                                  style: TextStyle(color: Colors.white)),
+                              TextSpan(
+                                text: totalDiff.toString().toCurrency(),
+                                style:
+                                    const TextStyle(color: Color(0xFFFBB6CE)),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
                       InvestDialog(
