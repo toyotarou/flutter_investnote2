@@ -485,13 +485,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                          date: DateTime.parse('$generateYmd 00:00:00'),
-                          isar: widget.isar,
-                          investNameList: investNameList ?? [],
-                          allInvestRecord: investRecordList ?? [],
-                          calendarCellDateDataList: calendarCellDateDataList,
-                          totalPrice: stockPrice + shintakuPrice + goldPrice,
-                          totalDiff: stockSum + shintakuSum + goldSum),
+                        date: DateTime.parse('$generateYmd 00:00:00'),
+                        isar: widget.isar,
+                        investNameList: investNameList ?? [],
+                        allInvestRecord: investRecordList ?? [],
+                        calendarCellDateDataList: calendarCellDateDataList,
+                        // totalPrice: stockPrice + shintakuPrice + goldPrice,
+                        // totalDiff: stockSum + shintakuSum + goldSum
+                        //
+                      ),
                     );
                   },
             child: Container(
