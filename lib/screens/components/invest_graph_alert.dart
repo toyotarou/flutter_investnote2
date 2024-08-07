@@ -1,13 +1,11 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-import '../../collections/invest_name.dart';
-import '../../collections/invest_record.dart';
-import '../../enum/invest_kind.dart';
-import '../../extensions/extensions.dart';
-import '../../utilities/utilities.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/collections/invest_record.dart';
+import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/screens/components/parts/custom_horizontal_scroll_bar.dart';
+import 'package:invest_note/utilities/utilities.dart';
 
 class InvestGraphAlert extends StatefulWidget {
   const InvestGraphAlert({
@@ -30,10 +28,13 @@ class InvestGraphAlert extends StatefulWidget {
 
 class _InvestGraphAlertState extends State<InvestGraphAlert> {
   LineChartData graphData = LineChartData();
+  LineChartData graphData2 = LineChartData();
 
   final ScrollController _controller = ScrollController();
 
   final Utility _utility = Utility();
+
+  List<String> investGraphGuideNames = [];
 
   ///
   @override
@@ -43,40 +44,64 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
-      content: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        controller: _controller,
-        child: SizedBox(
-          width: context.screenSize.width *
-              (widget.calendarCellDateDataList.length / 10),
-          height: context.screenSize.height - 50,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      content: Stack(
+        children: [
+          Column(
             children: [
-              Container(width: context.screenSize.width),
-              Expanded(child: LineChart(graphData)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Expanded(child: LineChart(graphData2)),
+              const SizedBox(height: 40),
+            ],
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: _controller,
+            child: SizedBox(
+              width: context.screenSize.width *
+                  (widget.calendarCellDateDataList.length / 10),
+              height: context.screenSize.height - 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                    onPressed: () => _controller
-                        .jumpTo(_controller.position.maxScrollExtent),
-                    child: const Text('jump'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                    onPressed: () => _controller
-                        .jumpTo(_controller.position.minScrollExtent),
-                    child: const Text('back'),
+                  Container(width: context.screenSize.width),
+                  Expanded(child: LineChart(graphData)),
+                  SizedBox(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.pinkAccent.withOpacity(0.3)),
+                          onPressed: () => _controller
+                              .jumpTo(_controller.position.maxScrollExtent),
+                          child: const Text('jump'),
+                        ),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.pinkAccent.withOpacity(0.3)),
+                              onPressed: () => _controller
+                                  .jumpTo(_controller.position.minScrollExtent),
+                              child: const Text('back'),
+                            ),
+                            const SizedBox(width: 50),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+          CustomHorizontalScrollBar(
+            scrollController: _controller,
+            investGraphGuideNames: investGraphGuideNames,
+          ),
+        ],
       ),
     );
   }
@@ -85,12 +110,18 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
   void setChartData() {
     final idList = <int>[];
 
+    investGraphGuideNames = [];
+
     if (widget.kind == InvestKind.gold.name) {
       idList.add(0);
     } else {
       widget.investNameList
           .where((element) => element.kind == widget.kind)
-          .forEach((element2) => idList.add(element2.id));
+          .forEach((element2) {
+        idList.add(element2.id);
+
+        investGraphGuideNames.add(element2.name);
+      });
     }
 
     final map = <int, Map<String, int>>{};
@@ -120,7 +151,9 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
 
       var j = 0;
       value.forEach((key2, value2) {
-        flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
+        if (value2 > 0) {
+          flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
+        }
 
         points.add(value2);
 
@@ -130,18 +163,16 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
       flspotsList.add(flspots);
     });
 
-    final minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
-
-    final roundMin = (minPoint / 10).round();
-
     const graphYMax = 300;
-    final graphYMin = (roundMin - 1) * 10;
+    const graphYMin = 0;
 
     final twelveColor = _utility.getTwelveColor();
 
     graphData = LineChartData(
       maxY: graphYMax.toDouble(),
       minY: graphYMin.toDouble(),
+
+      borderData: FlBorderData(show: false),
 
       ///
       lineTouchData: LineTouchData(
@@ -187,9 +218,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 60,
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString(),
-                style: const TextStyle(fontSize: 12)),
+            reservedSize: 30,
+            getTitlesWidget: (value, meta) => Container(),
           ),
         ),
         //-------------------------// 左側の目盛り
@@ -198,9 +228,8 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
         rightTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 60,
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString(),
-                style: const TextStyle(fontSize: 12)),
+            reservedSize: 30,
+            getTitlesWidget: (value, meta) => Container(),
           ),
         ),
         //-------------------------// 右側の目盛り
@@ -215,8 +244,71 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
             barWidth: 3,
             isStrokeCapRound: true,
             color: twelveColor[i],
+            dotData: const FlDotData(show: false),
           ),
       ],
+    );
+
+    graphData2 = LineChartData(
+      maxY: graphYMax.toDouble(),
+      minY: graphYMin.toDouble(),
+
+      borderData: FlBorderData(show: false),
+
+      ///
+      lineTouchData: LineTouchData(
+          touchTooltipData:
+              LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
+
+      ///
+      gridData: _utility.getFlGridData(),
+
+      ///
+      titlesData: FlTitlesData(
+        //-------------------------// 上部の目盛り
+        topTitles: const AxisTitles(),
+        //-------------------------// 上部の目盛り
+
+        //-------------------------// 下部の目盛り
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 50,
+            getTitlesWidget: (value, meta) {
+              return Container();
+            },
+          ),
+        ),
+        //-------------------------// 下部の目盛り
+
+        //-------------------------// 左側の目盛り
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 40,
+            getTitlesWidget: (value, meta) {
+              if (value == graphYMin || value == graphYMax) {
+                return const SizedBox();
+              }
+
+              return SideTitleWidget(
+                  axisSide: AxisSide.left,
+                  child: Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(fontSize: 10),
+                  ));
+            },
+          ),
+        ),
+        //-------------------------// 左側の目盛り
+
+        //-------------------------// 右側の目盛り
+        rightTitles: const AxisTitles(),
+        //-------------------------// 右側の目盛り
+      ),
+
+      ///
+      lineBarsData: [],
     );
   }
 

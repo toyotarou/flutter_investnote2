@@ -693,6 +693,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     Stack(
                                       children: [
                                         if (index > 0) ...[
+
+
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -705,32 +707,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             ),
                                           ),
                                         ],
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text((stockCost +
-                                                    shintakuCost +
-                                                    goldCost)
-                                                .toString()
-                                                .toCurrency()),
-                                            Text(
-                                                (stockPrice +
-                                                        shintakuPrice +
-                                                        goldPrice)
+                                            Container(),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text((stockCost +
+                                                        shintakuCost +
+                                                        goldCost)
                                                     .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color:
-                                                        Colors.yellowAccent)),
-                                            Text(
-                                                (stockSum +
-                                                        shintakuSum +
-                                                        goldSum)
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color: Color(0xFFFBB6CE))),
+                                                    .toCurrency()),
+                                                Text(
+                                                    (stockPrice +
+                                                            shintakuPrice +
+                                                            goldPrice)
+                                                        .toString()
+                                                        .toCurrency(),
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Colors.yellowAccent)),
+                                                Text(
+                                                    (stockSum +
+                                                            shintakuSum +
+                                                            goldSum)
+                                                        .toString()
+                                                        .toCurrency(),
+                                                    style: const TextStyle(
+                                                        color: Color(0xFFFBB6CE))),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ],
