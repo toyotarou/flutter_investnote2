@@ -1,13 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invest_note/collections/invest_name.dart';
 import 'package:invest_note/collections/invest_record.dart';
 import 'package:invest_note/enum/invest_kind.dart';
 import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/screens/components/parts/custom_horizontal_scroll_bar.dart';
+import 'package:invest_note/screens/components/parts/custom_scroll_bar.dart';
+import 'package:invest_note/state/invest_graph/invest_graph.dart';
 import 'package:invest_note/utilities/utilities.dart';
 
-class InvestGraphAlert extends StatefulWidget {
+class InvestGraphAlert extends ConsumerStatefulWidget {
   const InvestGraphAlert({
     super.key,
     required this.kind,
@@ -23,10 +25,10 @@ class InvestGraphAlert extends StatefulWidget {
 
   ///
   @override
-  State<InvestGraphAlert> createState() => _InvestGraphAlertState();
+  ConsumerState<InvestGraphAlert> createState() => _InvestGraphAlertState();
 }
 
-class _InvestGraphAlertState extends State<InvestGraphAlert> {
+class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -40,6 +42,9 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
   @override
   Widget build(BuildContext context) {
     setChartData();
+
+    final wideGraphDisplay = ref
+        .watch(investGraphProvider.select((value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -56,8 +61,10 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
             scrollDirection: Axis.horizontal,
             controller: _controller,
             child: SizedBox(
-              width: context.screenSize.width *
-                  (widget.calendarCellDateDataList.length / 10),
+              width: wideGraphDisplay
+                  ? context.screenSize.width *
+                      (widget.calendarCellDateDataList.length / 10)
+                  : context.screenSize.width * 0.65,
               height: context.screenSize.height - 50,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,40 +73,43 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
                   Expanded(child: LineChart(graphData)),
                   SizedBox(
                     height: 40,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.pinkAccent.withOpacity(0.3)),
-                          onPressed: () => _controller
-                              .jumpTo(_controller.position.maxScrollExtent),
-                          child: const Text('jump'),
-                        ),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Colors.pinkAccent.withOpacity(0.3)),
-                              onPressed: () => _controller
-                                  .jumpTo(_controller.position.minScrollExtent),
-                              child: const Text('back'),
-                            ),
-                            const SizedBox(width: 50),
-                          ],
-                        ),
-                      ],
-                    ),
+                    child: wideGraphDisplay
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Colors.pinkAccent.withOpacity(0.3)),
+                                onPressed: () => _controller.jumpTo(
+                                    _controller.position.maxScrollExtent),
+                                child: const Text('jump'),
+                              ),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            Colors.pinkAccent.withOpacity(0.3)),
+                                    onPressed: () => _controller.jumpTo(
+                                        _controller.position.minScrollExtent),
+                                    child: const Text('back'),
+                                  ),
+                                  const SizedBox(width: 50),
+                                ],
+                              ),
+                            ],
+                          )
+                        : Container(),
                   ),
                 ],
               ),
             ),
           ),
-          CustomHorizontalScrollBar(
+          CustomScrollBar(
             scrollController: _controller,
             investGraphGuideNames: investGraphGuideNames,
+            investNameList: widget.investNameList,
           ),
         ],
       ),
@@ -142,29 +152,55 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
               : 0;
     });
 
+    final selectedGraphId =
+        ref.watch(investGraphProvider.select((value) => value.selectedGraphId));
+
     final flspotsList = <List<FlSpot>>[];
 
     final points = <int>[];
 
-    map.forEach((key, value) {
-      final flspots = <FlSpot>[];
+    if (selectedGraphId != 0) {
+      map.forEach((key, value) {
+        if (selectedGraphId == key) {
+          final flspots = <FlSpot>[];
 
-      var j = 0;
-      value.forEach((key2, value2) {
-        if (value2 > 0) {
-          flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
+          var j = 0;
+          value.forEach((key2, value2) {
+            if (value2 > 0) {
+              flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
+            }
+
+            points.add(value2);
+
+            j++;
+          });
+
+          flspotsList.add(flspots);
         }
-
-        points.add(value2);
-
-        j++;
       });
+    } else {
+      map.forEach((key, value) {
+        final flspots = <FlSpot>[];
 
-      flspotsList.add(flspots);
-    });
+        var j = 0;
+        value.forEach((key2, value2) {
+          if (value2 > 0) {
+            flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
+          }
+
+          points.add(value2);
+
+          j++;
+        });
+
+        flspotsList.add(flspots);
+      });
+    }
 
     const graphYMax = 300;
     const graphYMin = 0;
+
+    final investGraphState = ref.watch(investGraphProvider);
 
     final twelveColor = _utility.getTwelveColor();
 
@@ -200,10 +236,14 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
                   style: const TextStyle(fontSize: 10),
                   child: Column(
                     children: [
-                      Text(widget.calendarCellDateDataList[value.toInt()]
-                          .split('-')[0]),
+                      Text(investGraphState.wideGraphDisplay
+                          ? widget.calendarCellDateDataList[value.toInt()]
+                              .split('-')[0]
+                          : ''),
                       Text(
-                        '${widget.calendarCellDateDataList[value.toInt()].split('-')[1]}-${widget.calendarCellDateDataList[value.toInt()].split('-')[2]}',
+                        investGraphState.wideGraphDisplay
+                            ? '${widget.calendarCellDateDataList[value.toInt()].split('-')[1]}-${widget.calendarCellDateDataList[value.toInt()].split('-')[2]}'
+                            : '',
                       ),
                     ],
                   ),
@@ -243,7 +283,10 @@ class _InvestGraphAlertState extends State<InvestGraphAlert> {
             spots: flspotsList[i],
             barWidth: 3,
             isStrokeCapRound: true,
-            color: twelveColor[i],
+            color: (investGraphState.selectedGraphName != '' &&
+                    investGraphState.selectedGraphColor != null)
+                ? investGraphState.selectedGraphColor
+                : twelveColor[i % 12],
             dotData: const FlDotData(show: false),
           ),
       ],

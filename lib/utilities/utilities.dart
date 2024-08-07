@@ -33,14 +33,16 @@ class Utility {
 
   ///
   FlGridData getFlGridData() {
-    const flline = FlLine(color: Colors.white30, strokeWidth: 1);
-
     return FlGridData(
       //横線
-      getDrawingHorizontalLine: (value) => flline,
+      getDrawingHorizontalLine: (value) => FlLine(
+        color: (value == 100) ? Colors.redAccent : Colors.white30,
+        strokeWidth: 1,
+      ),
 
       //縦線
-      getDrawingVerticalLine: (value) => flline,
+      getDrawingVerticalLine: (value) =>
+          const FlLine(color: Colors.white30, strokeWidth: 1),
     );
   }
 

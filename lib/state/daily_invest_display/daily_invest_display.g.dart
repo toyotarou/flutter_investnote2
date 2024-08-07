@@ -7,7 +7,7 @@ part of 'daily_invest_display.dart';
 // **************************************************************************
 
 String _$dailyInvestDisplayHash() =>
-    r'e9c4832552d263ce41d1dff520e66468d0ceadb9';
+    r'2cb3300ffb37ca7ec775d063ad7a32d374247e63';
 
 /// See also [DailyInvestDisplay].
 @ProviderFor(DailyInvestDisplay)

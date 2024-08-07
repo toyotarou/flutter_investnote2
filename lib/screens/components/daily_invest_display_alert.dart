@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
+import 'package:invest_note/state/invest_graph/invest_graph.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
@@ -307,6 +308,18 @@ class _DailyInvestDisplayAlertState
                   ),
                   GestureDetector(
                     onTap: () {
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setWideGraphDisplay(flag: true);
+
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setSelectedGraphId(id: 0);
+
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setSelectedGraphName(name: '');
+
                       InvestDialog(
                         context: context,
                         widget: InvestGraphAlert(

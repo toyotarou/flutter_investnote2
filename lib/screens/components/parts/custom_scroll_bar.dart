@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:invest_note/collections/invest_name.dart';
 import 'package:invest_note/extensions/extensions.dart';
 import 'package:invest_note/screens/components/invest_graph_guide_alert.dart';
 import 'package:invest_note/screens/components/parts/invest_dialog.dart';
 
-class CustomHorizontalScrollBar extends StatefulWidget {
-  const CustomHorizontalScrollBar(
+class CustomScrollBar extends StatefulWidget {
+  const CustomScrollBar(
       {super.key,
       required this.scrollController,
-      required this.investGraphGuideNames});
+      required this.investGraphGuideNames,
+      required this.investNameList});
 
   final ScrollController scrollController;
   final List<String> investGraphGuideNames;
+  final List<InvestName> investNameList;
 
   @override
-  State<CustomHorizontalScrollBar> createState() =>
-      _CustomHorizontalScrollBarState();
+  State<CustomScrollBar> createState() => _CustomScrollBarState();
 }
 
-class _CustomHorizontalScrollBarState extends State<CustomHorizontalScrollBar> {
+class _CustomScrollBarState extends State<CustomScrollBar> {
   double _alignmentX = -1;
 
   ///
@@ -46,8 +48,9 @@ class _CustomHorizontalScrollBarState extends State<CustomHorizontalScrollBar> {
             context: context,
             widget: InvestGraphGuideAlert(
               investGraphGuideNames: widget.investGraphGuideNames,
+              investNameList: widget.investNameList,
             ),
-            paddingTop: context.screenSize.height * 0.4,
+            paddingTop: context.screenSize.height * 0.2,
             clearBarrierColor: true,
           );
         },
