@@ -105,7 +105,7 @@ class _DailyInvestDisplayAlertState
     final selectedInvestName = ref.watch(
         dailyInvestDisplayProvider.select((value) => value.selectedInvestName));
 
-    InvestKind.values.forEach((element) {
+    for (var element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
         final dispInvestRecordGold = thisDayInvestRecordList
             ?.where((element4) => element4.investId == 0)
@@ -462,7 +462,7 @@ class _DailyInvestDisplayAlertState
           ],
         ));
       }
-    });
+    }
 
     return SingleChildScrollView(
         child: Column(

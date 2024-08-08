@@ -179,16 +179,16 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     }
 
     if (errFlg == false) {
-      [
+      for (var element in [
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
-      ].forEach((element) {
+      ]) {
         if (checkInputValueLengthCheck(
                 value: element[0].toString(), length: element[1] as int) ==
             false) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
@@ -227,16 +227,16 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     }
 
     if (errFlg == false) {
-      [
+      for (var element in [
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
-      ].forEach((element) {
+      ]) {
         if (checkInputValueLengthCheck(
                 value: element[0].toString(), length: element[1] as int) ==
             false) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
@@ -283,7 +283,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     var cost = 0;
 
-    dateList.forEach((element3) {
+    for (var element3 in dateList) {
       widget.allInvestRecord
           .where((element) => element.investId == widget.investName.id)
           .forEach((element2) {
@@ -293,7 +293,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           }
         }
       });
-    });
+    }
 
     _costEditingController.text = cost.toString().trim();
   }

@@ -306,15 +306,15 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     }
 
     if (errFlg == false) {
-      [
+      for (var element in [
         [_investNameEditingController.text.trim(), 50]
-      ].forEach((element) {
+      ]) {
         if (checkInputValueLengthCheck(
                 value: element[0].toString(), length: element[1] as int) ==
             false) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
@@ -388,15 +388,15 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     }
 
     if (errFlg == false) {
-      [
+      for (var element in [
         [_investNameEditingController.text.trim(), 30]
-      ].forEach((element) {
+      ]) {
         if (checkInputValueLengthCheck(
                 value: element[0].toString(), length: element[1] as int) ==
             false) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {

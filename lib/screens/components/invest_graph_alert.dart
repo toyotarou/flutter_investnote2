@@ -136,13 +136,15 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
     final map = <int, Map<String, int>>{};
 
-    idList.forEach((element) {
+    for (var element in idList) {
       final map2 = <String, int>{};
-      widget.calendarCellDateDataList.forEach((element2) => map2[element2] = 0);
+      for (var element2 in widget.calendarCellDateDataList) {
+        map2[element2] = 0;
+      }
       map[element] = map2;
-    });
+    }
 
-    widget.allInvestRecord.forEach((element) {
+    for (var element in widget.allInvestRecord) {
       map[element.investId]?[element.date] =
           (element.price != 0 && element.cost != 0)
               ? ((element.price / element.cost) * 100)
@@ -150,7 +152,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                   .split('.')[0]
                   .toInt()
               : 0;
-    });
+    }
 
     final selectedGraphId =
         ref.watch(investGraphProvider.select((value) => value.selectedGraphId));
@@ -359,7 +361,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   List<LineTooltipItem> getGraphToolTip(List<LineBarSpot> touchedSpots) {
     final list = <LineTooltipItem>[];
 
-    touchedSpots.forEach((element) {
+    for (var element in touchedSpots) {
       final textStyle = TextStyle(
           color: element.bar.gradient?.colors.first ??
               element.bar.color ??
@@ -371,7 +373,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 //      final month = usageGuideList[element.barIndex].mm;
 
       list.add(LineTooltipItem(price, textStyle, textAlign: TextAlign.end));
-    });
+    }
 
     return list;
   }

@@ -176,17 +176,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     var firstCostTotal = 0;
     var firstPriceTotal = 0;
-    firstDateInvestRecordList.forEach((element) {
+    for (var element in firstDateInvestRecordList) {
       firstCostTotal += element.cost;
       firstPriceTotal += element.price;
-    });
+    }
 
     var lastCostTotal = 0;
     var lastPriceTotal = 0;
-    lastDateInvestRecordList.forEach((element) {
+    for (var element in lastDateInvestRecordList) {
       lastCostTotal += element.cost;
       lastPriceTotal += element.price;
-    });
+    }
 
     final firstDiff = firstPriceTotal - firstCostTotal;
     final lastDiff = lastPriceTotal - lastCostTotal;
@@ -416,7 +416,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       var goldSum = 0;
 
       if (investRecordMap[generateYmd] != null) {
-        investRecordMap[generateYmd]!.forEach((element) {
+        for (var element in investRecordMap[generateYmd]!) {
           if (stockIds.contains(element.investId)) {
             stockCost += element.cost;
             stockPrice += element.price;
@@ -431,7 +431,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             goldCost += element.cost;
             goldPrice += element.price;
           }
-        });
+        }
 
         stockSum = stockPrice - stockCost;
         shintakuSum = shintakuPrice - shintakuCost;
@@ -439,10 +439,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       var allSum = 0;
-      [stockCost, stockPrice, shintakuCost, shintakuPrice, goldCost, goldPrice]
-          .forEach((element) {
+      for (var element in [
+        stockCost,
+        stockPrice,
+        shintakuCost,
+        shintakuPrice,
+        goldCost,
+        goldPrice
+      ]) {
         allSum += element;
-      });
+      }
 
       //////////////////////////////////////////////////
 
@@ -775,7 +781,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     calendarCellDateDataList = [];
 
     final dateList = <String>[];
-    investRecordList!.forEach((element) {
+    for (var element in investRecordList!) {
       if (!dateList.contains(element.date)) {
         var stockCost = 0;
         var stockPrice = 0;
@@ -792,7 +798,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         var allSum = 0;
 
         if (investRecordMap[element.date] != null) {
-          investRecordMap[element.date]!.forEach((element) {
+          for (var element in investRecordMap[element.date]!) {
             if (stockIds.contains(element.investId)) {
               stockCost += element.cost;
               stockPrice += element.price;
@@ -807,7 +813,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               goldCost += element.cost;
               goldPrice += element.price;
             }
-          });
+          }
 
           stockSum = stockPrice - stockCost;
           shintakuSum = shintakuPrice - shintakuCost;
@@ -827,7 +833,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       dateList.add(element.date);
-    });
+    }
   }
 
   ///
