@@ -1,4 +1,4 @@
-// ignore_for_file: use_named_constants
+// ignore_for_file: use_named_constants, lines_longer_than_80_chars
 
 import 'dart:math';
 

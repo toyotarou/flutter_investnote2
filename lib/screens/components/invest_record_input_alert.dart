@@ -179,7 +179,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     }
 
     if (errFlg == false) {
-      for (var element in [
+      for (final element in [
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
       ]) {
@@ -227,7 +227,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     }
 
     if (errFlg == false) {
-      for (var element in [
+      for (final element in [
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
       ]) {
@@ -283,7 +283,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     var cost = 0;
 
-    for (var element3 in dateList) {
+    for (final element3 in dateList) {
       widget.allInvestRecord
           .where((element) => element.investId == widget.investName.id)
           .forEach((element2) {

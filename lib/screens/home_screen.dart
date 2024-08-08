@@ -176,14 +176,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     var firstCostTotal = 0;
     var firstPriceTotal = 0;
-    for (var element in firstDateInvestRecordList) {
+    for (final element in firstDateInvestRecordList) {
       firstCostTotal += element.cost;
       firstPriceTotal += element.price;
     }
 
     var lastCostTotal = 0;
     var lastPriceTotal = 0;
-    for (var element in lastDateInvestRecordList) {
+    for (final element in lastDateInvestRecordList) {
       lastCostTotal += element.cost;
       lastPriceTotal += element.price;
     }
@@ -416,7 +416,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       var goldSum = 0;
 
       if (investRecordMap[generateYmd] != null) {
-        for (var element in investRecordMap[generateYmd]!) {
+        for (final element in investRecordMap[generateYmd]!) {
           if (stockIds.contains(element.investId)) {
             stockCost += element.cost;
             stockPrice += element.price;
@@ -439,7 +439,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       var allSum = 0;
-      for (var element in [
+      for (final element in [
         stockCost,
         stockPrice,
         shintakuCost,
@@ -781,7 +781,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     calendarCellDateDataList = [];
 
     final dateList = <String>[];
-    for (var element in investRecordList!) {
+    for (final element in investRecordList!) {
       if (!dateList.contains(element.date)) {
         var stockCost = 0;
         var stockPrice = 0;
@@ -798,7 +798,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         var allSum = 0;
 
         if (investRecordMap[element.date] != null) {
-          for (var element in investRecordMap[element.date]!) {
+          for (final element in investRecordMap[element.date]!) {
             if (stockIds.contains(element.investId)) {
               stockCost += element.cost;
               stockPrice += element.price;

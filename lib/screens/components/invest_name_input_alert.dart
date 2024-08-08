@@ -306,7 +306,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     }
 
     if (errFlg == false) {
-      for (var element in [
+      for (final element in [
         [_investNameEditingController.text.trim(), 50]
       ]) {
         if (checkInputValueLengthCheck(
@@ -388,7 +388,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     }
 
     if (errFlg == false) {
-      for (var element in [
+      for (final element in [
         [_investNameEditingController.text.trim(), 30]
       ]) {
         if (checkInputValueLengthCheck(

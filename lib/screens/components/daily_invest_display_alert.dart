@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,7 +107,7 @@ class _DailyInvestDisplayAlertState
     final selectedInvestName = ref.watch(
         dailyInvestDisplayProvider.select((value) => value.selectedInvestName));
 
-    for (var element in InvestKind.values) {
+    for (final element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
         final dispInvestRecordGold = thisDayInvestRecordList
             ?.where((element4) => element4.investId == 0)

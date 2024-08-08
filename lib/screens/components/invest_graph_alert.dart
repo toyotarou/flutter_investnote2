@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,15 +138,15 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
     final map = <int, Map<String, int>>{};
 
-    for (var element in idList) {
+    for (final element in idList) {
       final map2 = <String, int>{};
-      for (var element2 in widget.calendarCellDateDataList) {
+      for (final element2 in widget.calendarCellDateDataList) {
         map2[element2] = 0;
       }
       map[element] = map2;
     }
 
-    for (var element in widget.allInvestRecord) {
+    for (final element in widget.allInvestRecord) {
       map[element.investId]?[element.date] =
           (element.price != 0 && element.cost != 0)
               ? ((element.price / element.cost) * 100)
@@ -361,7 +363,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   List<LineTooltipItem> getGraphToolTip(List<LineBarSpot> touchedSpots) {
     final list = <LineTooltipItem>[];
 
-    for (var element in touchedSpots) {
+    for (final element in touchedSpots) {
       final textStyle = TextStyle(
           color: element.bar.gradient?.colors.first ??
               element.bar.color ??

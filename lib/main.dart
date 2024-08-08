@@ -20,7 +20,8 @@ void main() async {
     InvestNameSchema,
   ], directory: dir.path);
 
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+  await SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
       .then((_) => runApp(ProviderScope(child: MyApp(isar: isar))));
 }
 
@@ -44,7 +45,8 @@ class MyApp extends ConsumerWidget {
       ],
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          titleTextStyle: GoogleFonts.kiwiMaru(textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+          titleTextStyle: GoogleFonts.kiwiMaru(
+              textStyle: const TextStyle(fontWeight: FontWeight.bold)),
           backgroundColor: Colors.transparent,
         ),
         useMaterial3: false,
@@ -54,7 +56,8 @@ class MyApp extends ConsumerWidget {
       themeMode: ThemeMode.dark,
       title: 'money note',
       debugShowCheckedModeBanner: false,
-      home: GestureDetector(onTap: () => primaryFocus?.unfocus(), child: HomeScreen(isar: isar)),
+      home: GestureDetector(
+          onTap: () => primaryFocus?.unfocus(), child: HomeScreen(isar: isar)),
     );
   }
 }

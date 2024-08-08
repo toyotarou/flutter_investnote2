@@ -4,7 +4,9 @@ import 'package:http/http.dart';
 import '../../model/holiday.dart';
 import 'holidays_response_state.dart';
 
-final holidayProvider = StateNotifierProvider.autoDispose<HolidayNotifier, HolidaysResponseState>((ref) {
+final holidayProvider =
+    StateNotifierProvider.autoDispose<HolidayNotifier, HolidaysResponseState>(
+        (ref) {
   return HolidayNotifier(const HolidaysResponseState())..getHoliday();
 });
 

@@ -75,7 +75,9 @@ extension StringEx on String {
     final regex = RegExp(r'^[a-zA-Z0-9]+$');
     final string = runes.map<String>((rune) {
       final char = String.fromCharCode(rune);
-      return regex.hasMatch(char) ? String.fromCharCode(rune + _fullLengthCode) : char;
+      return regex.hasMatch(char)
+          ? String.fromCharCode(rune + _fullLengthCode)
+          : char;
     });
     return string.join();
   }
@@ -84,7 +86,9 @@ extension StringEx on String {
     final regex = RegExp(r'^[Ａ-Ｚａ-ｚ０-９]+$');
     final string = runes.map<String>((rune) {
       final char = String.fromCharCode(rune);
-      return regex.hasMatch(char) ? String.fromCharCode(rune - _fullLengthCode) : char;
+      return regex.hasMatch(char)
+          ? String.fromCharCode(rune - _fullLengthCode)
+          : char;
     });
     return string.join();
   }

@@ -677,6 +677,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  pedantic_mono:
+    dependency: "direct main"
+    description:
+      name: pedantic_mono
+      sha256: c1dee9e5d3806e9cc9760d9931782f87d62ffc98f619352b1d837ca6204284ad
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.12.3"
   petitparser:
     dependency: transitive
     description:

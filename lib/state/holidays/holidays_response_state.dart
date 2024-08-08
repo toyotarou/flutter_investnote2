@@ -7,6 +7,7 @@ part 'holidays_response_state.freezed.dart';
 @freezed
 class HolidaysResponseState with _$HolidaysResponseState {
   const factory HolidaysResponseState({
-    @Default(AsyncValue<Map<String, String>>.loading()) AsyncValue<Map<String, String>> holidayMap,
+    @Default(AsyncValue<Map<String, String>>.loading())
+    AsyncValue<Map<String, String>> holidayMap,
   }) = _HolidaysResponseState;
 }
