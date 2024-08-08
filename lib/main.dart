@@ -54,7 +54,7 @@ class MyApp extends ConsumerWidget {
         fontFamily: 'KiwiMaru',
       ),
       themeMode: ThemeMode.dark,
-      title: 'money note',
+      title: 'invest note',
       debugShowCheckedModeBanner: false,
       home: GestureDetector(
           onTap: () => primaryFocus?.unfocus(), child: HomeScreen(isar: isar)),
