@@ -20,7 +20,7 @@ class CustomScrollBar extends StatefulWidget {
 }
 
 class _CustomScrollBarState extends State<CustomScrollBar> {
-  double _alignmentX = -1;
+  double _alignmentY = -1;
 
   ///
   @override
@@ -41,7 +41,7 @@ class _CustomScrollBarState extends State<CustomScrollBar> {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment(1, _alignmentX),
+      alignment: Alignment(1, _alignmentY),
       child: GestureDetector(
         onTap: () {
           InvestDialog(
@@ -70,7 +70,7 @@ class _CustomScrollBarState extends State<CustomScrollBar> {
     setState(() {
       final position = widget.scrollController.position;
       final ratio = position.pixels / position.maxScrollExtent;
-      _alignmentX = ratio * 2 - 1;
+      _alignmentY = ratio * 2 - 1;
     });
   }
 }

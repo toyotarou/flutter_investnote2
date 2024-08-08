@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../extensions/extensions.dart';
+import 'package:invest_note/extensions/extensions.dart';
 
 class BackGroundImage extends StatelessWidget {
   const BackGroundImage({
@@ -19,7 +18,9 @@ class BackGroundImage extends StatelessWidget {
               Container(
                 width: context.screenSize.width / 2.5,
                 height: 140,
-                decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/arrow_dolphin.png'))),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/arrow_dolphin.png'))),
               ),
               Row(
                 children: [
@@ -27,7 +28,9 @@ class BackGroundImage extends StatelessWidget {
                     width: context.screenSize.width / 2.5,
                     height: 30,
                     decoration: const BoxDecoration(
-                        image: DecorationImage(image: AssetImage('assets/images/invest_note_title.png'))),
+                        image: DecorationImage(
+                            image: AssetImage(
+                                'assets/images/invest_note_title.png'))),
                   ),
                   const SizedBox(width: 5),
                 ],

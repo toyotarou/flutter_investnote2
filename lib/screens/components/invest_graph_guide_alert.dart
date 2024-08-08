@@ -96,7 +96,7 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
 
           ref
               .read(investGraphProvider.notifier)
-              .setSelectedGraphColor(color: twelveColor[i]);
+              .setSelectedGraphColor(color: twelveColor[i % 12]);
         },
         child: Container(
           margin: const EdgeInsets.only(bottom: 10),

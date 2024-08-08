@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/collections/invest_record.dart';
+import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/repository/invest_records_repository.dart';
+import 'package:invest_note/screens/components/invest_graph_alert.dart';
+import 'package:invest_note/screens/components/invest_record_input_alert.dart';
+import 'package:invest_note/screens/components/invest_record_list_alert.dart';
+import 'package:invest_note/screens/components/parts/invest_dialog.dart';
 import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
 import 'package:invest_note/state/invest_graph/invest_graph.dart';
 import 'package:isar/isar.dart';
-
-import '../../collections/invest_name.dart';
-import '../../collections/invest_record.dart';
-import '../../enum/invest_kind.dart';
-import '../../extensions/extensions.dart';
-import '../../repository/invest_records_repository.dart';
-import 'invest_graph_alert.dart';
-import 'invest_record_input_alert.dart';
-import 'invest_record_list_alert.dart';
-import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
   const DailyInvestDisplayAlert(
