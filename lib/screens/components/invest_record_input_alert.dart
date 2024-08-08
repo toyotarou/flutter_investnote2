@@ -2,20 +2,24 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/collections/invest_record.dart';
 import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/repository/invest_records_repository.dart';
+import 'package:invest_note/screens/components/parts/error_dialog.dart';
+import 'package:invest_note/utilities/functions.dart';
 import 'package:isar/isar.dart';
-
-import '../../collections/invest_name.dart';
-import '../../collections/invest_record.dart';
-import '../../extensions/extensions.dart';
-import '../../repository/invest_records_repository.dart';
-import '../../utilities/functions.dart';
-import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestRecordInputAlert extends StatefulWidget {
   const InvestRecordInputAlert(
-      {super.key, required this.isar, required this.date, required this.investName, this.investRecord, required this.allInvestRecord});
+      {super.key,
+      required this.isar,
+      required this.date,
+      required this.investName,
+      this.investRecord,
+      required this.allInvestRecord});
 
   final Isar isar;
   final DateTime date;
@@ -62,13 +66,18 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(widget.date.yyyymmdd), Text(widget.investName.name)]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(widget.date.yyyymmdd),
+                Text(widget.investName.name)
+              ]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
-              if (widget.investName.kind == InvestKind.stock.name || widget.investName.kind == InvestKind.shintaku.name) ...[
+              if (widget.investName.kind == InvestKind.stock.name ||
+                  widget.investName.kind == InvestKind.shintaku.name) ...[
                 ElevatedButton(
                   onPressed: getLastCost,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                   child: const Text('get last cost'),
                 ),
               ],
@@ -77,8 +86,14 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                 children: [
                   Container(),
                   (widget.investRecord!.isNotEmpty)
-                      ? TextButton(onPressed: _updateInvestRecord, child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
-                      : TextButton(onPressed: _inputInvestRecord, child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
+                      ? TextButton(
+                          onPressed: _updateInvestRecord,
+                          child: const Text('投資詳細レコードを更新する',
+                              style: TextStyle(fontSize: 12)))
+                      : TextButton(
+                          onPressed: _inputInvestRecord,
+                          child: const Text('投資詳細レコードを追加する',
+                              style: TextStyle(fontSize: 12))),
                 ],
               ),
             ],
@@ -91,7 +106,12 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   Widget _displayInputParts() {
     return DecoratedBox(
-      decoration: BoxDecoration(boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            blurRadius: 24,
+            spreadRadius: 16,
+            color: Colors.black.withOpacity(0.2))
+      ]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
@@ -103,7 +123,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               children: [
@@ -111,28 +132,34 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                   controller: _costEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '取得総額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (event) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _priceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '時価評価額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (event) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
             ),
@@ -146,7 +173,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _inputInvestRecord() async {
     var errFlg = false;
 
-    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
+    if (_costEditingController.text.trim() == '' ||
+        _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
@@ -155,7 +183,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int) ==
+            false) {
           errFlg = true;
         }
       });
@@ -164,7 +194,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
@@ -176,7 +207,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       ..cost = _costEditingController.text.trim().toInt()
       ..price = _priceEditingController.text.trim().toInt();
 
-    await InvestRecordsRepository().inputInvestRecord(isar: widget.isar, investRecord: investRecord).then((value) {
+    await InvestRecordsRepository()
+        .inputInvestRecord(isar: widget.isar, investRecord: investRecord)
+        .then((value) {
       _costEditingController.clear();
       _priceEditingController.clear();
 
@@ -188,7 +221,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _updateInvestRecord() async {
     var errFlg = false;
 
-    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
+    if (_costEditingController.text.trim() == '' ||
+        _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
@@ -197,7 +231,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         [_costEditingController.text.trim(), 30],
         [_priceEditingController.text.trim(), 10]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int) ==
+            false) {
           errFlg = true;
         }
       });
@@ -206,21 +242,26 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
     }
 
     await widget.isar.writeTxn(() async {
-      await InvestRecordsRepository().getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id).then((value) async {
+      await InvestRecordsRepository()
+          .getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id)
+          .then((value) async {
         value!
           ..date = widget.date.yyyymmdd
           ..investId = widget.investName.id
           ..cost = _costEditingController.text.trim().toInt()
           ..price = _priceEditingController.text.trim().toInt();
 
-        await InvestRecordsRepository().updateInvestRecord(isar: widget.isar, investRecord: value).then((value) {
+        await InvestRecordsRepository()
+            .updateInvestRecord(isar: widget.isar, investRecord: value)
+            .then((value) {
           _costEditingController.clear();
           _priceEditingController.clear();
 
@@ -243,7 +284,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     var cost = 0;
 
     dateList.forEach((element3) {
-      widget.allInvestRecord.where((element) => element.investId == widget.investName.id).forEach((element2) {
+      widget.allInvestRecord
+          .where((element) => element.investId == widget.investName.id)
+          .forEach((element2) {
         if (cost == 0) {
           if (element3 == element2.date) {
             cost = element2.cost;

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/repository/invest_names_repository.dart';
+import 'package:invest_note/screens/components/invest_name_input_alert.dart';
+import 'package:invest_note/screens/components/parts/invest_dialog.dart';
 import 'package:isar/isar.dart';
 
-import '../../collections/invest_name.dart';
-import '../../enum/invest_kind.dart';
-import '../../extensions/extensions.dart';
-import '../../repository/invest_names_repository.dart';
-import 'invest_name_input_alert.dart';
-import 'parts/invest_dialog.dart';
-
 class InvestNameListAlert extends StatefulWidget {
-  const InvestNameListAlert({super.key, required this.isar, required this.investKind});
+  const InvestNameListAlert(
+      {super.key, required this.isar, required this.investKind});
 
   final Isar isar;
   final InvestKind investKind;
@@ -53,10 +53,12 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
                   TextButton(
                     onPressed: () => InvestDialog(
                       context: context,
-                      widget: InvestNameInputAlert(isar: widget.isar, investKind: widget.investKind),
+                      widget: InvestNameInputAlert(
+                          isar: widget.isar, investKind: widget.investKind),
                       clearBarrierColor: true,
                     ),
-                    child: const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
+                    child:
+                        const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
                   ),
                 ],
               ),
@@ -70,7 +72,8 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
 
   ///
   Future<void> _makeStockNameList() async => InvestNamesRepository()
-      .getInvestNameListByInvestKind(isar: widget.isar, investKind: widget.investKind.name)
+      .getInvestNameListByInvestKind(
+          isar: widget.isar, investKind: widget.investKind.name)
       .then((value) => setState(() => investNameList = value));
 
   ///
@@ -81,7 +84,10 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
       list.add(Container(
         width: context.screenSize.width,
         margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                    color: Colors.white.withOpacity(0.2), width: 2))),
         child: Row(
           children: [
             Expanded(
@@ -94,10 +100,14 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
             GestureDetector(
               onTap: () => InvestDialog(
                 context: context,
-                widget: InvestNameInputAlert(isar: widget.isar, investName: element, investKind: widget.investKind),
+                widget: InvestNameInputAlert(
+                    isar: widget.isar,
+                    investName: element,
+                    investKind: widget.investKind),
                 clearBarrierColor: true,
               ),
-              child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+              child: Icon(Icons.edit,
+                  size: 16, color: Colors.greenAccent.withOpacity(0.6)),
             ),
           ],
         ),

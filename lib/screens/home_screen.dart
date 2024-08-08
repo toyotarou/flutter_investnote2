@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/collections/invest_record.dart';
+import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/repository/invest_names_repository.dart';
+import 'package:invest_note/repository/invest_records_repository.dart';
+import 'package:invest_note/screens/components/daily_invest_display_alert.dart';
+import 'package:invest_note/screens/components/invest_name_list_alert.dart';
+import 'package:invest_note/screens/components/parts/back_ground_image.dart';
+import 'package:invest_note/screens/components/parts/invest_dialog.dart';
+import 'package:invest_note/screens/components/parts/menu_head_icon.dart';
+import 'package:invest_note/state/calendars/calendars_notifier.dart';
 import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
+import 'package:invest_note/state/holidays/holidays_notifier.dart';
+import 'package:invest_note/utilities/utilities.dart';
 import 'package:isar/isar.dart';
-
-import '../collections/invest_name.dart';
-import '../collections/invest_record.dart';
-import '../enum/invest_kind.dart';
-import '../extensions/extensions.dart';
-import '../repository/invest_names_repository.dart';
-import '../repository/invest_records_repository.dart';
-import '../state/calendars/calendars_notifier.dart';
-import '../state/holidays/holidays_notifier.dart';
-import '../utilities/utilities.dart';
-import 'components/daily_invest_display_alert.dart';
-import 'components/invest_name_list_alert.dart';
-import 'components/parts/back_ground_image.dart';
-import 'components/parts/invest_dialog.dart';
-import 'components/parts/menu_head_icon.dart';
 
 class CalendarCellSumData {
   CalendarCellSumData(
@@ -243,24 +242,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-
-  /*
-                                              Text(
-                                                shintakuPrice
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color:
-                                                        Colors.yellowAccent)),
-                                            Text(
-                                                shintakuSum
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color: Color(0xFFFBB6CE))),
-
-
-  */
 
   ///
   Widget _dispDrawer() {
@@ -693,8 +674,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     Stack(
                                       children: [
                                         if (index > 0) ...[
-
-
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -708,7 +687,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           ),
                                         ],
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(),
                                             Column(
@@ -727,8 +707,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                         .toString()
                                                         .toCurrency(),
                                                     style: const TextStyle(
-                                                        color:
-                                                            Colors.yellowAccent)),
+                                                        color: Colors
+                                                            .yellowAccent)),
                                                 Text(
                                                     (stockSum +
                                                             shintakuSum +
@@ -736,7 +716,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                         .toString()
                                                         .toCurrency(),
                                                     style: const TextStyle(
-                                                        color: Color(0xFFFBB6CE))),
+                                                        color:
+                                                            Color(0xFFFBB6CE))),
                                               ],
                                             ),
                                           ],

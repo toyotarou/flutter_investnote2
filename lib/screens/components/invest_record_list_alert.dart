@@ -5,10 +5,9 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../collections/invest_name.dart';
-import '../../collections/invest_record.dart';
-import '../../extensions/extensions.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/collections/invest_record.dart';
+import 'package:invest_note/extensions/extensions.dart';
 
 class InvestRecordListAlert extends ConsumerStatefulWidget {
   const InvestRecordListAlert(

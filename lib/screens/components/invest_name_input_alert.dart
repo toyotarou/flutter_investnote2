@@ -3,18 +3,17 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:invest_note/collections/invest_name.dart';
+import 'package:invest_note/enum/invest_kind.dart';
+import 'package:invest_note/enum/shintaku_frame.dart';
+import 'package:invest_note/enum/stock_frame.dart';
+import 'package:invest_note/extensions/extensions.dart';
+import 'package:invest_note/repository/invest_names_repository.dart';
 import 'package:invest_note/repository/invest_records_repository.dart';
+import 'package:invest_note/screens/components/parts/error_dialog.dart';
+import 'package:invest_note/state/invest_names/invest_names_notifier.dart';
+import 'package:invest_note/utilities/functions.dart';
 import 'package:isar/isar.dart';
-
-import '../../collections/invest_name.dart';
-import '../../enum/invest_kind.dart';
-import '../../enum/shintaku_frame.dart';
-import '../../enum/stock_frame.dart';
-import '../../extensions/extensions.dart';
-import '../../repository/invest_names_repository.dart';
-import '../../state/invest_names/invest_names_notifier.dart';
-import '../../utilities/functions.dart';
-import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestNameInputAlert extends ConsumerStatefulWidget {
