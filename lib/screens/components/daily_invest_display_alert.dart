@@ -137,8 +137,17 @@ class _DailyInvestDisplayAlertState
               children: [
                 Row(children: [
                   Expanded(
-                      child: Text(element3.name,
-                          maxLines: 1, overflow: TextOverflow.ellipsis))
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(element3.frame),
+                      Text(
+                        element3.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ))
                 ]),
                 Row(
                   children: [
