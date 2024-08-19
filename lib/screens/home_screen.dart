@@ -8,6 +8,7 @@ import 'package:invest_note/repository/invest_names_repository.dart';
 import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:invest_note/screens/components/daily_invest_display_alert.dart';
 import 'package:invest_note/screens/components/invest_name_list_alert.dart';
+import 'package:invest_note/screens/components/invest_total_graph_alert.dart';
 import 'package:invest_note/screens/components/parts/back_ground_image.dart';
 import 'package:invest_note/screens/components/parts/invest_dialog.dart';
 import 'package:invest_note/screens/components/parts/menu_head_icon.dart';
@@ -127,6 +128,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         actions: [
+          IconButton(
+            onPressed: () {
+              InvestDialog(
+                context: context,
+                widget: InvestTotalGraphAlert(
+                  isar: widget.isar,
+                  investNameList: investNameList ?? [],
+                  investRecordMap: investRecordMap,
+                ),
+              );
+            },
+            icon: Icon(Icons.graphic_eq,
+                color: Colors.white.withOpacity(0.6), size: 20),
+          ),
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
             icon: Icon(Icons.settings,

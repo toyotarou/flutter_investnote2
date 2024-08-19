@@ -230,7 +230,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
                             text: ' / ', style: TextStyle(color: Colors.white)),
                         TextSpan(
                           text:
-                              '${(endPrice - startPrice) > 0 ? '+' : '-'} ${(endPrice - startPrice).toString().split('.')[0].toCurrency()}',
+                              '${(endPrice - startPrice) > 0 ? '+' : ''} ${(endPrice - startPrice).toString().split('.')[0].toCurrency()}',
                           style: TextStyle(
                               color: ((endPrice - startPrice) > 0)
                                   ? const Color(0xFFFBB6CE)
