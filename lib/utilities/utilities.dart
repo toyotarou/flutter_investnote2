@@ -36,8 +36,8 @@ class Utility {
     return FlGridData(
       //横線
       getDrawingHorizontalLine: (value) => FlLine(
-        color: (value == 100) ? Colors.redAccent : Colors.white30,
-        strokeWidth: 1,
+        color: (value == 100) ? Colors.white : Colors.white30,
+        strokeWidth: (value == 100) ? 3 : 1,
       ),
 
       //縦線

@@ -9,9 +9,11 @@ class CustomScrollBar extends StatefulWidget {
       {super.key,
       required this.scrollController,
       required this.investGraphGuideNames,
-      required this.investNameList});
+      required this.investNameList,
+      required this.investGraphGuideFrames});
 
   final ScrollController scrollController;
+  final List<String> investGraphGuideFrames;
   final List<String> investGraphGuideNames;
   final List<InvestName> investNameList;
 
@@ -47,6 +49,7 @@ class _CustomScrollBarState extends State<CustomScrollBar> {
           InvestDialog(
             context: context,
             widget: InvestGraphGuideAlert(
+              investGraphGuideFrames: widget.investGraphGuideFrames,
               investGraphGuideNames: widget.investGraphGuideNames,
               investNameList: widget.investNameList,
             ),

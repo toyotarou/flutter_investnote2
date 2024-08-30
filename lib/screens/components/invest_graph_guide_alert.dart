@@ -9,8 +9,10 @@ class InvestGraphGuideAlert extends ConsumerStatefulWidget {
   const InvestGraphGuideAlert(
       {super.key,
       required this.investGraphGuideNames,
-      required this.investNameList});
+      required this.investNameList,
+      required this.investGraphGuideFrames});
 
+  final List<String> investGraphGuideFrames;
   final List<String> investGraphGuideNames;
   final List<InvestName> investNameList;
 
@@ -117,21 +119,34 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundColor: twelveColor[i].withOpacity(0.4),
+                    backgroundColor: twelveColor[i % 12].withOpacity(0.4),
                     radius: 15,
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      widget.investGraphGuideNames[i],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: (investGraphState.selectedGraphColor != null &&
-                                widget.investGraphGuideNames[i] ==
-                                    investGraphState.selectedGraphName)
-                            ? investGraphState.selectedGraphColor
-                            : Colors.white,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.investGraphGuideFrames[i],
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.lightBlueAccent,
+                          ),
+                        ),
+                        Text(
+                          widget.investGraphGuideNames[i],
+                          style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                (investGraphState.selectedGraphColor != null &&
+                                        widget.investGraphGuideNames[i] ==
+                                            investGraphState.selectedGraphName)
+                                    ? investGraphState.selectedGraphColor
+                                    : Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

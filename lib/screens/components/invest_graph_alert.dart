@@ -38,6 +38,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
   final Utility _utility = Utility();
 
+  List<String> investGraphGuideFrames = [];
   List<String> investGraphGuideNames = [];
 
   ///
@@ -110,6 +111,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           ),
           CustomScrollBar(
             scrollController: _controller,
+            investGraphGuideFrames: investGraphGuideFrames,
             investGraphGuideNames: investGraphGuideNames,
             investNameList: widget.investNameList,
           ),
@@ -122,6 +124,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   void setChartData() {
     final idList = <int>[];
 
+    investGraphGuideFrames = [];
     investGraphGuideNames = [];
 
     if (widget.kind == InvestKind.gold.name) {
@@ -129,11 +132,14 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
     } else {
       widget.investNameList
           .where((element) => element.kind == widget.kind)
-          .forEach((element2) {
-        idList.add(element2.id);
+          .toList()
+        ..sort((a, b) => a.dealNumber.compareTo(b.dealNumber))
+        ..forEach((element2) {
+          idList.add(element2.id);
 
-        investGraphGuideNames.add(element2.name);
-      });
+          investGraphGuideFrames.add(element2.frame);
+          investGraphGuideNames.add(element2.name);
+        });
     }
 
     final map = <int, Map<String, int>>{};
@@ -216,8 +222,35 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
       ///
       lineTouchData: LineTouchData(
-          touchTooltipData:
-              LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
+        touchTooltipData: LineTouchTooltipData(
+            tooltipRoundedRadius: 2,
+            getTooltipItems: (List<LineBarSpot> touchedSpots) {
+              final list = <LineTooltipItem>[];
+
+              for (final element in touchedSpots) {
+                final textStyle = TextStyle(
+                  color: element.bar.gradient?.colors.first ??
+                      element.bar.color ??
+                      Colors.blueGrey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                );
+
+                final percent =
+                    element.y.round().toString().split('.')[0].toCurrency();
+
+                list.add(
+                  LineTooltipItem(
+                    '${element.x.toInt()} : $percent',
+                    textStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                );
+              }
+
+              return list;
+            }),
+      ),
 
       ///
       gridData: _utility.getFlGridData(),
@@ -281,7 +314,6 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
       ///
       lineBarsData: [
-        //forで仕方ない
         for (var i = 0; i < flspotsList.length; i++)
           LineChartBarData(
             spots: flspotsList[i],
