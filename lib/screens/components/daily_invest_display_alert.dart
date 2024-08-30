@@ -121,159 +121,173 @@ class _DailyInvestDisplayAlertState
         final list2 = <Widget>[];
         widget.investNameList
             .where((element2) => element2.kind == element.name)
-            .forEach((element3) {
-          final dispInvestRecord = thisDayInvestRecordList
-              ?.where((element4) => element4.investId == element3.id)
-              .toList();
+            .toList()
+          ..sort((a, b) => a.dealNumber.compareTo(b.dealNumber))
+          ..forEach((element3) {
+            final dispInvestRecord = thisDayInvestRecordList
+                ?.where((element4) => element4.investId == element3.id)
+                .toList();
 
-          list2.add(Container(
-            width: context.screenSize.width,
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.white.withOpacity(0.2), width: 2))),
-            child: Column(
-              children: [
-                Row(children: [
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(element3.frame),
-                      Text(
-                        element3.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ))
-                ]),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text((dispInvestRecord != null &&
-                                    dispInvestRecord.isNotEmpty)
-                                ? dispInvestRecord[0]
-                                    .cost
-                                    .toString()
-                                    .toCurrency()
-                                : '0'),
-                          ),
-                          const Text(''),
-                        ],
+            list2.add(Container(
+              width: context.screenSize.width,
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.white.withOpacity(0.2), width: 2))),
+              child: Column(
+                children: [
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    SizedBox(
+                      width: 20,
+                      child: Text(
+                        element3.dealNumber.toString().padLeft(2, '0'),
+                        style: const TextStyle(color: Colors.orangeAccent),
                       ),
                     ),
+                    const SizedBox(width: 10),
                     Expanded(
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecord != null &&
-                                      dispInvestRecord.isNotEmpty)
-                                  ? dispInvestRecord[0]
-                                      .price
-                                      .toString()
-                                      .toCurrency()
-                                  : '0',
-                              style:
-                                  const TextStyle(color: Colors.yellowAccent),
-                            ),
-                          ),
-                          const Text(''),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              (dispInvestRecord != null &&
-                                      dispInvestRecord.isNotEmpty)
-                                  ? (dispInvestRecord[0].price -
-                                          dispInvestRecord[0].cost)
-                                      .toString()
-                                      .toCurrency()
-                                  : '0',
-                              style: const TextStyle(color: Color(0xFFFBB6CE)),
-                            ),
-                          ),
-                          Text(
-                            (dispInvestRecord != null &&
-                                    dispInvestRecord.isNotEmpty)
-                                ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
-                                : '0',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Row(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            ref
-                                .read(dailyInvestDisplayProvider.notifier)
-                                .setSelectedInvestName(
-                                    selectedInvestName: element3.name);
-
-                            InvestDialog(
-                              context: context,
-                              widget: InvestRecordListAlert(
-                                investName: element3,
-                                allInvestRecord: widget.allInvestRecord,
-                              ),
-                              clearBarrierColor: true,
-                            );
-                          },
-                          icon: Icon(Icons.info_outline,
-                              color: (element3.name == selectedInvestName)
-                                  ? Colors.redAccent.withOpacity(0.6)
-                                  : Colors.greenAccent.withOpacity(0.6)),
+                        Text(
+                          element3.frame,
+                          style: const TextStyle(color: Colors.lightBlueAccent),
+                        ),
+                        Text(
+                          element3.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        InvestDialog(
-                          context: context,
-                          widget: InvestRecordInputAlert(
-                            isar: widget.isar,
-                            date: widget.date,
-                            investName: element3,
-                            investRecord: thisDayInvestRecordList
-                                ?.where((element4) =>
-                                    element4.investId == element3.id)
-                                .toList(),
-                            allInvestRecord: widget.allInvestRecord,
+                    ))
+                  ]),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text((dispInvestRecord != null &&
+                                      dispInvestRecord.isNotEmpty)
+                                  ? dispInvestRecord[0]
+                                      .cost
+                                      .toString()
+                                      .toCurrency()
+                                  : '0'),
+                            ),
+                            const Text(''),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                (dispInvestRecord != null &&
+                                        dispInvestRecord.isNotEmpty)
+                                    ? dispInvestRecord[0]
+                                        .price
+                                        .toString()
+                                        .toCurrency()
+                                    : '0',
+                                style:
+                                    const TextStyle(color: Colors.yellowAccent),
+                              ),
+                            ),
+                            const Text(''),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                (dispInvestRecord != null &&
+                                        dispInvestRecord.isNotEmpty)
+                                    ? (dispInvestRecord[0].price -
+                                            dispInvestRecord[0].cost)
+                                        .toString()
+                                        .toCurrency()
+                                    : '0',
+                                style:
+                                    const TextStyle(color: Color(0xFFFBB6CE)),
+                              ),
+                            ),
+                            Text(
+                              (dispInvestRecord != null &&
+                                      dispInvestRecord.isNotEmpty)
+                                  ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
+                                  : '0',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              ref
+                                  .read(dailyInvestDisplayProvider.notifier)
+                                  .setSelectedInvestName(
+                                      selectedInvestName: element3.name);
+
+                              InvestDialog(
+                                context: context,
+                                widget: InvestRecordListAlert(
+                                  investName: element3,
+                                  allInvestRecord: widget.allInvestRecord,
+                                ),
+                                clearBarrierColor: true,
+                              );
+                            },
+                            icon: Icon(Icons.info_outline,
+                                color: (element3.name == selectedInvestName)
+                                    ? Colors.redAccent.withOpacity(0.6)
+                                    : Colors.greenAccent.withOpacity(0.6)),
                           ),
-                          clearBarrierColor: true,
-                        );
-                      },
-                      child: Icon(Icons.input,
-                          color: Colors.greenAccent.withOpacity(0.6)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ));
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          InvestDialog(
+                            context: context,
+                            widget: InvestRecordInputAlert(
+                              isar: widget.isar,
+                              date: widget.date,
+                              investName: element3,
+                              investRecord: thisDayInvestRecordList
+                                  ?.where((element4) =>
+                                      element4.investId == element3.id)
+                                  .toList(),
+                              allInvestRecord: widget.allInvestRecord,
+                            ),
+                            clearBarrierColor: true,
+                          );
+                        },
+                        child: Icon(Icons.input,
+                            color: Colors.greenAccent.withOpacity(0.6)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ));
 
-          if (dispInvestRecord != null && dispInvestRecord.isNotEmpty) {
-            totalPrice += dispInvestRecord[0].price;
+            if (dispInvestRecord != null && dispInvestRecord.isNotEmpty) {
+              totalPrice += dispInvestRecord[0].price;
 
-            totalDiff += dispInvestRecord[0].price - dispInvestRecord[0].cost;
-          }
-        });
+              totalDiff += dispInvestRecord[0].price - dispInvestRecord[0].cost;
+            }
+          });
         //---------------------------------//
 
         list.add(Column(
@@ -361,6 +375,13 @@ class _DailyInvestDisplayAlertState
                 child: Column(
                   children: [
                     const Row(children: [
+                      SizedBox(
+                        width: 30,
+                        child: Text(
+                          '01',
+                          style: TextStyle(color: Colors.orangeAccent),
+                        ),
+                      ),
                       Expanded(
                           child: Text('gold',
                               maxLines: 1, overflow: TextOverflow.ellipsis))

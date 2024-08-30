@@ -17,18 +17,23 @@ const InvestNameSchema = CollectionSchema(
   name: r'InvestName',
   id: -7031451711582071805,
   properties: {
-    r'frame': PropertySchema(
+    r'dealNumber': PropertySchema(
       id: 0,
+      name: r'dealNumber',
+      type: IsarType.long,
+    ),
+    r'frame': PropertySchema(
+      id: 1,
       name: r'frame',
       type: IsarType.string,
     ),
     r'kind': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'kind',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     )
@@ -65,9 +70,10 @@ void _investNameSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.frame);
-  writer.writeString(offsets[1], object.kind);
-  writer.writeString(offsets[2], object.name);
+  writer.writeLong(offsets[0], object.dealNumber);
+  writer.writeString(offsets[1], object.frame);
+  writer.writeString(offsets[2], object.kind);
+  writer.writeString(offsets[3], object.name);
 }
 
 InvestName _investNameDeserialize(
@@ -77,10 +83,11 @@ InvestName _investNameDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = InvestName();
-  object.frame = reader.readString(offsets[0]);
+  object.dealNumber = reader.readLong(offsets[0]);
+  object.frame = reader.readString(offsets[1]);
   object.id = id;
-  object.kind = reader.readString(offsets[1]);
-  object.name = reader.readString(offsets[2]);
+  object.kind = reader.readString(offsets[2]);
+  object.name = reader.readString(offsets[3]);
   return object;
 }
 
@@ -92,10 +99,12 @@ P _investNameDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -193,6 +202,61 @@ extension InvestNameQueryWhere
 
 extension InvestNameQueryFilter
     on QueryBuilder<InvestName, InvestName, QFilterCondition> {
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> dealNumberEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dealNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      dealNumberGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dealNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      dealNumberLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dealNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition> dealNumberBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dealNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<InvestName, InvestName, QAfterFilterCondition> frameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -646,6 +710,18 @@ extension InvestNameQueryLinks
 
 extension InvestNameQuerySortBy
     on QueryBuilder<InvestName, InvestName, QSortBy> {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByDealNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dealNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByDealNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dealNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
@@ -685,6 +761,18 @@ extension InvestNameQuerySortBy
 
 extension InvestNameQuerySortThenBy
     on QueryBuilder<InvestName, InvestName, QSortThenBy> {
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByDealNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dealNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByDealNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dealNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByFrame() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'frame', Sort.asc);
@@ -736,6 +824,12 @@ extension InvestNameQuerySortThenBy
 
 extension InvestNameQueryWhereDistinct
     on QueryBuilder<InvestName, InvestName, QDistinct> {
+  QueryBuilder<InvestName, InvestName, QDistinct> distinctByDealNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dealNumber');
+    });
+  }
+
   QueryBuilder<InvestName, InvestName, QDistinct> distinctByFrame(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -763,6 +857,12 @@ extension InvestNameQueryProperty
   QueryBuilder<InvestName, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<InvestName, int, QQueryOperations> dealNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dealNumber');
     });
   }
 

@@ -57,8 +57,12 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
                           isar: widget.isar, investKind: widget.investKind),
                       clearBarrierColor: true,
                     ),
-                    child:
-                        const Text('株式名称を追加する', style: TextStyle(fontSize: 12)),
+                    child: Text(
+                      getInvestName(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -68,6 +72,19 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
         ),
       ),
     );
+  }
+
+  ///
+  String getInvestName() {
+    switch (widget.investKind) {
+      case InvestKind.stock:
+        return '株式名称を追加する';
+      case InvestKind.shintaku:
+        return '信託名称を追加する';
+      case InvestKind.blank:
+      case InvestKind.gold:
+    }
+    return '';
   }
 
   ///
@@ -89,7 +106,13 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
                 bottom: BorderSide(
                     color: Colors.white.withOpacity(0.2), width: 2))),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              width: 30,
+              child: Text(element.dealNumber.toString()),
+            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

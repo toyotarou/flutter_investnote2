@@ -11,4 +11,6 @@ class InvestName {
   late String frame;
 
   late String name;
+
+  late int dealNumber;
 }

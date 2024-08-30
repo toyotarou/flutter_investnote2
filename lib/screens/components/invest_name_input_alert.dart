@@ -34,6 +34,9 @@ class InvestNameInputAlert extends ConsumerStatefulWidget {
 }
 
 class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
+  final TextEditingController _investNumberEditingController =
+      TextEditingController();
+
   final TextEditingController _investNameEditingController =
       TextEditingController();
 
@@ -46,6 +49,9 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     super.initState();
 
     if (widget.investName != null) {
+      _investNumberEditingController.text =
+          widget.investName!.dealNumber.toString();
+
       _investNameEditingController.text = widget.investName!.name;
 
       if (widget.investKind == InvestKind.stock) {
@@ -220,7 +226,37 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
             ),
             child: Column(
               children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _investNumberEditingController,
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          hintText: '管理番号',
+                          filled: true,
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
+                        ),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: context.screenSize.width * 0.5,
+                      child: const Text('(10文字以内)'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 getDropdownButton(),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _investNameEditingController,
                   decoration: InputDecoration(
@@ -301,12 +337,14 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   Future<void> _inputInvestName() async {
     var errFlg = false;
 
-    if (_investNameEditingController.text.trim() == '') {
+    if (_investNumberEditingController.text.trim() == '' ||
+        _investNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       for (final element in [
+        [_investNumberEditingController.text.trim(), 10],
         [_investNameEditingController.text.trim(), 50]
       ]) {
         if (checkInputValueLengthCheck(
@@ -314,6 +352,12 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
             false) {
           errFlg = true;
         }
+      }
+    }
+
+    if (errFlg == false) {
+      if (int.tryParse(_investNumberEditingController.text) == null) {
+        errFlg = true;
       }
     }
 
@@ -347,12 +391,14 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     final investName = InvestName()
       ..frame = frame
+      ..dealNumber = _investNumberEditingController.text.trim().toInt()
       ..name = _investNameEditingController.text.trim()
       ..kind = widget.investKind.name;
 
     await InvestNamesRepository()
         .inputInvestName(isar: widget.isar, investName: investName)
         .then((value) {
+      _investNumberEditingController.clear();
       _investNameEditingController.clear();
 
       Navigator.pop(context);
@@ -370,13 +416,15 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     switch (widget.investKind) {
       case InvestKind.stock:
-        if (_investNameEditingController.text.trim() == '' ||
+        if (_investNumberEditingController.text.trim() == '' ||
+            _investNameEditingController.text.trim() == '' ||
             (stockFrame == StockFrame.blank)) {
           errFlg = true;
         }
         break;
       case InvestKind.shintaku:
-        if (_investNameEditingController.text.trim() == '' ||
+        if (_investNumberEditingController.text.trim() == '' ||
+            _investNameEditingController.text.trim() == '' ||
             (shintakuFrame == ShintakuFrame.blank)) {
           errFlg = true;
         }
@@ -389,13 +437,20 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     if (errFlg == false) {
       for (final element in [
-        [_investNameEditingController.text.trim(), 30]
+        [_investNumberEditingController.text.trim(), 10],
+        [_investNameEditingController.text.trim(), 50]
       ]) {
         if (checkInputValueLengthCheck(
                 value: element[0].toString(), length: element[1] as int) ==
             false) {
           errFlg = true;
         }
+      }
+    }
+
+    if (errFlg == false) {
+      if (int.tryParse(_investNumberEditingController.text) == null) {
+        errFlg = true;
       }
     }
 
@@ -430,12 +485,14 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
           .getInvestName(isar: widget.isar, id: widget.investName!.id)
           .then((value) async {
         value!
+          ..dealNumber = _investNumberEditingController.text.trim().toInt()
           ..name = _investNameEditingController.text.trim()
           ..frame = frame;
 
         await InvestNamesRepository()
             .updateInvestName(isar: widget.isar, investName: value)
             .then((value) {
+          _investNumberEditingController.clear();
           _investNameEditingController.clear();
 
           Navigator.pop(context);
