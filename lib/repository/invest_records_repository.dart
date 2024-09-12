@@ -43,6 +43,15 @@ class InvestRecordsRepository {
   }
 
   ///
+  Future<void> inputInvestRecordList(
+      {required Isar isar,
+      required List<InvestRecord> investRecordList}) async {
+    for (final element in investRecordList) {
+      await inputInvestRecord(isar: isar, investRecord: element);
+    }
+  }
+
+  ///
   Future<void> inputInvestRecord(
       {required Isar isar, required InvestRecord investRecord}) async {
     final investRecordsCollection = getCollection(isar: isar);

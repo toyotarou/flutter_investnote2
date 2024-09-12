@@ -6,6 +6,7 @@ import 'package:invest_note/enum/invest_kind.dart';
 import 'package:invest_note/extensions/extensions.dart';
 import 'package:invest_note/repository/invest_names_repository.dart';
 import 'package:invest_note/repository/invest_records_repository.dart';
+import 'package:invest_note/screens/components/csv_data/data_import_alert.dart';
 import 'package:invest_note/screens/components/daily_invest_display_alert.dart';
 import 'package:invest_note/screens/components/invest_name_list_alert.dart';
 import 'package:invest_note/screens/components/invest_total_graph_alert.dart';
@@ -17,6 +18,8 @@ import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart
 import 'package:invest_note/state/holidays/holidays_notifier.dart';
 import 'package:invest_note/utilities/utilities.dart';
 import 'package:isar/isar.dart';
+
+import 'components/csv_data/data_export_alert.dart';
 
 class CalendarCellSumData {
   CalendarCellSumData(
@@ -309,6 +312,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              GestureDetector(
+                onTap: () {
+                  InvestDialog(
+                      context: context,
+                      widget: DataExportAlert(isar: widget.isar));
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('データエクスポート'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  InvestDialog(
+                      context: context,
+                      widget: DataImportAlert(isar: widget.isar));
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('データインポート'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
             ],
           ),
         ),

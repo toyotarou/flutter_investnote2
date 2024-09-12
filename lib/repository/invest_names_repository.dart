@@ -24,7 +24,19 @@ class InvestNamesRepository {
   Future<List<InvestName>?> getInvestNameListByInvestKind(
       {required Isar isar, required String investKind}) async {
     final investNamesCollection = getCollection(isar: isar);
-    return investNamesCollection.filter().kindEqualTo(investKind).sortByDealNumber().findAll();
+    return investNamesCollection
+        .filter()
+        .kindEqualTo(investKind)
+        .sortByDealNumber()
+        .findAll();
+  }
+
+  ///
+  Future<void> inputInvestNameList(
+      {required Isar isar, required List<InvestName> investNameList}) async {
+    for (final element in investNameList) {
+      await inputInvestName(isar: isar, investName: element);
+    }
   }
 
   ///
