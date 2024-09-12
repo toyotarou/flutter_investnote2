@@ -4,9 +4,9 @@ import 'package:http/http.dart';
 import '../../model/holiday.dart';
 import 'holidays_response_state.dart';
 
-final holidayProvider =
+final AutoDisposeStateNotifierProvider<HolidayNotifier, HolidaysResponseState> holidayProvider =
     StateNotifierProvider.autoDispose<HolidayNotifier, HolidaysResponseState>(
-        (ref) {
+        (AutoDisposeStateNotifierProviderRef<HolidayNotifier, HolidaysResponseState> ref) {
   return HolidayNotifier(const HolidaysResponseState())..getHoliday();
 });
 
@@ -15,12 +15,13 @@ class HolidayNotifier extends StateNotifier<HolidaysResponseState> {
 
   Future<void> getHoliday() async {
     try {
-      const url = 'https://holidays-jp.github.io/api/v1/date.json';
+      const String url = 'https://holidays-jp.github.io/api/v1/date.json';
 
-      final response = await get(Uri.parse(url));
+      final Response response = await get(Uri.parse(url));
 
-      final holiday = holidayFromJson(response.body);
+      final Map<String, String> holiday = holidayFromJson(response.body);
 
+      // ignore: always_specify_types
       state = state.copyWith(holidayMap: AsyncValue.data(holiday));
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {

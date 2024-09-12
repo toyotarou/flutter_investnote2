@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/repository/invest_names_repository.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:isar/isar.dart';
 
+import '../../../collections/invest_name.dart';
+import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
-
+import '../../../repository/invest_names_repository.dart';
+import '../../../repository/invest_records_repository.dart';
 import '../parts/error_dialog.dart';
 
 class DataImportAlert extends StatefulWidget {
@@ -240,6 +239,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
             .inputInvestNameList(
                 isar: widget.isar,
                 investNameList: importDataList as List<InvestName>)
+            // ignore: always_specify_types
             .then((value) {
           if (mounted) {
             Navigator.pop(context);
@@ -251,6 +251,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
             .inputInvestRecordList(
                 isar: widget.isar,
                 investRecordList: importDataList as List<InvestRecord>)
+            // ignore: always_specify_types
             .then((value) {
           if (mounted) {
             Navigator.pop(context);

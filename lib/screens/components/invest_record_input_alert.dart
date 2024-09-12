@@ -2,14 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
-import 'package:invest_note/screens/components/parts/error_dialog.dart';
-import 'package:invest_note/utilities/functions.dart';
 import 'package:isar/isar.dart';
+
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../enum/invest_kind.dart';
+import '../../extensions/extensions.dart';
+import '../../repository/invest_records_repository.dart';
+import '../../utilities/functions.dart';
+import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestRecordInputAlert extends StatefulWidget {
@@ -63,17 +64,17 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                 Text(widget.date.yyyymmdd),
                 Text(widget.investName.name)
               ]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
               if (widget.investName.kind == InvestKind.stock.name ||
-                  widget.investName.kind == InvestKind.shintaku.name) ...[
+                  widget.investName.kind == InvestKind.shintaku.name) ...<Widget>[
                 ElevatedButton(
                   onPressed: getLastCost,
                   style: ElevatedButton.styleFrom(
@@ -83,14 +84,12 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
               ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
-                  (widget.investRecord!.isNotEmpty)
-                      ? TextButton(
+                  if (widget.investRecord!.isNotEmpty) TextButton(
                           onPressed: _updateInvestRecord,
                           child: const Text('投資詳細レコードを更新する',
-                              style: TextStyle(fontSize: 12)))
-                      : TextButton(
+                              style: TextStyle(fontSize: 12))) else TextButton(
                           onPressed: _inputInvestRecord,
                           child: const Text('投資詳細レコードを追加する',
                               style: TextStyle(fontSize: 12))),
@@ -106,7 +105,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   Widget _displayInputParts() {
     return DecoratedBox(
-      decoration: BoxDecoration(boxShadow: [
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
         BoxShadow(
             blurRadius: 24,
             spreadRadius: 16,
@@ -127,7 +126,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                   Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 TextField(
                   controller: _costEditingController,
                   decoration: const InputDecoration(
@@ -141,7 +140,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                         borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) =>
+                  onTapOutside: (PointerDownEvent event) =>
                       FocusManager.instance.primaryFocus?.unfocus(),
                 ),
                 const SizedBox(height: 10),
@@ -158,7 +157,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                         borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) =>
+                  onTapOutside: (PointerDownEvent event) =>
                       FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
@@ -171,27 +170,27 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
   ///
   Future<void> _inputInvestRecord() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_costEditingController.text.trim() == '' ||
         _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
-    if (errFlg == false) {
-      for (final element in [
-        [_costEditingController.text.trim(), 30],
-        [_priceEditingController.text.trim(), 10]
+    if (!errFlg) {
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_costEditingController.text.trim(), 30],
+        <Object>[_priceEditingController.text.trim(), 10]
       ]) {
-        if (checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int) ==
-            false) {
+        if (!checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -201,7 +200,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       return;
     }
 
-    final investRecord = InvestRecord()
+    final InvestRecord investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
       ..investId = widget.investName.id
       ..cost = _costEditingController.text.trim().toInt()
@@ -209,6 +208,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     await InvestRecordsRepository()
         .inputInvestRecord(isar: widget.isar, investRecord: investRecord)
+        // ignore: always_specify_types
         .then((value) {
       _costEditingController.clear();
       _priceEditingController.clear();
@@ -219,27 +219,27 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
   ///
   Future<void> _updateInvestRecord() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_costEditingController.text.trim() == '' ||
         _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
-    if (errFlg == false) {
-      for (final element in [
-        [_costEditingController.text.trim(), 30],
-        [_priceEditingController.text.trim(), 10]
+    if (!errFlg) {
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_costEditingController.text.trim(), 30],
+        <Object>[_priceEditingController.text.trim(), 10]
       ]) {
-        if (checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int) ==
-            false) {
+        if (!checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -252,7 +252,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
     await widget.isar.writeTxn(() async {
       await InvestRecordsRepository()
           .getInvestRecord(isar: widget.isar, id: widget.investRecord![0].id)
-          .then((value) async {
+          .then((InvestRecord? value) async {
         value!
           ..date = widget.date.yyyymmdd
           ..investId = widget.investName.id
@@ -261,6 +261,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
         await InvestRecordsRepository()
             .updateInvestRecord(isar: widget.isar, investRecord: value)
+            // ignore: always_specify_types
             .then((value) {
           _costEditingController.clear();
           _priceEditingController.clear();
@@ -273,20 +274,20 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
   ///
   void getLastCost() {
-    final dateList = <String>[];
+    final List<String> dateList = <String>[];
 
-    for (var i = 1; i < 10; i++) {
-      final day = widget.date.add(Duration(days: i * -1));
+    for (int i = 1; i < 10; i++) {
+      final DateTime day = widget.date.add(Duration(days: i * -1));
 
       dateList.add(day.yyyymmdd);
     }
 
-    var cost = 0;
+    int cost = 0;
 
-    for (final element3 in dateList) {
+    for (final String element3 in dateList) {
       widget.allInvestRecord
-          .where((element) => element.investId == widget.investName.id)
-          .forEach((element2) {
+          .where((InvestRecord element) => element.investId == widget.investName.id)
+          .forEach((InvestRecord element2) {
         if (cost == 0) {
           if (element3 == element2.date) {
             cost = element2.cost;

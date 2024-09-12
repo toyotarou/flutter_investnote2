@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/repository/invest_names_repository.dart';
-import 'package:invest_note/screens/components/invest_name_input_alert.dart';
-import 'package:invest_note/screens/components/parts/invest_dialog.dart';
 import 'package:isar/isar.dart';
+
+import '../../collections/invest_name.dart';
+import '../../enum/invest_kind.dart';
+import '../../extensions/extensions.dart';
+import '../../repository/invest_names_repository.dart';
+import 'invest_name_input_alert.dart';
+import 'parts/invest_dialog.dart';
 
 class InvestNameListAlert extends StatefulWidget {
   const InvestNameListAlert(
@@ -21,7 +22,7 @@ class InvestNameListAlert extends StatefulWidget {
 }
 
 class _InvestNameListAlertState extends State<InvestNameListAlert> {
-  List<InvestName>? investNameList = [];
+  List<InvestName>? investNameList = <InvestName>[];
 
   ///
   @override
@@ -41,14 +42,14 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Text('${widget.investKind.japanName}名称一覧'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   TextButton(
                     onPressed: () => InvestDialog(
@@ -91,13 +92,13 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
   Future<void> _makeStockNameList() async => InvestNamesRepository()
       .getInvestNameListByInvestKind(
           isar: widget.isar, investKind: widget.investKind.name)
-      .then((value) => setState(() => investNameList = value));
+      .then((List<InvestName>? value) => setState(() => investNameList = value));
 
   ///
   Widget _displayStockNames() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    investNameList?.forEach((element) {
+    investNameList?.forEach((InvestName element) {
       list.add(Container(
         width: context.screenSize.width,
         margin: const EdgeInsets.all(2),
@@ -107,7 +108,7 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
                     color: Colors.white.withOpacity(0.2), width: 2))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             SizedBox(
               width: 30,
               child: Text(element.dealNumber.toString()),
@@ -116,7 +117,7 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(element.frame), Text(element.name)],
+                children: <Widget>[Text(element.frame), Text(element.name)],
               ),
             ),
             const SizedBox(width: 20),

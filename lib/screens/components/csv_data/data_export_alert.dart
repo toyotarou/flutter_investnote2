@@ -7,18 +7,18 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:invest_note/repository/invest_names_repository.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
 import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../collections/invest_name.dart';
+import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
-
+import '../../../repository/invest_names_repository.dart';
+import '../../../repository/invest_records_repository.dart';
 import '../parts/error_dialog.dart';
 
 part 'data_export_alert.freezed.dart';
-
 part 'data_export_alert.g.dart';
 
 class DataExportAlert extends ConsumerStatefulWidget {
@@ -170,9 +170,9 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
       case 'investName':
         await InvestNamesRepository()
             .getInvestNameList(isar: widget.isar)
-            .then((value) {
-          value?.forEach((element) {
-            outputValuesList.add([
+            .then((List<InvestName>? value) {
+          value?.forEach((InvestName element) {
+            outputValuesList.add(<Object>[
               element.id,
               element.kind,
               element.frame,
@@ -185,9 +185,9 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
       case 'investRecord':
         await InvestRecordsRepository()
             .getInvestRecordList(isar: widget.isar)
-            .then((value) {
-          value?.forEach((element) {
-            outputValuesList.add([
+            .then((List<InvestRecord>? value) {
+          value?.forEach((InvestRecord element) {
+            outputValuesList.add(<Object?>[
               element.id,
               element.date,
               element.investId,

@@ -10,13 +10,13 @@ class InvestRecordsRepository {
   ///
   Future<InvestRecord?> getInvestRecord(
       {required Isar isar, required int id}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     return investRecordsCollection.get(id);
   }
 
   ///
   Future<List<InvestRecord>?> getInvestRecordList({required Isar isar}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     return investRecordsCollection
         .where()
         .sortByDate()
@@ -27,14 +27,14 @@ class InvestRecordsRepository {
   ///
   Future<List<InvestRecord>?> getInvestRecordListByInvestId(
       {required Isar isar, required int investId}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     return investRecordsCollection.filter().investIdEqualTo(investId).findAll();
   }
 
   ///
   Future<List<InvestRecord>?> getInvestRecordListByDate(
       {required Isar isar, required String date}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     return investRecordsCollection
         .filter()
         .dateEqualTo(date)
@@ -46,7 +46,7 @@ class InvestRecordsRepository {
   Future<void> inputInvestRecordList(
       {required Isar isar,
       required List<InvestRecord> investRecordList}) async {
-    for (final element in investRecordList) {
+    for (final InvestRecord element in investRecordList) {
       await inputInvestRecord(isar: isar, investRecord: element);
     }
   }
@@ -54,14 +54,14 @@ class InvestRecordsRepository {
   ///
   Future<void> inputInvestRecord(
       {required Isar isar, required InvestRecord investRecord}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investRecordsCollection.put(investRecord));
   }
 
   ///
   Future<void> updateInvestRecord(
       {required Isar isar, required InvestRecord investRecord}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     await investRecordsCollection.put(investRecord);
   }
 
@@ -70,12 +70,12 @@ class InvestRecordsRepository {
       {required Isar isar,
       required List<InvestRecord>? investRecordList}) async {
     investRecordList
-        ?.forEach((element) => deleteInvestRecord(isar: isar, id: element.id));
+        ?.forEach((InvestRecord element) => deleteInvestRecord(isar: isar, id: element.id));
   }
 
   ///
   Future<void> deleteInvestRecord({required Isar isar, required int id}) async {
-    final investRecordsCollection = getCollection(isar: isar);
+    final IsarCollection<InvestRecord> investRecordsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investRecordsCollection.delete(id));
   }
 }

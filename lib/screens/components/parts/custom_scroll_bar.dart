@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/screens/components/invest_graph_guide_alert.dart';
-import 'package:invest_note/screens/components/parts/invest_dialog.dart';
+import '../../../collections/invest_name.dart';
+import '../../../extensions/extensions.dart';
+import '../invest_graph_guide_alert.dart';
+import 'invest_dialog.dart';
 
 class CustomScrollBar extends StatefulWidget {
   const CustomScrollBar(
@@ -71,8 +71,8 @@ class _CustomScrollBarState extends State<CustomScrollBar> {
   ///
   void _scrollingListener() {
     setState(() {
-      final position = widget.scrollController.position;
-      final ratio = position.pixels / position.maxScrollExtent;
+      final ScrollPosition position = widget.scrollController.position;
+      final double ratio = position.pixels / position.maxScrollExtent;
       _alignmentY = ratio * 2 - 1;
     });
   }

@@ -3,17 +3,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/enum/shintaku_frame.dart';
-import 'package:invest_note/enum/stock_frame.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/repository/invest_names_repository.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
-import 'package:invest_note/screens/components/parts/error_dialog.dart';
-import 'package:invest_note/state/invest_names/invest_names_notifier.dart';
-import 'package:invest_note/utilities/functions.dart';
 import 'package:isar/isar.dart';
+
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../enum/invest_kind.dart';
+import '../../enum/shintaku_frame.dart';
+import '../../enum/stock_frame.dart';
+import '../../extensions/extensions.dart';
+import '../../repository/invest_names_repository.dart';
+import '../../repository/invest_records_repository.dart';
+import '../../state/invest_names/invest_names_notifier.dart';
+import '../../state/invest_names/invest_names_response_state.dart';
+import '../../utilities/functions.dart';
+import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class InvestNameInputAlert extends ConsumerStatefulWidget {
@@ -58,25 +61,19 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
         switch (widget.investName!.frame) {
           case '一般口座':
             _selectedStockFrame = StockFrame.general;
-            break;
           case '特定口座':
             _selectedStockFrame = StockFrame.specific;
-            break;
         }
       } else if (widget.investKind == InvestKind.shintaku) {
         switch (widget.investName!.frame) {
           case '特定口座':
             _selectedShintakuFrame = ShintakuFrame.specific;
-            break;
           case 'NISAつみたて投資枠':
             _selectedShintakuFrame = ShintakuFrame.nisaAccumulated;
-            break;
           case 'NISA成長投資枠':
             _selectedShintakuFrame = ShintakuFrame.nisaGrowth;
-            break;
           case 'つみたてNISA':
             _selectedShintakuFrame = ShintakuFrame.nisaFreshly;
-            break;
         }
       }
     }
@@ -98,7 +95,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               const Text('株式名称追加'),
@@ -106,11 +103,10 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
               _displayInputParts(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
-                  (widget.investName != null)
-                      ? Column(
-                          children: [
+                  if (widget.investName != null) Column(
+                          children: <Widget>[
                             GestureDetector(
                               onTap: () {
                                 if (widget.investKind == InvestKind.stock) {
@@ -120,13 +116,11 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                                           .read(investNamesProvider.notifier)
                                           .setStockFrame(
                                               stockFrame: StockFrame.general);
-                                      break;
                                     case '特定口座':
                                       ref
                                           .read(investNamesProvider.notifier)
                                           .setStockFrame(
                                               stockFrame: StockFrame.specific);
-                                      break;
                                   }
                                 } else if (widget.investKind ==
                                     InvestKind.shintaku) {
@@ -137,28 +131,24 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                                           .setShintakuFrame(
                                               shintakuFrame:
                                                   ShintakuFrame.specific);
-                                      break;
                                     case 'NISAつみたて投資枠':
                                       ref
                                           .read(investNamesProvider.notifier)
                                           .setShintakuFrame(
                                               shintakuFrame: ShintakuFrame
                                                   .nisaAccumulated);
-                                      break;
                                     case 'NISA成長投資枠':
                                       ref
                                           .read(investNamesProvider.notifier)
                                           .setShintakuFrame(
                                               shintakuFrame:
                                                   ShintakuFrame.nisaGrowth);
-                                      break;
                                     case 'つみたてNISA':
                                       ref
                                           .read(investNamesProvider.notifier)
                                           .setShintakuFrame(
                                               shintakuFrame:
                                                   ShintakuFrame.nisaFreshly);
-                                      break;
                                   }
                                 }
 
@@ -184,8 +174,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                                           .primary)),
                             ),
                           ],
-                        )
-                      : TextButton(
+                        ) else TextButton(
                           onPressed: _inputInvestName,
                           child: Text('${widget.investKind.japanName}名称を追加する',
                               style: const TextStyle(fontSize: 12)),
@@ -203,7 +192,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -225,9 +214,9 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                   Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       child: TextField(
                         controller: _investNumberEditingController,
@@ -243,7 +232,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
@@ -270,7 +259,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
                         borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) =>
+                  onTapOutside: (PointerDownEvent event) =>
                       FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
@@ -283,15 +272,17 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   Widget getDropdownButton() {
-    final investNamesState = ref.watch(investNamesProvider);
+    final InvestNamesResponseState investNamesState = ref.watch(investNamesProvider);
 
     switch (widget.investKind) {
       case InvestKind.stock:
+        // ignore: always_specify_types
         return DropdownButton(
           isExpanded: true,
           dropdownColor: Colors.pinkAccent.withOpacity(0.1),
           iconEnabledColor: Colors.white,
-          items: StockFrame.values.map((e) {
+          items: StockFrame.values.map((StockFrame e) {
+            // ignore: always_specify_types
             return DropdownMenuItem(
               value: e,
               child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
@@ -300,18 +291,20 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
           value: (_selectedStockFrame != StockFrame.blank)
               ? _selectedStockFrame
               : investNamesState.stockFrame,
-          onChanged: (value) {
+          onChanged: (StockFrame? value) {
             ref
                 .read(investNamesProvider.notifier)
                 .setStockFrame(stockFrame: value!);
           },
         );
       case InvestKind.shintaku:
+        // ignore: always_specify_types
         return DropdownButton(
           isExpanded: true,
           dropdownColor: Colors.pinkAccent.withOpacity(0.1),
           iconEnabledColor: Colors.white,
-          items: ShintakuFrame.values.map((e) {
+          items: ShintakuFrame.values.map((ShintakuFrame e) {
+            // ignore: always_specify_types
             return DropdownMenuItem(
               value: e,
               child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
@@ -320,7 +313,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
           value: (_selectedShintakuFrame != ShintakuFrame.blank)
               ? _selectedShintakuFrame
               : investNamesState.shintakuFrame,
-          onChanged: (value) {
+          onChanged: (ShintakuFrame? value) {
             ref
                 .read(investNamesProvider.notifier)
                 .setShintakuFrame(shintakuFrame: value!);
@@ -335,33 +328,33 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   Future<void> _inputInvestName() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_investNumberEditingController.text.trim() == '' ||
         _investNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
-    if (errFlg == false) {
-      for (final element in [
-        [_investNumberEditingController.text.trim(), 10],
-        [_investNameEditingController.text.trim(), 50]
+    if (!errFlg) {
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_investNumberEditingController.text.trim(), 10],
+        <Object>[_investNameEditingController.text.trim(), 50]
       ]) {
-        if (checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int) ==
-            false) {
+        if (!checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       if (int.tryParse(_investNumberEditingController.text) == null) {
         errFlg = true;
       }
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -371,25 +364,23 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
       return;
     }
 
-    final investNamesState = ref.watch(investNamesProvider);
+    final InvestNamesResponseState investNamesState = ref.watch(investNamesProvider);
 
-    var frame = '';
+    String frame = '';
 
     switch (widget.investKind) {
       case InvestKind.stock:
         frame = investNamesState.stockFrame.japanName;
-        break;
 
       case InvestKind.shintaku:
         frame = investNamesState.shintakuFrame.japanName;
-        break;
 
       case InvestKind.blank:
       case InvestKind.gold:
         break;
     }
 
-    final investName = InvestName()
+    final InvestName investName = InvestName()
       ..frame = frame
       ..dealNumber = _investNumberEditingController.text.trim().toInt()
       ..name = _investNameEditingController.text.trim()
@@ -397,6 +388,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
     await InvestNamesRepository()
         .inputInvestName(isar: widget.isar, investName: investName)
+        // ignore: always_specify_types
         .then((value) {
       _investNumberEditingController.clear();
       _investNameEditingController.clear();
@@ -407,12 +399,12 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
   ///
   Future<void> _updateInvestName() async {
-    final stockFrame =
-        ref.watch(investNamesProvider.select((value) => value.stockFrame));
-    final shintakuFrame =
-        ref.watch(investNamesProvider.select((value) => value.shintakuFrame));
+    final StockFrame stockFrame =
+        ref.watch(investNamesProvider.select((InvestNamesResponseState value) => value.stockFrame));
+    final ShintakuFrame shintakuFrame =
+        ref.watch(investNamesProvider.select((InvestNamesResponseState value) => value.shintakuFrame));
 
-    var errFlg = false;
+    bool errFlg = false;
 
     switch (widget.investKind) {
       case InvestKind.stock:
@@ -421,40 +413,38 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
             (stockFrame == StockFrame.blank)) {
           errFlg = true;
         }
-        break;
       case InvestKind.shintaku:
         if (_investNumberEditingController.text.trim() == '' ||
             _investNameEditingController.text.trim() == '' ||
             (shintakuFrame == ShintakuFrame.blank)) {
           errFlg = true;
         }
-        break;
 
       case InvestKind.gold:
       case InvestKind.blank:
         break;
     }
 
-    if (errFlg == false) {
-      for (final element in [
-        [_investNumberEditingController.text.trim(), 10],
-        [_investNameEditingController.text.trim(), 50]
+    if (!errFlg) {
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_investNumberEditingController.text.trim(), 10],
+        <Object>[_investNameEditingController.text.trim(), 50]
       ]) {
-        if (checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int) ==
-            false) {
+        if (!checkInputValueLengthCheck(
+                value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       if (int.tryParse(_investNumberEditingController.text) == null) {
         errFlg = true;
       }
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -464,16 +454,14 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
       return;
     }
 
-    var frame = '';
+    String frame = '';
 
     switch (widget.investKind) {
       case InvestKind.stock:
         frame = stockFrame.japanName;
-        break;
 
       case InvestKind.shintaku:
         frame = shintakuFrame.japanName;
-        break;
 
       case InvestKind.blank:
       case InvestKind.gold:
@@ -483,7 +471,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await InvestNamesRepository()
           .getInvestName(isar: widget.isar, id: widget.investName!.id)
-          .then((value) async {
+          .then((InvestName? value) async {
         value!
           ..dealNumber = _investNumberEditingController.text.trim().toInt()
           ..name = _investNameEditingController.text.trim()
@@ -491,6 +479,7 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
 
         await InvestNamesRepository()
             .updateInvestName(isar: widget.isar, investName: value)
+            // ignore: always_specify_types
             .then((value) {
           _investNumberEditingController.clear();
           _investNameEditingController.clear();
@@ -514,12 +503,13 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
+    // ignore: inference_failure_on_function_invocation
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
@@ -527,9 +517,11 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
   Future<void> _deleteInvestName() async => InvestRecordsRepository()
       .getInvestRecordListByInvestId(
           isar: widget.isar, investId: widget.investName!.id)
-      .then((value) async => InvestRecordsRepository()
+      .then((List<InvestRecord>? value) async => InvestRecordsRepository()
           .deleteInvestRecordList(isar: widget.isar, investRecordList: value)
+          // ignore: always_specify_types
           .then((value2) async => InvestNamesRepository()
               .deleteInvestName(isar: widget.isar, id: widget.investName!.id)
+              // ignore: always_specify_types
               .then((value3) => Navigator.pop(context))));
 }

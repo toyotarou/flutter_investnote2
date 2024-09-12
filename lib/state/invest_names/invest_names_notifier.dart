@@ -4,8 +4,8 @@ import '../../enum/shintaku_frame.dart';
 import '../../enum/stock_frame.dart';
 import 'invest_names_response_state.dart';
 
-final investNamesProvider = StateNotifierProvider.autoDispose<
-    InvestNamesNotifier, InvestNamesResponseState>((ref) {
+final AutoDisposeStateNotifierProvider<InvestNamesNotifier, InvestNamesResponseState> investNamesProvider = StateNotifierProvider.autoDispose<
+    InvestNamesNotifier, InvestNamesResponseState>((AutoDisposeStateNotifierProviderRef<InvestNamesNotifier, InvestNamesResponseState> ref) {
   return InvestNamesNotifier(const InvestNamesResponseState());
 });
 

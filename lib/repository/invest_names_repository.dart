@@ -10,20 +10,20 @@ class InvestNamesRepository {
   ///
   Future<InvestName?> getInvestName(
       {required Isar isar, required int id}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     return investNamesCollection.get(id);
   }
 
   ///
   Future<List<InvestName>?> getInvestNameList({required Isar isar}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     return investNamesCollection.where().findAll();
   }
 
   ///
   Future<List<InvestName>?> getInvestNameListByInvestKind(
       {required Isar isar, required String investKind}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     return investNamesCollection
         .filter()
         .kindEqualTo(investKind)
@@ -34,7 +34,7 @@ class InvestNamesRepository {
   ///
   Future<void> inputInvestNameList(
       {required Isar isar, required List<InvestName> investNameList}) async {
-    for (final element in investNameList) {
+    for (final InvestName element in investNameList) {
       await inputInvestName(isar: isar, investName: element);
     }
   }
@@ -42,20 +42,20 @@ class InvestNamesRepository {
   ///
   Future<void> inputInvestName(
       {required Isar isar, required InvestName investName}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investNamesCollection.put(investName));
   }
 
   ///
   Future<void> updateInvestName(
       {required Isar isar, required InvestName investName}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     await investNamesCollection.put(investName);
   }
 
   ///
   Future<void> deleteInvestName({required Isar isar, required int id}) async {
-    final investNamesCollection = getCollection(isar: isar);
+    final IsarCollection<InvestName> investNamesCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => investNamesCollection.delete(id));
   }
 }

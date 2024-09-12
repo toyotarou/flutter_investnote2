@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/repository/invest_names_repository.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
-import 'package:invest_note/screens/components/csv_data/data_import_alert.dart';
-import 'package:invest_note/screens/components/daily_invest_display_alert.dart';
-import 'package:invest_note/screens/components/invest_name_list_alert.dart';
-import 'package:invest_note/screens/components/invest_total_graph_alert.dart';
-import 'package:invest_note/screens/components/parts/back_ground_image.dart';
-import 'package:invest_note/screens/components/parts/invest_dialog.dart';
-import 'package:invest_note/screens/components/parts/menu_head_icon.dart';
-import 'package:invest_note/state/calendars/calendars_notifier.dart';
-import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
-import 'package:invest_note/state/holidays/holidays_notifier.dart';
-import 'package:invest_note/utilities/utilities.dart';
 import 'package:isar/isar.dart';
 
+import '../collections/invest_name.dart';
+import '../collections/invest_record.dart';
+import '../enum/invest_kind.dart';
+import '../extensions/extensions.dart';
+import '../repository/invest_names_repository.dart';
+import '../repository/invest_records_repository.dart';
+import '../state/calendars/calendars_notifier.dart';
+import '../state/calendars/calendars_response_state.dart';
+import '../state/daily_invest_display/daily_invest_display.dart';
+import '../state/holidays/holidays_notifier.dart';
+import '../state/holidays/holidays_response_state.dart';
+import '../utilities/utilities.dart';
 import 'components/csv_data/data_export_alert.dart';
+import 'components/csv_data/data_import_alert.dart';
+import 'components/daily_invest_display_alert.dart';
+import 'components/invest_name_list_alert.dart';
+import 'components/invest_total_graph_alert.dart';
+import 'components/parts/back_ground_image.dart';
+import 'components/parts/invest_dialog.dart';
+import 'components/parts/menu_head_icon.dart';
 
 class CalendarCellSumData {
   CalendarCellSumData(
@@ -50,7 +52,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _calendarMonthFirst = DateTime.now();
-  final List<String> _youbiList = [
+  final List<String> _youbiList = <String>[
     'Sunday',
     'Monday',
     'Tuesday',
@@ -59,22 +61,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     'Friday',
     'Saturday'
   ];
-  List<String> _calendarDays = [];
+  List<String> _calendarDays = <String>[];
 
-  Map<String, String> _holidayMap = {};
+  Map<String, String> _holidayMap = <String, String>{};
 
   final Utility _utility = Utility();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<InvestName>? investNameList = [];
+  List<InvestName>? investNameList = <InvestName>[];
 
-  List<InvestRecord>? investRecordList = [];
+  List<InvestRecord>? investRecordList = <InvestRecord>[];
 
-  Map<String, List<InvestRecord>> investRecordMap = {};
+  Map<String, List<InvestRecord>> investRecordMap = <String, List<InvestRecord>>{};
 
-  List<String> calendarCellDateDataList = [];
-  Map<String, CalendarCellSumData> calendarCellSumDataMap = {};
+  List<String> calendarCellDateDataList = <String>[];
+  Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
 
   ///
   void _init() {
@@ -86,15 +88,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     if (widget.baseYm != null) {
+      // ignore: always_specify_types
       Future(() => ref
           .read(calendarProvider.notifier)
           .setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     if (investRecordList!.isNotEmpty) {
       makeCalendarCellSumDataMap();
@@ -106,7 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Row(
-          children: [
+          children: <Widget>[
             Text(calendarState.baseYearMonth),
             const SizedBox(width: 10),
             IconButton(
@@ -130,14 +134,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         centerTitle: false,
         backgroundColor: Colors.transparent,
-        actions: [
+        actions: <Widget>[
           IconButton(
             onPressed: () {
               InvestDialog(
                 context: context,
                 widget: InvestTotalGraphAlert(
                   isar: widget.isar,
-                  investNameList: investNameList ?? [],
+                  investNameList: investNameList ?? <InvestName>[],
                   investRecordMap: investRecordMap,
                 ),
               );
@@ -153,14 +157,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       body: Stack(
-        children: [
+        children: <Widget>[
           const BackGroundImage(),
           Container(
               width: context.screenSize.width,
               height: context.screenSize.height,
               decoration: BoxDecoration(color: Colors.black.withOpacity(0.5))),
           Column(
-            children: [
+            children: <Widget>[
               displayMonthSummary(),
               Expanded(child: _getCalendar()),
             ],
@@ -173,14 +177,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget displayMonthSummary() {
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
-    var firstDateInvestRecordList = <InvestRecord>[];
-    var lastDateInvestRecordList = <InvestRecord>[];
+    List<InvestRecord> firstDateInvestRecordList = <InvestRecord>[];
+    List<InvestRecord> lastDateInvestRecordList = <InvestRecord>[];
 
-    var i = 0;
-    investRecordMap.forEach((key, value) {
-      final exKey = key.split('-');
+    int i = 0;
+    investRecordMap.forEach((String key, List<InvestRecord> value) {
+      final List<String> exKey = key.split('-');
       if ('${exKey[0]}-${exKey[1]}' == calendarState.baseYearMonth) {
         if (i == 0) {
           firstDateInvestRecordList = value;
@@ -192,37 +196,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     });
 
-    var firstCostTotal = 0;
-    var firstPriceTotal = 0;
-    for (final element in firstDateInvestRecordList) {
+    int firstCostTotal = 0;
+    int firstPriceTotal = 0;
+    for (final InvestRecord element in firstDateInvestRecordList) {
       firstCostTotal += element.cost;
       firstPriceTotal += element.price;
     }
 
-    var lastCostTotal = 0;
-    var lastPriceTotal = 0;
-    for (final element in lastDateInvestRecordList) {
+    int lastCostTotal = 0;
+    int lastPriceTotal = 0;
+    for (final InvestRecord element in lastDateInvestRecordList) {
       lastCostTotal += element.cost;
       lastPriceTotal += element.price;
     }
 
-    final firstDiff = firstPriceTotal - firstCostTotal;
-    final lastDiff = lastPriceTotal - lastCostTotal;
+    final int firstDiff = firstPriceTotal - firstCostTotal;
+    final int lastDiff = lastPriceTotal - lastCostTotal;
 
-    final monthCostDiff = lastCostTotal - firstCostTotal;
-    final monthPriceDiff = lastPriceTotal - firstPriceTotal;
-    final monthDiffDiff = lastDiff - firstDiff;
+    final int monthCostDiff = lastCostTotal - firstCostTotal;
+    final int monthPriceDiff = lastPriceTotal - firstPriceTotal;
+    final int monthDiffDiff = lastDiff - firstDiff;
 
     return Container(
       padding: const EdgeInsets.all(10),
       child: DefaultTextStyle(
         style: const TextStyle(fontSize: 12),
         child: Row(
-          children: [
+          children: <Widget>[
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
                   Text(firstCostTotal.toString().toCurrency()),
                   Text(firstPriceTotal.toString().toCurrency(),
                       style: const TextStyle(color: Colors.yellowAccent)),
@@ -234,7 +238,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
                   Text(lastCostTotal.toString().toCurrency()),
                   Text(lastPriceTotal.toString().toCurrency(),
                       style: const TextStyle(color: Colors.yellowAccent)),
@@ -246,7 +250,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
                   Text(monthCostDiff.toString().toCurrency()),
                   Text(monthPriceDiff.toString().toCurrency(),
                       style: const TextStyle(color: Colors.yellowAccent)),
@@ -270,7 +274,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.only(left: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 60),
               GestureDetector(
                 onTap: () => InvestDialog(
@@ -278,7 +282,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     widget: InvestNameListAlert(
                         isar: widget.isar, investKind: InvestKind.stock)),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -298,7 +302,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     widget: InvestNameListAlert(
                         isar: widget.isar, investKind: InvestKind.shintaku)),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -365,57 +369,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   void _goPrevMonth() {
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     Navigator.pushReplacement(
       context,
+      // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (context) => HomeScreen(
+          builder: (BuildContext context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.prevYearMonth)),
     );
   }
 
   ///
   void _goNextMonth() {
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     Navigator.pushReplacement(
       context,
+      // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (context) => HomeScreen(
+          builder: (BuildContext context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.nextYearMonth)),
     );
   }
 
   ///
   Widget _getCalendar() {
-    final holidayState = ref.watch(holidayProvider);
+    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     _calendarMonthFirst =
         DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
 
-    final monthEnd =
+    final DateTime monthEnd =
         DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
 
-    final diff = monthEnd.difference(_calendarMonthFirst).inDays;
-    final monthDaysNum = diff + 1;
+    final int diff = monthEnd.difference(_calendarMonthFirst).inDays;
+    final int monthDaysNum = diff + 1;
 
-    final youbi = _calendarMonthFirst.youbiStr;
-    final youbiNum = _youbiList.indexWhere((element) => element == youbi);
+    final String youbi = _calendarMonthFirst.youbiStr;
+    final int youbiNum = _youbiList.indexWhere((String element) => element == youbi);
 
-    final weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
+    final int weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
 
-    _calendarDays = List.generate(weekNum * 7, (index) => '');
+    // ignore: always_specify_types
+    _calendarDays = List.generate(weekNum * 7, (int index) => '');
 
-    for (var i = 0; i < (weekNum * 7); i++) {
+    for (int i = 0; i < (weekNum * 7); i++) {
       if (i >= youbiNum) {
-        final gendate = _calendarMonthFirst.add(Duration(days: i - youbiNum));
+        final DateTime gendate = _calendarMonthFirst.add(Duration(days: i - youbiNum));
 
         if (_calendarMonthFirst.month == gendate.month) {
           _calendarDays[i] = gendate.day.toString();
@@ -423,8 +430,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    final list = <Widget>[];
-    for (var i = 0; i < weekNum; i++) {
+    final List<Widget> list = <Widget>[];
+    for (int i = 0; i < weekNum; i++) {
       list.add(_getCalendarRow(week: i));
     }
 
@@ -435,12 +442,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _getCalendarRow({required int week}) {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final stockIds = <int>[];
-    final shintakuIds = <int>[];
+    final List<int> stockIds = <int>[];
+    final List<int> shintakuIds = <int>[];
 
-    investNameList?.forEach((element) {
+    investNameList?.forEach((InvestName element) {
       if (element.kind == InvestKind.stock.name) {
         stockIds.add(element.id);
       }
@@ -450,14 +457,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     });
 
-    for (var i = week * 7; i < ((week + 1) * 7); i++) {
-      final generateYmd = (_calendarDays[i] == '')
+    for (int i = week * 7; i < ((week + 1) * 7); i++) {
+      final String generateYmd = (_calendarDays[i] == '')
           ? ''
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
                   _calendarDays[i].toInt())
               .yyyymmdd;
 
-      final youbiStr = (_calendarDays[i] == '')
+      final String youbiStr = (_calendarDays[i] == '')
           ? ''
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
                   _calendarDays[i].toInt())
@@ -465,20 +472,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //////////////////////////////////////////////////
 
-      var stockCost = 0;
-      var stockPrice = 0;
-      var stockSum = 0;
+      int stockCost = 0;
+      int stockPrice = 0;
+      int stockSum = 0;
 
-      var shintakuCost = 0;
-      var shintakuPrice = 0;
-      var shintakuSum = 0;
+      int shintakuCost = 0;
+      int shintakuPrice = 0;
+      int shintakuSum = 0;
 
-      var goldCost = 0;
-      var goldPrice = 0;
-      var goldSum = 0;
+      int goldCost = 0;
+      int goldPrice = 0;
+      int goldSum = 0;
 
       if (investRecordMap[generateYmd] != null) {
-        for (final element in investRecordMap[generateYmd]!) {
+        for (final InvestRecord element in investRecordMap[generateYmd]!) {
           if (stockIds.contains(element.investId)) {
             stockCost += element.cost;
             stockPrice += element.price;
@@ -500,8 +507,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         goldSum = goldPrice - goldCost;
       }
 
-      var allSum = 0;
-      for (final element in [
+      int allSum = 0;
+      for (final int element in <int>[
         stockCost,
         stockPrice,
         shintakuCost,
@@ -514,11 +521,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //////////////////////////////////////////////////
 
-      final index = calendarCellDateDataList
-          .indexWhere((element) => element == generateYmd);
-      final beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
+      final int index = calendarCellDateDataList
+          .indexWhere((String element) => element == generateYmd);
+      final String beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
 
-      var tapFlag = true;
+      bool tapFlag = true;
       if (i % 7 == 0 || i % 7 == 6) {
         tapFlag = false;
       }
@@ -544,8 +551,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       widget: DailyInvestDisplayAlert(
                           date: DateTime.parse('$generateYmd 00:00:00'),
                           isar: widget.isar,
-                          investNameList: investNameList ?? [],
-                          allInvestRecord: investRecordList ?? [],
+                          investNameList: investNameList ?? <InvestName>[],
+                          allInvestRecord: investRecordList ?? <InvestRecord>[],
                           calendarCellDateDataList: calendarCellDateDataList,
                           totalPrice: stockPrice + shintakuPrice + goldPrice,
                           totalDiff: stockSum + shintakuSum + goldSum),
@@ -578,7 +585,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ? const Text('')
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(_calendarDays[i].padLeft(2, '0')),
                         const SizedBox(height: 5),
                         ConstrainedBox(
@@ -590,10 +597,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ? Container()
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
+                                  children: <Widget>[
                                     Stack(
-                                      children: [
-                                        if (index > 0) ...[
+                                      children: <Widget>[
+                                        if (index > 0) ...<Widget>[
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -606,15 +613,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
-                                          children: [
+                                          children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   gradient:
-                                                      LinearGradient(colors: [
+                                                      LinearGradient(colors: <Color>[
                                                 Colors.indigo.withOpacity(0.8),
                                                 Colors.transparent
-                                              ], stops: const [
+                                              ], stops: const <double>[
                                                 0.9,
                                                 1
                                               ])),
@@ -642,8 +649,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                     const SizedBox(height: 5),
                                     Stack(
-                                      children: [
-                                        if (index > 0) ...[
+                                      children: <Widget>[
+                                        if (index > 0) ...<Widget>[
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -656,15 +663,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
-                                          children: [
+                                          children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   gradient:
-                                                      LinearGradient(colors: [
+                                                      LinearGradient(colors: <Color>[
                                                 Colors.indigo.withOpacity(0.8),
                                                 Colors.transparent
-                                              ], stops: const [
+                                              ], stops: const <double>[
                                                 0.7,
                                                 1
                                               ])),
@@ -692,8 +699,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                     const SizedBox(height: 5),
                                     Stack(
-                                      children: [
-                                        if (index > 0) ...[
+                                      children: <Widget>[
+                                        if (index > 0) ...<Widget>[
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -706,15 +713,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
-                                          children: [
+                                          children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   gradient:
-                                                      LinearGradient(colors: [
+                                                      LinearGradient(colors: <Color>[
                                                 Colors.indigo.withOpacity(0.8),
                                                 Colors.transparent
-                                              ], stops: const [
+                                              ], stops: const <double>[
                                                 0.7,
                                                 1
                                               ])),
@@ -740,8 +747,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                     const SizedBox(height: 10),
                                     Stack(
-                                      children: [
-                                        if (index > 0) ...[
+                                      children: <Widget>[
+                                        if (index > 0) ...<Widget>[
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
@@ -757,12 +764,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
-                                          children: [
+                                          children: <Widget>[
                                             Container(),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
-                                              children: [
+                                              children: <Widget>[
                                                 Text((stockCost +
                                                         shintakuCost +
                                                         goldCost)
@@ -809,28 +816,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeInvestNameList() async => InvestNamesRepository()
       .getInvestNameList(isar: widget.isar)
-      .then((value) => setState(() => investNameList = value));
+      .then((List<InvestName>? value) => setState(() => investNameList = value));
 
   ///
   Future<void> _makeInvestRecordList() async {
     await InvestRecordsRepository()
         .getInvestRecordList(isar: widget.isar)
-        .then((value) {
+        .then((List<InvestRecord>? value) {
       investRecordList = value;
 
       if (value != null) {
         value
-          ..forEach((element) => investRecordMap[element.date] = [])
-          ..forEach((element) => investRecordMap[element.date]?.add(element));
+          ..forEach((InvestRecord element) => investRecordMap[element.date] = <InvestRecord>[])
+          ..forEach((InvestRecord element) => investRecordMap[element.date]?.add(element));
       }
     });
   }
 
   void makeCalendarCellSumDataMap() {
-    final stockIds = <int>[];
-    final shintakuIds = <int>[];
+    final List<int> stockIds = <int>[];
+    final List<int> shintakuIds = <int>[];
 
-    investNameList?.forEach((element) {
+    investNameList?.forEach((InvestName element) {
       if (element.kind == InvestKind.stock.name) {
         stockIds.add(element.id);
       }
@@ -840,27 +847,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     });
 
-    calendarCellDateDataList = [];
+    calendarCellDateDataList = <String>[];
 
-    final dateList = <String>[];
-    for (final element in investRecordList!) {
+    final List<String> dateList = <String>[];
+    for (final InvestRecord element in investRecordList!) {
       if (!dateList.contains(element.date)) {
-        var stockCost = 0;
-        var stockPrice = 0;
-        var stockSum = 0;
+        int stockCost = 0;
+        int stockPrice = 0;
+        int stockSum = 0;
 
-        var shintakuCost = 0;
-        var shintakuPrice = 0;
-        var shintakuSum = 0;
+        int shintakuCost = 0;
+        int shintakuPrice = 0;
+        int shintakuSum = 0;
 
-        var goldCost = 0;
-        var goldPrice = 0;
-        var goldSum = 0;
+        int goldCost = 0;
+        int goldPrice = 0;
+        int goldSum = 0;
 
-        var allSum = 0;
+        int allSum = 0;
 
         if (investRecordMap[element.date] != null) {
-          for (final element in investRecordMap[element.date]!) {
+          for (final InvestRecord element in investRecordMap[element.date]!) {
             if (stockIds.contains(element.investId)) {
               stockCost += element.cost;
               stockPrice += element.price;

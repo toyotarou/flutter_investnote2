@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/state/invest_graph/invest_graph.dart';
-import 'package:invest_note/utilities/utilities.dart';
+import '../../collections/invest_name.dart';
+import '../../extensions/extensions.dart';
+import '../../state/invest_graph/invest_graph.dart';
+import '../../utilities/utilities.dart';
 
 class InvestGraphGuideAlert extends ConsumerStatefulWidget {
   const InvestGraphGuideAlert(
@@ -27,19 +27,19 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final wideGraphDisplay = ref
-        .watch(investGraphProvider.select((value) => value.wideGraphDisplay));
+    final bool wideGraphDisplay = ref
+        .watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Container(width: context.screenSize.width),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               IconButton(
                 onPressed: () {
                   ref
@@ -74,18 +74,18 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
 
   ///
   Widget displayGraphGuide() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final twelveColor = _utility.getTwelveColor();
+    final List<Color> twelveColor = _utility.getTwelveColor();
 
-    final investGraphState = ref.watch(investGraphProvider);
+    final InvestGraphState investGraphState = ref.watch(investGraphProvider);
 
-    for (var i = 0; i < widget.investGraphGuideNames.length; i++) {
+    for (int i = 0; i < widget.investGraphGuideNames.length; i++) {
       list.add(GestureDetector(
         onTap: () {
-          final investName = widget.investNameList
+          final InvestName investName = widget.investNameList
               .where(
-                  (element) => element.name == widget.investGraphGuideNames[i])
+                  (InvestName element) => element.name == widget.investGraphGuideNames[i])
               .first;
 
           ref
@@ -114,10 +114,10 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
             ),
           ),
           child: Column(
-            children: [
+            children: <Widget>[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   CircleAvatar(
                     backgroundColor: twelveColor[i % 12].withOpacity(0.4),
                     radius: 15,
@@ -126,7 +126,7 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(
                           widget.investGraphGuideFrames[i],
                           style: const TextStyle(

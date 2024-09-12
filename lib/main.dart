@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,16 +15,18 @@ import 'screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final dir = await getApplicationSupportDirectory();
+  final Directory dir = await getApplicationSupportDirectory();
 
-  final isar = await Isar.open([
+  // ignore: always_specify_types
+  final Isar isar = await Isar.open([
     InvestRecordSchema,
     InvestNameSchema,
   ], directory: dir.path);
 
-  await SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-      .then((_) => runApp(ProviderScope(child: MyApp(isar: isar))));
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]).then((_) => runApp(ProviderScope(child: MyApp(isar: isar))));
 }
 
 class MyApp extends ConsumerWidget {
@@ -34,12 +38,13 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      // ignore: always_specify_types
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
+      supportedLocales: const <Locale>[
         Locale('en'),
         Locale('ja'),
       ],

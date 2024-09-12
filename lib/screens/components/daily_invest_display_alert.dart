@@ -3,18 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/repository/invest_records_repository.dart';
-import 'package:invest_note/screens/components/invest_graph_alert.dart';
-import 'package:invest_note/screens/components/invest_record_input_alert.dart';
-import 'package:invest_note/screens/components/invest_record_list_alert.dart';
-import 'package:invest_note/screens/components/parts/invest_dialog.dart';
-import 'package:invest_note/state/daily_invest_display/daily_invest_display.dart';
-import 'package:invest_note/state/invest_graph/invest_graph.dart';
 import 'package:isar/isar.dart';
+
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../enum/invest_kind.dart';
+import '../../extensions/extensions.dart';
+import '../../repository/invest_records_repository.dart';
+import '../../state/daily_invest_display/daily_invest_display.dart';
+import '../../state/invest_graph/invest_graph.dart';
+import 'invest_graph_alert.dart';
+import 'invest_record_input_alert.dart';
+import 'invest_record_list_alert.dart';
+import 'parts/invest_dialog.dart';
 
 class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
   const DailyInvestDisplayAlert(
@@ -43,7 +44,7 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
 
 class _DailyInvestDisplayAlertState
     extends ConsumerState<DailyInvestDisplayAlert> {
-  List<InvestRecord>? thisDayInvestRecordList = [];
+  List<InvestRecord>? thisDayInvestRecordList = <InvestRecord>[];
 
   ///
   void _init() {
@@ -53,6 +54,7 @@ class _DailyInvestDisplayAlertState
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     return AlertDialog(
@@ -68,12 +70,12 @@ class _DailyInvestDisplayAlertState
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Text(widget.date.yyyymmdd),
                   RichText(
                     text: TextSpan(
@@ -102,30 +104,30 @@ class _DailyInvestDisplayAlertState
 
   ///
   Widget _displayDailyInvest() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final selectedInvestName = ref.watch(
-        dailyInvestDisplayProvider.select((value) => value.selectedInvestName));
+    final String selectedInvestName = ref.watch(
+        dailyInvestDisplayProvider.select((DailyInvestDisplayState value) => value.selectedInvestName));
 
-    for (final element in InvestKind.values) {
+    for (final InvestKind element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
-        final dispInvestRecordGold = thisDayInvestRecordList
-            ?.where((element4) => element4.investId == 0)
+        final List<InvestRecord>? dispInvestRecordGold = thisDayInvestRecordList
+            ?.where((InvestRecord element4) => element4.investId == 0)
             .toList();
 
         //---------------------------------//
 
-        var totalPrice = 0;
-        var totalDiff = 0;
+        int totalPrice = 0;
+        int totalDiff = 0;
 
-        final list2 = <Widget>[];
+        final List<Widget> list2 = <Widget>[];
         widget.investNameList
-            .where((element2) => element2.kind == element.name)
+            .where((InvestName element2) => element2.kind == element.name)
             .toList()
-          ..sort((a, b) => a.dealNumber.compareTo(b.dealNumber))
-          ..forEach((element3) {
-            final dispInvestRecord = thisDayInvestRecordList
-                ?.where((element4) => element4.investId == element3.id)
+          ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
+          ..forEach((InvestName element3) {
+            final List<InvestRecord>? dispInvestRecord = thisDayInvestRecordList
+                ?.where((InvestRecord element4) => element4.investId == element3.id)
                 .toList();
 
             list2.add(Container(
@@ -136,8 +138,8 @@ class _DailyInvestDisplayAlertState
                       bottom: BorderSide(
                           color: Colors.white.withOpacity(0.2), width: 2))),
               child: Column(
-                children: [
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                children: <Widget>[
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                     SizedBox(
                       width: 20,
                       child: Text(
@@ -149,7 +151,7 @@ class _DailyInvestDisplayAlertState
                     Expanded(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(
                           element3.frame,
                           style: const TextStyle(color: Colors.lightBlueAccent),
@@ -163,10 +165,10 @@ class _DailyInvestDisplayAlertState
                     ))
                   ]),
                   Row(
-                    children: [
+                    children: <Widget>[
                       Expanded(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             Container(
                               alignment: Alignment.topRight,
                               child: Text((dispInvestRecord != null &&
@@ -183,7 +185,7 @@ class _DailyInvestDisplayAlertState
                       ),
                       Expanded(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             Container(
                               alignment: Alignment.topRight,
                               child: Text(
@@ -205,7 +207,7 @@ class _DailyInvestDisplayAlertState
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
+                          children: <Widget>[
                             Container(
                               alignment: Alignment.topRight,
                               child: Text(
@@ -232,7 +234,7 @@ class _DailyInvestDisplayAlertState
                       ),
                       const SizedBox(width: 20),
                       Row(
-                        children: [
+                        children: <Widget>[
                           IconButton(
                             onPressed: () {
                               ref
@@ -265,7 +267,7 @@ class _DailyInvestDisplayAlertState
                               date: widget.date,
                               investName: element3,
                               investRecord: thisDayInvestRecordList
-                                  ?.where((element4) =>
+                                  ?.where((InvestRecord element4) =>
                                       element4.investId == element3.id)
                                   .toList(),
                               allInvestRecord: widget.allInvestRecord,
@@ -291,26 +293,26 @@ class _DailyInvestDisplayAlertState
         //---------------------------------//
 
         list.add(Column(
-          children: [
+          children: <Widget>[
             Container(
               width: context.screenSize.width,
               padding: const EdgeInsets.all(5),
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
+                  gradient: LinearGradient(colors: <Color>[
                 Colors.indigo.withOpacity(0.8),
                 Colors.transparent
-              ], stops: const [
+              ], stops: const <double>[
                 0.7,
                 1
               ])),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Row(
-                    children: [
+                    children: <Widget>[
                       SizedBox(width: 60, child: Text(element.japanName)),
-                      if (element.name != InvestKind.gold.name) ...[
+                      if (element.name != InvestKind.gold.name) ...<Widget>[
                         RichText(
                           text: TextSpan(
                             text: totalPrice.toString().toCurrency(),
@@ -364,7 +366,7 @@ class _DailyInvestDisplayAlertState
             ),
 
             ///////////////////// GOLD
-            if (element.name == InvestKind.gold.name) ...[
+            if (element.name == InvestKind.gold.name) ...<Widget>[
               Container(
                 width: context.screenSize.width,
                 margin: const EdgeInsets.all(2),
@@ -373,8 +375,8 @@ class _DailyInvestDisplayAlertState
                         bottom: BorderSide(
                             color: Colors.white.withOpacity(0.2), width: 2))),
                 child: Column(
-                  children: [
-                    const Row(children: [
+                  children: <Widget>[
+                    const Row(children: <Widget>[
                       SizedBox(
                         width: 30,
                         child: Text(
@@ -387,10 +389,10 @@ class _DailyInvestDisplayAlertState
                               maxLines: 1, overflow: TextOverflow.ellipsis))
                     ]),
                     Row(
-                      children: [
+                      children: <Widget>[
                         Expanded(
                           child: Column(
-                            children: [
+                            children: <Widget>[
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text((dispInvestRecordGold != null &&
@@ -407,7 +409,7 @@ class _DailyInvestDisplayAlertState
                         ),
                         Expanded(
                           child: Column(
-                            children: [
+                            children: <Widget>[
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
@@ -429,7 +431,7 @@ class _DailyInvestDisplayAlertState
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
+                            children: <Widget>[
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
@@ -464,7 +466,7 @@ class _DailyInvestDisplayAlertState
                                 date: widget.date,
                                 investRecord: thisDayInvestRecordList
                                     ?.where(
-                                        (element4) => element4.investId == 0)
+                                        (InvestRecord element4) => element4.investId == 0)
                                     .toList(),
                                 allInvestRecord: widget.allInvestRecord,
                                 investName: InvestName()
@@ -486,7 +488,7 @@ class _DailyInvestDisplayAlertState
             ],
             ///////////////////// GOLD
 
-            if (element.name != InvestKind.gold.name) ...[
+            if (element.name != InvestKind.gold.name) ...<Widget>[
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: list2),
@@ -504,5 +506,5 @@ class _DailyInvestDisplayAlertState
   ///
   Future<void> _makeThisDayInvestRecordList() async => InvestRecordsRepository()
       .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
-      .then((value) => setState(() => thisDayInvestRecordList = value));
+      .then((List<InvestRecord>? value) => setState(() => thisDayInvestRecordList = value));
 }

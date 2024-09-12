@@ -3,13 +3,14 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/model/invest_price.dart';
-import 'package:invest_note/state/total_graph/total_graph.dart';
 import 'package:isar/isar.dart';
+
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../enum/invest_kind.dart';
+import '../../extensions/extensions.dart';
+import '../../model/invest_price.dart';
+import '../../state/total_graph/total_graph.dart';
 
 class InvestTotalGraphAlert extends ConsumerStatefulWidget {
   const InvestTotalGraphAlert({
@@ -29,7 +30,7 @@ class InvestTotalGraphAlert extends ConsumerStatefulWidget {
 }
 
 class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
-  Map<String, InvestPrice> investPriceMap = {};
+  Map<String, InvestPrice> investPriceMap = <String, InvestPrice>{};
 
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
@@ -41,16 +42,16 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
     setChartData();
 
-    final selectedGraphName = ref
-        .watch(totalGraphProvider.select((value) => value.selectedGraphName));
+    final String selectedGraphName = ref
+        .watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       content: Stack(
-        children: [
+        children: <Widget>[
           Column(
-            children: [
+            children: <Widget>[
               Container(height: 70),
               Expanded(child: LineChart(graphData2)),
             ],
@@ -60,14 +61,14 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             height: context.screenSize.height - 50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(width: context.screenSize.width),
                 SizedBox(
                   height: 50,
                   child: Row(
-                      children: InvestKind.values.map((e) {
+                      children: InvestKind.values.map((InvestKind e) {
                     return Row(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: () {
                             ref
@@ -101,10 +102,10 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
   ///
   void makeGraphData() {
-    final stockIds = <int>[];
-    final shintakuIds = <int>[];
+    final List<int> stockIds = <int>[];
+    final List<int> shintakuIds = <int>[];
 
-    widget.investNameList.forEach((element) {
+    for (final InvestName element in widget.investNameList) {
       if (element.kind == InvestKind.stock.name) {
         stockIds.add(element.id);
       }
@@ -112,26 +113,26 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
       if (element.kind == InvestKind.shintaku.name) {
         shintakuIds.add(element.id);
       }
-    });
+    }
 
-    widget.investRecordMap.forEach((key, value) {
-      var stockCost = 0;
-      var stockPrice = 0;
-      var stockSum = 0;
+    widget.investRecordMap.forEach((String key, List<InvestRecord> value) {
+      int stockCost = 0;
+      int stockPrice = 0;
+      int stockSum = 0;
 
-      var shintakuCost = 0;
-      var shintakuPrice = 0;
-      var shintakuSum = 0;
+      int shintakuCost = 0;
+      int shintakuPrice = 0;
+      int shintakuSum = 0;
 
-      var goldCost = 0;
-      var goldPrice = 0;
-      var goldSum = 0;
+      int goldCost = 0;
+      int goldPrice = 0;
+      int goldSum = 0;
 
-      var allCost = 0;
-      var allPrice = 0;
-      var allSum = 0;
+      int allCost = 0;
+      int allPrice = 0;
+      int allSum = 0;
 
-      value.forEach((element) {
+      for (final InvestRecord element in value) {
         if (stockIds.contains(element.investId)) {
           stockCost += element.cost;
           stockPrice += element.price;
@@ -153,7 +154,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
         allCost += element.cost;
         allPrice += element.price;
         allSum += element.price - element.cost;
-      });
+      }
 
       investPriceMap[key] = InvestPrice(
         stockCost: stockCost,
@@ -174,38 +175,40 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
   ///
   void setChartData() {
-    final selectedGraphName = ref
-        .watch(totalGraphProvider.select((value) => value.selectedGraphName));
+    final String selectedGraphName = ref
+        .watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
 
-    final graphInvestKind = <String>[];
+    final List<String> graphInvestKind = <String>[];
 
     if (selectedGraphName == 'blank') {
-      InvestKind.values.forEach((element) => graphInvestKind.add(element.name));
+      for (final InvestKind element in InvestKind.values) {
+        graphInvestKind.add(element.name);
+      }
     } else {
       graphInvestKind.add(selectedGraphName);
     }
 
-    final flspotsStockCost = <FlSpot>[];
-    final flspotsStockPrice = <FlSpot>[];
-    final flspotsStockSum = <FlSpot>[];
+    final List<FlSpot> flspotsStockCost = <FlSpot>[];
+    final List<FlSpot> flspotsStockPrice = <FlSpot>[];
+    final List<FlSpot> flspotsStockSum = <FlSpot>[];
 
-    final flspotsShintakuCost = <FlSpot>[];
-    final flspotsShintakuPrice = <FlSpot>[];
-    final flspotsShintakuSum = <FlSpot>[];
+    final List<FlSpot> flspotsShintakuCost = <FlSpot>[];
+    final List<FlSpot> flspotsShintakuPrice = <FlSpot>[];
+    final List<FlSpot> flspotsShintakuSum = <FlSpot>[];
 
-    final flspotsGoldCost = <FlSpot>[];
-    final flspotsGoldPrice = <FlSpot>[];
-    final flspotsGoldSum = <FlSpot>[];
+    final List<FlSpot> flspotsGoldCost = <FlSpot>[];
+    final List<FlSpot> flspotsGoldPrice = <FlSpot>[];
+    final List<FlSpot> flspotsGoldSum = <FlSpot>[];
 
-    final flspotsAllCost = <FlSpot>[];
-    final flspotsAllPrice = <FlSpot>[];
-    final flspotsAllSum = <FlSpot>[];
+    final List<FlSpot> flspotsAllCost = <FlSpot>[];
+    final List<FlSpot> flspotsAllPrice = <FlSpot>[];
+    final List<FlSpot> flspotsAllSum = <FlSpot>[];
 
-    final points = <int>[];
+    final List<int> points = <int>[];
 
-    var i = 0;
-    investPriceMap.forEach((key, value) {
-      final values = <int>[];
+    int i = 0;
+    investPriceMap.forEach((String key, InvestPrice value) {
+      final List<int> values = <int>[];
       if (graphInvestKind.contains('stock')) {
         values
           ..add(value.stockCost)
@@ -259,12 +262,12 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
       i++;
     });
 
-    final maxPoint = points.reduce(max);
-    final minPoint = points.reduce(min);
+    final int maxPoint = points.reduce(max);
+    final int minPoint = points.reduce(min);
 
-    const warisuu = 1000;
-    final graphYMax = (maxPoint / warisuu).ceil() * warisuu;
-    final graphYMin = (minPoint * -1 / warisuu).ceil() * warisuu * -1;
+    const int warisuu = 1000;
+    final int graphYMax = (maxPoint / warisuu).ceil() * warisuu;
+    final int graphYMin = (minPoint * -1 / warisuu).ceil() * warisuu * -1;
 
     graphData = LineChartData(
       maxY: graphYMax.toDouble(),
@@ -295,8 +298,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
       ),
 
       ///
-      lineBarsData: [
-        if (graphInvestKind.contains('stock')) ...[
+      lineBarsData: <LineChartBarData>[
+        if (graphInvestKind.contains('stock')) ...<LineChartBarData>[
           LineChartBarData(
             spots: flspotsStockPrice,
             barWidth: 1,
@@ -304,7 +307,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             color: Colors.yellowAccent,
             dotData: const FlDotData(show: false),
           ),
-          if (!graphInvestKind.contains('blank')) ...[
+          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
             LineChartBarData(
               spots: flspotsStockCost,
               barWidth: 1,
@@ -321,7 +324,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             ),
           ],
         ],
-        if (graphInvestKind.contains('shintaku')) ...[
+        if (graphInvestKind.contains('shintaku')) ...<LineChartBarData>[
           LineChartBarData(
             spots: flspotsShintakuPrice,
             barWidth: 1,
@@ -329,7 +332,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             color: Colors.yellowAccent,
             dotData: const FlDotData(show: false),
           ),
-          if (!graphInvestKind.contains('blank')) ...[
+          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
             LineChartBarData(
               spots: flspotsShintakuCost,
               barWidth: 1,
@@ -346,7 +349,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             ),
           ],
         ],
-        if (graphInvestKind.contains('gold')) ...[
+        if (graphInvestKind.contains('gold')) ...<LineChartBarData>[
           LineChartBarData(
             spots: flspotsGoldPrice,
             barWidth: 1,
@@ -354,7 +357,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             color: Colors.yellowAccent,
             dotData: const FlDotData(show: false),
           ),
-          if (!graphInvestKind.contains('blank')) ...[
+          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
             LineChartBarData(
               spots: flspotsGoldCost,
               barWidth: 1,
@@ -371,7 +374,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             ),
           ],
         ],
-        if (graphInvestKind.contains('blank')) ...[
+        if (graphInvestKind.contains('blank')) ...<LineChartBarData>[
           LineChartBarData(
             spots: flspotsAllPrice,
             barWidth: 3,
@@ -421,7 +424,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 60,
-            getTitlesWidget: (value, meta) {
+            getTitlesWidget: (double value, TitleMeta meta) {
               return Text(
                 value.toInt().toString(),
                 style: const TextStyle(fontSize: 12),
@@ -437,7 +440,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
       ),
 
       ///
-      lineBarsData: [],
+      lineBarsData: <LineChartBarData>[],
     );
   }
 }

@@ -3,13 +3,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/enum/invest_kind.dart';
-import 'package:invest_note/extensions/extensions.dart';
-import 'package:invest_note/screens/components/parts/custom_scroll_bar.dart';
-import 'package:invest_note/state/invest_graph/invest_graph.dart';
-import 'package:invest_note/utilities/utilities.dart';
+
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../enum/invest_kind.dart';
+import '../../extensions/extensions.dart';
+import '../../state/invest_graph/invest_graph.dart';
+import '../../utilities/utilities.dart';
+import 'parts/custom_scroll_bar.dart';
 
 class InvestGraphAlert extends ConsumerStatefulWidget {
   const InvestGraphAlert({
@@ -38,24 +39,24 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
   final Utility _utility = Utility();
 
-  List<String> investGraphGuideFrames = [];
-  List<String> investGraphGuideNames = [];
+  List<String> investGraphGuideFrames = <String>[];
+  List<String> investGraphGuideNames = <String>[];
 
   ///
   @override
   Widget build(BuildContext context) {
     setChartData();
 
-    final wideGraphDisplay = ref
-        .watch(investGraphProvider.select((value) => value.wideGraphDisplay));
+    final bool wideGraphDisplay = ref
+        .watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       content: Stack(
-        children: [
+        children: <Widget>[
           Column(
-            children: [
+            children: <Widget>[
               Expanded(child: LineChart(graphData2)),
               const SizedBox(height: 40),
             ],
@@ -71,7 +72,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
               height: context.screenSize.height - 50,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Container(width: context.screenSize.width),
                   Expanded(child: LineChart(graphData)),
                   SizedBox(
@@ -79,7 +80,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                     child: wideGraphDisplay
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+                            children: <Widget>[
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -89,7 +90,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                                 child: const Text('jump'),
                               ),
                               Row(
-                                children: [
+                                children: <Widget>[
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor:
@@ -122,19 +123,19 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
   ///
   void setChartData() {
-    final idList = <int>[];
+    final List<int> idList = <int>[];
 
-    investGraphGuideFrames = [];
-    investGraphGuideNames = [];
+    investGraphGuideFrames = <String>[];
+    investGraphGuideNames = <String>[];
 
     if (widget.kind == InvestKind.gold.name) {
       idList.add(0);
     } else {
       widget.investNameList
-          .where((element) => element.kind == widget.kind)
+          .where((InvestName element) => element.kind == widget.kind)
           .toList()
-        ..sort((a, b) => a.dealNumber.compareTo(b.dealNumber))
-        ..forEach((element2) {
+        ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
+        ..forEach((InvestName element2) {
           idList.add(element2.id);
 
           investGraphGuideFrames.add(element2.frame);
@@ -142,17 +143,17 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
         });
     }
 
-    final map = <int, Map<String, int>>{};
+    final Map<int, Map<String, int>> map = <int, Map<String, int>>{};
 
-    for (final element in idList) {
-      final map2 = <String, int>{};
-      for (final element2 in widget.calendarCellDateDataList) {
+    for (final int element in idList) {
+      final Map<String, int> map2 = <String, int>{};
+      for (final String element2 in widget.calendarCellDateDataList) {
         map2[element2] = 0;
       }
       map[element] = map2;
     }
 
-    for (final element in widget.allInvestRecord) {
+    for (final InvestRecord element in widget.allInvestRecord) {
       map[element.investId]?[element.date] =
           (element.price != 0 && element.cost != 0)
               ? ((element.price / element.cost) * 100)
@@ -162,20 +163,20 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
               : 0;
     }
 
-    final selectedGraphId =
-        ref.watch(investGraphProvider.select((value) => value.selectedGraphId));
+    final int selectedGraphId =
+        ref.watch(investGraphProvider.select((InvestGraphState value) => value.selectedGraphId));
 
-    final flspotsList = <List<FlSpot>>[];
+    final List<List<FlSpot>> flspotsList = <List<FlSpot>>[];
 
-    final points = <int>[];
+    final List<int> points = <int>[];
 
     if (selectedGraphId != 0) {
-      map.forEach((key, value) {
+      map.forEach((int key, Map<String, int> value) {
         if (selectedGraphId == key) {
-          final flspots = <FlSpot>[];
+          final List<FlSpot> flspots = <FlSpot>[];
 
-          var j = 0;
-          value.forEach((key2, value2) {
+          int j = 0;
+          value.forEach((String key2, int value2) {
             if (value2 > 0) {
               flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
             }
@@ -189,11 +190,11 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
         }
       });
     } else {
-      map.forEach((key, value) {
-        final flspots = <FlSpot>[];
+      map.forEach((int key, Map<String, int> value) {
+        final List<FlSpot> flspots = <FlSpot>[];
 
-        var j = 0;
-        value.forEach((key2, value2) {
+        int j = 0;
+        value.forEach((String key2, int value2) {
           if (value2 > 0) {
             flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
           }
@@ -207,12 +208,12 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
       });
     }
 
-    const graphYMax = 300;
-    const graphYMin = 0;
+    const int graphYMax = 300;
+    const int graphYMin = 0;
 
-    final investGraphState = ref.watch(investGraphProvider);
+    final InvestGraphState investGraphState = ref.watch(investGraphProvider);
 
-    final twelveColor = _utility.getTwelveColor();
+    final List<Color> twelveColor = _utility.getTwelveColor();
 
     graphData = LineChartData(
       maxY: graphYMax.toDouble(),
@@ -225,10 +226,10 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
         touchTooltipData: LineTouchTooltipData(
             tooltipRoundedRadius: 2,
             getTooltipItems: (List<LineBarSpot> touchedSpots) {
-              final list = <LineTooltipItem>[];
+              final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-              for (final element in touchedSpots) {
-                final textStyle = TextStyle(
+              for (final LineBarSpot element in touchedSpots) {
+                final TextStyle textStyle = TextStyle(
                   color: element.bar.gradient?.colors.first ??
                       element.bar.color ??
                       Colors.blueGrey,
@@ -236,7 +237,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                   fontSize: 12,
                 );
 
-                final percent =
+                final String percent =
                     element.y.round().toString().split('.')[0].toCurrency();
 
                 list.add(
@@ -266,13 +267,13 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 50,
-            getTitlesWidget: (value, meta) {
+            getTitlesWidget: (double value, TitleMeta meta) {
               return SideTitleWidget(
                 axisSide: meta.axisSide,
                 child: DefaultTextStyle(
                   style: const TextStyle(fontSize: 10),
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       Text(investGraphState.wideGraphDisplay
                           ? widget.calendarCellDateDataList[value.toInt()]
                               .split('-')[0]
@@ -296,7 +297,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: (value, meta) => Container(),
+            getTitlesWidget: (double value, TitleMeta meta) => Container(),
           ),
         ),
         //-------------------------// 左側の目盛り
@@ -306,15 +307,15 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: (value, meta) => Container(),
+            getTitlesWidget: (double value, TitleMeta meta) => Container(),
           ),
         ),
         //-------------------------// 右側の目盛り
       ),
 
       ///
-      lineBarsData: [
-        for (var i = 0; i < flspotsList.length; i++)
+      lineBarsData: <LineChartBarData>[
+        for (int i = 0; i < flspotsList.length; i++)
           LineChartBarData(
             spots: flspotsList[i],
             barWidth: 3,
@@ -353,7 +354,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 50,
-            getTitlesWidget: (value, meta) {
+            getTitlesWidget: (double value, TitleMeta meta) {
               return Container();
             },
           ),
@@ -365,7 +366,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 40,
-            getTitlesWidget: (value, meta) {
+            getTitlesWidget: (double value, TitleMeta meta) {
               if (value == graphYMin || value == graphYMax) {
                 return const SizedBox();
               }
@@ -387,23 +388,23 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
       ),
 
       ///
-      lineBarsData: [],
+      lineBarsData: <LineChartBarData>[],
     );
   }
 
   ///
   List<LineTooltipItem> getGraphToolTip(List<LineBarSpot> touchedSpots) {
-    final list = <LineTooltipItem>[];
+    final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-    for (final element in touchedSpots) {
-      final textStyle = TextStyle(
+    for (final LineBarSpot element in touchedSpots) {
+      final TextStyle textStyle = TextStyle(
           color: element.bar.gradient?.colors.first ??
               element.bar.color ??
               Colors.blueGrey,
           fontWeight: FontWeight.bold,
           fontSize: 12);
 
-      final price = element.y.round().toString().split('.')[0].toCurrency();
+      final String price = element.y.round().toString().split('.')[0].toCurrency();
 //      final month = usageGuideList[element.barIndex].mm;
 
       list.add(LineTooltipItem(price, textStyle, textAlign: TextAlign.end));

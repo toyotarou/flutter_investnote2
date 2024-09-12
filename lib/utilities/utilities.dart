@@ -8,16 +8,14 @@ class Utility {
     required String youbiStr,
     required Map<String, String> holidayMap,
   }) {
-    var color = Colors.black.withOpacity(0.2);
+    Color color = Colors.black.withOpacity(0.2);
 
     switch (youbiStr) {
       case 'Sunday':
         color = Colors.redAccent.withOpacity(0.2);
-        break;
 
       case 'Saturday':
         color = Colors.blueAccent.withOpacity(0.2);
-        break;
 
       default:
         color = Colors.black.withOpacity(0.2);
@@ -35,20 +33,20 @@ class Utility {
   FlGridData getFlGridData() {
     return FlGridData(
       //横線
-      getDrawingHorizontalLine: (value) => FlLine(
+      getDrawingHorizontalLine: (double value) => FlLine(
         color: (value == 100) ? Colors.white : Colors.white30,
         strokeWidth: (value == 100) ? 3 : 1,
       ),
 
       //縦線
-      getDrawingVerticalLine: (value) =>
+      getDrawingVerticalLine: (double value) =>
           const FlLine(color: Colors.white30, strokeWidth: 1),
     );
   }
 
   ///
   List<Color> getTwelveColor() {
-    return [
+    return <Color>[
       const Color(0xffdb2f20),
       const Color(0xffefa43a),
       const Color(0xfffdf551),

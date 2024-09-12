@@ -2,13 +2,15 @@
 
 import 'dart:convert';
 
-// TODO エラー修正できない
 Map<String, String> holidayFromJson(String str) =>
-    Map.from(json.decode(str)).map((k, v) => MapEntry<String, String>(k, v));
+    // ignore: inference_failure_on_instance_creation, always_specify_types
+    Map.from(json.decode(str) as Map<dynamic, dynamic>)
+        // ignore: always_specify_types
+        .map((k, v) => MapEntry<String, String>(k as String, v as String));
 
-// TODO エラー修正できない
-String holidayToJson(Map<String, String> data) =>
-    json.encode(Map.from(data).map((k, v) => MapEntry<String, dynamic>(k, v)));
+String holidayToJson(Map<String, String> data) => json.encode(
+    // ignore: inference_failure_on_instance_creation, always_specify_types
+    Map.from(data).map((k, v) => MapEntry<String, dynamic>(k as String, v)));
 
 class Holiday {
   Holiday({required this.date, required this.content});

@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:invest_note/collections/invest_name.dart';
-import 'package:invest_note/collections/invest_record.dart';
-import 'package:invest_note/extensions/extensions.dart';
+import '../../collections/invest_name.dart';
+import '../../collections/invest_record.dart';
+import '../../extensions/extensions.dart';
 
 class InvestRecordListAlert extends ConsumerStatefulWidget {
   const InvestRecordListAlert(
@@ -40,7 +40,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
             style: const TextStyle(fontSize: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const SizedBox(height: 20),
                 Container(width: context.screenSize.width),
                 Text(widget.investName.name),
@@ -59,15 +59,15 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
   ///
   Widget _displayInvestRecordList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    var lastCost = 0;
+    int lastCost = 0;
     widget.allInvestRecord
-        .where((element) => element.investId == widget.investName.id)
+        .where((InvestRecord element) => element.investId == widget.investName.id)
         .toList()
-      ..sort((a, b) => a.date.compareTo(b.date))
-      ..forEach((element) {
-        final costColor =
+      ..sort((InvestRecord a, InvestRecord b) => a.date.compareTo(b.date))
+      ..forEach((InvestRecord element) {
+        final Color costColor =
             (lastCost != element.cost) ? Colors.yellowAccent : Colors.white;
 
         list.add(Container(
@@ -77,9 +77,9 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
               border: Border(
                   bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Column(
-            children: [
+            children: <Widget>[
               Row(
-                children: [
+                children: <Widget>[
                   Expanded(flex: 2, child: Text(element.date)),
                   Expanded(
                     child: Container(
@@ -98,7 +98,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   Expanded(
                       child: Container(
@@ -122,18 +122,18 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
   ///
   void setChartData() {
-    final flspots = <FlSpot>[];
+    final List<FlSpot> flspots = <FlSpot>[];
 
-    final points = <int>[];
+    final List<int> points = <int>[];
 
-    var startPrice = 0.0;
-    var endPrice = 0.0;
+    double startPrice = 0.0;
+    double endPrice = 0.0;
 
-    var startSpot = const FlSpot(0, 0);
-    var endSpot = const FlSpot(0, 0);
-    var flspotsTrend = <FlSpot>[];
+    FlSpot startSpot = const FlSpot(0, 0);
+    FlSpot endSpot = const FlSpot(0, 0);
+    List<FlSpot> flspotsTrend = <FlSpot>[];
 
-    for (var i = 0; i < widget.allInvestRecord.length; i++) {
+    for (int i = 0; i < widget.allInvestRecord.length; i++) {
       if (widget.allInvestRecord[i].investId == widget.investName.id) {
         if (startPrice == 0) {
           startPrice =
@@ -167,34 +167,29 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
       }
     }
 
-    flspotsTrend = [startSpot, endSpot];
+    flspotsTrend = <FlSpot>[startSpot, endSpot];
 
-    final maxPoint = (points.isNotEmpty) ? points.reduce(max) : 0;
+    final int maxPoint = (points.isNotEmpty) ? points.reduce(max) : 0;
 
-    final minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
+    final int minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
 
-    var devide = 0;
+    int devide = 0;
     switch (maxPoint.toString().length) {
       case 3:
         devide = 100;
-        break;
       case 4:
         devide = 1000;
-        break;
       case 5:
         devide = 10000;
-        break;
       case 6:
         devide = 100000;
-        break;
       case 7:
         devide = 1000000;
-        break;
     }
 
     if (devide != 0) {
-      final graphYMax = (maxPoint / devide).round() * devide;
-      final graphYMin = (minPoint < 0) ? minPoint : 0;
+      final int graphYMax = (maxPoint / devide).round() * devide;
+      final int graphYMin = (minPoint < 0) ? minPoint : 0;
 
       graphData = LineChartData(
         maxY: graphYMax.toDouble(),
@@ -218,7 +213,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Text(startPrice.toString().split('.')[0].toCurrency()),
                   RichText(
                     text: TextSpan(
@@ -255,7 +250,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
         ),
 
         ///
-        lineBarsData: [
+        lineBarsData: <LineChartBarData>[
           LineChartBarData(
             spots: flspots,
             barWidth: 1,
