@@ -106,8 +106,8 @@ class _DailyInvestDisplayAlertState
   Widget _displayDailyInvest() {
     final List<Widget> list = <Widget>[];
 
-    final String selectedInvestName = ref.watch(
-        dailyInvestDisplayProvider.select((DailyInvestDisplayState value) => value.selectedInvestName));
+    final String selectedInvestName = ref.watch(dailyInvestDisplayProvider
+        .select((DailyInvestDisplayState value) => value.selectedInvestName));
 
     for (final InvestKind element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
@@ -124,10 +124,12 @@ class _DailyInvestDisplayAlertState
         widget.investNameList
             .where((InvestName element2) => element2.kind == element.name)
             .toList()
-          ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
+          ..sort((InvestName a, InvestName b) =>
+              a.dealNumber.compareTo(b.dealNumber))
           ..forEach((InvestName element3) {
             final List<InvestRecord>? dispInvestRecord = thisDayInvestRecordList
-                ?.where((InvestRecord element4) => element4.investId == element3.id)
+                ?.where((InvestRecord element4) =>
+                    element4.investId == element3.relationalId)
                 .toList();
 
             list2.add(Container(
@@ -139,31 +141,34 @@ class _DailyInvestDisplayAlertState
                           color: Colors.white.withOpacity(0.2), width: 2))),
               child: Column(
                 children: <Widget>[
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                      child: Text(
-                        element3.dealNumber.toString().padLeft(2, '0'),
-                        style: const TextStyle(color: Colors.orangeAccent),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: Column(
+                  Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          element3.frame,
-                          style: const TextStyle(color: Colors.lightBlueAccent),
+                        SizedBox(
+                          width: 20,
+                          child: Text(
+                            element3.dealNumber.toString().padLeft(2, '0'),
+                            style: const TextStyle(color: Colors.orangeAccent),
+                          ),
                         ),
-                        Text(
-                          element3.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ))
-                  ]),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              element3.frame,
+                              style: const TextStyle(
+                                  color: Colors.lightBlueAccent),
+                            ),
+                            Text(
+                              element3.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ))
+                      ]),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -268,7 +273,8 @@ class _DailyInvestDisplayAlertState
                               investName: element3,
                               investRecord: thisDayInvestRecordList
                                   ?.where((InvestRecord element4) =>
-                                      element4.investId == element3.id)
+                                      element4.investId ==
+                                      element3.relationalId)
                                   .toList(),
                               allInvestRecord: widget.allInvestRecord,
                             ),
@@ -465,8 +471,8 @@ class _DailyInvestDisplayAlertState
                                 isar: widget.isar,
                                 date: widget.date,
                                 investRecord: thisDayInvestRecordList
-                                    ?.where(
-                                        (InvestRecord element4) => element4.investId == 0)
+                                    ?.where((InvestRecord element4) =>
+                                        element4.investId == 0)
                                     .toList(),
                                 allInvestRecord: widget.allInvestRecord,
                                 investName: InvestName()
@@ -506,5 +512,6 @@ class _DailyInvestDisplayAlertState
   ///
   Future<void> _makeThisDayInvestRecordList() async => InvestRecordsRepository()
       .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
-      .then((List<InvestRecord>? value) => setState(() => thisDayInvestRecordList = value));
+      .then((List<InvestRecord>? value) =>
+          setState(() => thisDayInvestRecordList = value));
 }

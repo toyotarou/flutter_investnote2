@@ -19,6 +19,7 @@ import '../../../repository/invest_records_repository.dart';
 import '../parts/error_dialog.dart';
 
 part 'data_export_alert.freezed.dart';
+
 part 'data_export_alert.g.dart';
 
 class DataExportAlert extends ConsumerStatefulWidget {
@@ -178,6 +179,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
               element.frame,
               element.name,
               element.dealNumber,
+              element.relationalId,
             ].join(','));
           });
         });

@@ -195,11 +195,14 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       switch (csvName) {
         case 'investName':
-          importDataList.add(InvestName()
-            ..kind = exLine[1].trim()
-            ..frame = exLine[2].trim()
-            ..name = exLine[3].trim()
-            ..dealNumber = exLine[4].trim().toInt());
+          importDataList.add(
+            InvestName()
+              ..kind = exLine[1].trim()
+              ..frame = exLine[2].trim()
+              ..name = exLine[3].trim()
+              ..dealNumber = exLine[4].trim().toInt()
+              ..relationalId = exLine[5].trim().toInt(),
+          );
 
         case 'investRecord':
           importDataList.add(InvestRecord()

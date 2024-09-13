@@ -36,6 +36,11 @@ const InvestNameSchema = CollectionSchema(
       id: 3,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'relationalId': PropertySchema(
+      id: 4,
+      name: r'relationalId',
+      type: IsarType.long,
     )
   },
   estimateSize: _investNameEstimateSize,
@@ -74,6 +79,7 @@ void _investNameSerialize(
   writer.writeString(offsets[1], object.frame);
   writer.writeString(offsets[2], object.kind);
   writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.relationalId);
 }
 
 InvestName _investNameDeserialize(
@@ -88,6 +94,7 @@ InvestName _investNameDeserialize(
   object.id = id;
   object.kind = reader.readString(offsets[2]);
   object.name = reader.readString(offsets[3]);
+  object.relationalId = reader.readLong(offsets[4]);
   return object;
 }
 
@@ -106,6 +113,8 @@ P _investNameDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -700,6 +709,62 @@ extension InvestNameQueryFilter
       ));
     });
   }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      relationalIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'relationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      relationalIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'relationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      relationalIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'relationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterFilterCondition>
+      relationalIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'relationalId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension InvestNameQueryObject
@@ -755,6 +820,18 @@ extension InvestNameQuerySortBy
   QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByRelationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'relationalId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> sortByRelationalIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'relationalId', Sort.desc);
     });
   }
 }
@@ -820,6 +897,18 @@ extension InvestNameQuerySortThenBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByRelationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'relationalId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QAfterSortBy> thenByRelationalIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'relationalId', Sort.desc);
+    });
+  }
 }
 
 extension InvestNameQueryWhereDistinct
@@ -848,6 +937,12 @@ extension InvestNameQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<InvestName, InvestName, QDistinct> distinctByRelationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'relationalId');
     });
   }
 }
@@ -881,6 +976,12 @@ extension InvestNameQueryProperty
   QueryBuilder<InvestName, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<InvestName, int, QQueryOperations> relationalIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'relationalId');
     });
   }
 }

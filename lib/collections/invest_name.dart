@@ -13,4 +13,6 @@ class InvestName {
   late String name;
 
   late int dealNumber;
+
+  late int relationalId;
 }

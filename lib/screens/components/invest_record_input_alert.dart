@@ -67,14 +67,17 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
             children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                Text(widget.date.yyyymmdd),
-                Text(widget.investName.name)
-              ]),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.date.yyyymmdd),
+                    Text(widget.investName.name)
+                  ]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
               if (widget.investName.kind == InvestKind.stock.name ||
-                  widget.investName.kind == InvestKind.shintaku.name) ...<Widget>[
+                  widget.investName.kind ==
+                      InvestKind.shintaku.name) ...<Widget>[
                 ElevatedButton(
                   onPressed: getLastCost,
                   style: ElevatedButton.styleFrom(
@@ -86,13 +89,16 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(),
-                  if (widget.investRecord!.isNotEmpty) TextButton(
-                          onPressed: _updateInvestRecord,
-                          child: const Text('投資詳細レコードを更新する',
-                              style: TextStyle(fontSize: 12))) else TextButton(
-                          onPressed: _inputInvestRecord,
-                          child: const Text('投資詳細レコードを追加する',
-                              style: TextStyle(fontSize: 12))),
+                  if (widget.investRecord!.isNotEmpty)
+                    TextButton(
+                        onPressed: _updateInvestRecord,
+                        child: const Text('投資詳細レコードを更新する',
+                            style: TextStyle(fontSize: 12)))
+                  else
+                    TextButton(
+                        onPressed: _inputInvestRecord,
+                        child: const Text('投資詳細レコードを追加する',
+                            style: TextStyle(fontSize: 12))),
                 ],
               ),
             ],
@@ -183,7 +189,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         <Object>[_priceEditingController.text.trim(), 10]
       ]) {
         if (!checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int)) {
+            value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -202,7 +208,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     final InvestRecord investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
-      ..investId = widget.investName.id
+      ..investId = widget.investName.relationalId
       ..cost = _costEditingController.text.trim().toInt()
       ..price = _priceEditingController.text.trim().toInt();
 
@@ -232,7 +238,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         <Object>[_priceEditingController.text.trim(), 10]
       ]) {
         if (!checkInputValueLengthCheck(
-                value: element[0].toString(), length: element[1] as int)) {
+            value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -255,7 +261,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           .then((InvestRecord? value) async {
         value!
           ..date = widget.date.yyyymmdd
-          ..investId = widget.investName.id
+          ..investId = widget.investName.relationalId
           ..cost = _costEditingController.text.trim().toInt()
           ..price = _priceEditingController.text.trim().toInt();
 
@@ -286,7 +292,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     for (final String element3 in dateList) {
       widget.allInvestRecord
-          .where((InvestRecord element) => element.investId == widget.investName.id)
+          .where((InvestRecord element) =>
+              element.investId == widget.investName.relationalId)
           .forEach((InvestRecord element2) {
         if (cost == 0) {
           if (element3 == element2.date) {
