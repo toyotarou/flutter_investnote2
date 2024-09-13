@@ -199,8 +199,12 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
-        () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () {
+          if (mounted) {
+            return error_dialog(
+                context: context, title: '登録できません。', content: '値を正しく入力してください。');
+          }
+        },
       );
 
       return;
@@ -219,7 +223,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       _costEditingController.clear();
       _priceEditingController.clear();
 
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -248,8 +254,12 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
-        () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () {
+          if (mounted) {
+            return error_dialog(
+                context: context, title: '登録できません。', content: '値を正しく入力してください。');
+          }
+        },
       );
 
       return;
@@ -272,7 +282,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           _costEditingController.clear();
           _priceEditingController.clear();
 
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
       });
     });
