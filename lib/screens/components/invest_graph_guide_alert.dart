@@ -27,8 +27,8 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final bool wideGraphDisplay = ref
-        .watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
+    final bool wideGraphDisplay = ref.watch(investGraphProvider
+        .select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -84,13 +84,13 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
       list.add(GestureDetector(
         onTap: () {
           final InvestName investName = widget.investNameList
-              .where(
-                  (InvestName element) => element.name == widget.investGraphGuideNames[i])
+              .where((InvestName element) =>
+                  element.name == widget.investGraphGuideNames[i])
               .first;
 
           ref
               .read(investGraphProvider.notifier)
-              .setSelectedGraphId(id: investName.id);
+              .setSelectedGraphId(id: investName.relationalId);
 
           ref
               .read(investGraphProvider.notifier)

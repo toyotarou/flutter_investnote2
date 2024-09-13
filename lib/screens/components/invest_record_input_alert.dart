@@ -212,7 +212,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     final InvestRecord investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
-      ..investId = widget.investName.relationalId
+      ..investId = (widget.investName.kind == 'gold')
+          ? 0
+          : widget.investName.relationalId
       ..cost = _costEditingController.text.trim().toInt()
       ..price = _priceEditingController.text.trim().toInt();
 

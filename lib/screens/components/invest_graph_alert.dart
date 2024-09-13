@@ -47,8 +47,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   Widget build(BuildContext context) {
     setChartData();
 
-    final bool wideGraphDisplay = ref
-        .watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
+    final bool wideGraphDisplay = ref.watch(investGraphProvider
+        .select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -134,9 +134,10 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
       widget.investNameList
           .where((InvestName element) => element.kind == widget.kind)
           .toList()
-        ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
+        ..sort((InvestName a, InvestName b) =>
+            a.dealNumber.compareTo(b.dealNumber))
         ..forEach((InvestName element2) {
-          idList.add(element2.id);
+          idList.add(element2.relationalId);
 
           investGraphGuideFrames.add(element2.frame);
           investGraphGuideNames.add(element2.name);
@@ -163,8 +164,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
               : 0;
     }
 
-    final int selectedGraphId =
-        ref.watch(investGraphProvider.select((InvestGraphState value) => value.selectedGraphId));
+    final int selectedGraphId = ref.watch(investGraphProvider
+        .select((InvestGraphState value) => value.selectedGraphId));
 
     final List<List<FlSpot>> flspotsList = <List<FlSpot>>[];
 
@@ -404,8 +405,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           fontWeight: FontWeight.bold,
           fontSize: 12);
 
-      final String price = element.y.round().toString().split('.')[0].toCurrency();
-//      final month = usageGuideList[element.barIndex].mm;
+      final String price =
+          element.y.round().toString().split('.')[0].toCurrency();
 
       list.add(LineTooltipItem(price, textStyle, textAlign: TextAlign.end));
     }

@@ -63,7 +63,8 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
 
     int lastCost = 0;
     widget.allInvestRecord
-        .where((InvestRecord element) => element.investId == widget.investName.id)
+        .where((InvestRecord element) =>
+            element.investId == widget.investName.relationalId)
         .toList()
       ..sort((InvestRecord a, InvestRecord b) => a.date.compareTo(b.date))
       ..forEach((InvestRecord element) {
@@ -134,7 +135,8 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
     List<FlSpot> flspotsTrend = <FlSpot>[];
 
     for (int i = 0; i < widget.allInvestRecord.length; i++) {
-      if (widget.allInvestRecord[i].investId == widget.investName.id) {
+      if (widget.allInvestRecord[i].investId ==
+          widget.investName.relationalId) {
         if (startPrice == 0) {
           startPrice =
               (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
