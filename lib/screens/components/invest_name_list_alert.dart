@@ -10,11 +10,16 @@ import 'invest_name_input_alert.dart';
 import 'parts/invest_dialog.dart';
 
 class InvestNameListAlert extends StatefulWidget {
-  const InvestNameListAlert(
-      {super.key, required this.isar, required this.investKind});
+  const InvestNameListAlert({
+    super.key,
+    required this.isar,
+    required this.investKind,
+    required this.investNameList,
+  });
 
   final Isar isar;
   final InvestKind investKind;
+  final List<InvestName> investNameList;
 
   ///
   @override
@@ -55,7 +60,10 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
                     onPressed: () => InvestDialog(
                       context: context,
                       widget: InvestNameInputAlert(
-                          isar: widget.isar, investKind: widget.investKind),
+                        isar: widget.isar,
+                        investKind: widget.investKind,
+                        investNameList: widget.investNameList,
+                      ),
                       clearBarrierColor: true,
                     ),
                     child: Text(
@@ -92,7 +100,8 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
   Future<void> _makeStockNameList() async => InvestNamesRepository()
       .getInvestNameListByInvestKind(
           isar: widget.isar, investKind: widget.investKind.name)
-      .then((List<InvestName>? value) => setState(() => investNameList = value));
+      .then(
+          (List<InvestName>? value) => setState(() => investNameList = value));
 
   ///
   Widget _displayStockNames() {
@@ -125,9 +134,11 @@ class _InvestNameListAlertState extends State<InvestNameListAlert> {
               onTap: () => InvestDialog(
                 context: context,
                 widget: InvestNameInputAlert(
-                    isar: widget.isar,
-                    investName: element,
-                    investKind: widget.investKind),
+                  isar: widget.isar,
+                  investName: element,
+                  investKind: widget.investKind,
+                  investNameList: widget.investNameList,
+                ),
                 clearBarrierColor: true,
               ),
               child: Icon(Icons.edit,

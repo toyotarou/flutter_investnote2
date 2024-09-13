@@ -73,10 +73,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   List<InvestRecord>? investRecordList = <InvestRecord>[];
 
-  Map<String, List<InvestRecord>> investRecordMap = <String, List<InvestRecord>>{};
+  Map<String, List<InvestRecord>> investRecordMap =
+      <String, List<InvestRecord>>{};
 
   List<String> calendarCellDateDataList = <String>[];
-  Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
+  Map<String, CalendarCellSumData> calendarCellSumDataMap =
+      <String, CalendarCellSumData>{};
 
   ///
   void _init() {
@@ -278,9 +280,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 60),
               GestureDetector(
                 onTap: () => InvestDialog(
-                    context: context,
-                    widget: InvestNameListAlert(
-                        isar: widget.isar, investKind: InvestKind.stock)),
+                  context: context,
+                  widget: InvestNameListAlert(
+                    isar: widget.isar,
+                    investKind: InvestKind.stock,
+                    investNameList: investNameList ?? <InvestName>[],
+                  ),
+                ),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
@@ -298,9 +304,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () => InvestDialog(
-                    context: context,
-                    widget: InvestNameListAlert(
-                        isar: widget.isar, investKind: InvestKind.shintaku)),
+                  context: context,
+                  widget: InvestNameListAlert(
+                    isar: widget.isar,
+                    investKind: InvestKind.shintaku,
+                    investNameList: investNameList ?? <InvestName>[],
+                  ),
+                ),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
@@ -413,7 +423,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final int monthDaysNum = diff + 1;
 
     final String youbi = _calendarMonthFirst.youbiStr;
-    final int youbiNum = _youbiList.indexWhere((String element) => element == youbi);
+    final int youbiNum =
+        _youbiList.indexWhere((String element) => element == youbi);
 
     final int weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
 
@@ -422,7 +433,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     for (int i = 0; i < (weekNum * 7); i++) {
       if (i >= youbiNum) {
-        final DateTime gendate = _calendarMonthFirst.add(Duration(days: i - youbiNum));
+        final DateTime gendate =
+            _calendarMonthFirst.add(Duration(days: i - youbiNum));
 
         if (_calendarMonthFirst.month == gendate.month) {
           _calendarDays[i] = gendate.day.toString();
@@ -523,7 +535,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       final int index = calendarCellDateDataList
           .indexWhere((String element) => element == generateYmd);
-      final String beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
+      final String beforeDate =
+          (index > 0) ? calendarCellDateDataList[index - 1] : '';
 
       bool tapFlag = true;
       if (i % 7 == 0 || i % 7 == 6) {
@@ -617,14 +630,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient:
-                                                      LinearGradient(colors: <Color>[
-                                                Colors.indigo.withOpacity(0.8),
-                                                Colors.transparent
-                                              ], stops: const <double>[
-                                                0.9,
-                                                1
-                                              ])),
+                                                  gradient: LinearGradient(
+                                                      colors: <Color>[
+                                                    Colors.indigo
+                                                        .withOpacity(0.8),
+                                                    Colors.transparent
+                                                  ],
+                                                      stops: const <double>[
+                                                    0.9,
+                                                    1
+                                                  ])),
                                               child: const Text('stock'),
                                             ),
                                             Text(stockCost
@@ -667,14 +682,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient:
-                                                      LinearGradient(colors: <Color>[
-                                                Colors.indigo.withOpacity(0.8),
-                                                Colors.transparent
-                                              ], stops: const <double>[
-                                                0.7,
-                                                1
-                                              ])),
+                                                  gradient: LinearGradient(
+                                                      colors: <Color>[
+                                                    Colors.indigo
+                                                        .withOpacity(0.8),
+                                                    Colors.transparent
+                                                  ],
+                                                      stops: const <double>[
+                                                    0.7,
+                                                    1
+                                                  ])),
                                               child: const Text('shintaku'),
                                             ),
                                             Text(shintakuCost
@@ -717,14 +734,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient:
-                                                      LinearGradient(colors: <Color>[
-                                                Colors.indigo.withOpacity(0.8),
-                                                Colors.transparent
-                                              ], stops: const <double>[
-                                                0.7,
-                                                1
-                                              ])),
+                                                  gradient: LinearGradient(
+                                                      colors: <Color>[
+                                                    Colors.indigo
+                                                        .withOpacity(0.8),
+                                                    Colors.transparent
+                                                  ],
+                                                      stops: const <double>[
+                                                    0.7,
+                                                    1
+                                                  ])),
                                               child: const Text('gold'),
                                             ),
                                             Text(goldCost
@@ -814,9 +833,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeInvestNameList() async => InvestNamesRepository()
-      .getInvestNameList(isar: widget.isar)
-      .then((List<InvestName>? value) => setState(() => investNameList = value));
+  Future<void> _makeInvestNameList() async =>
+      InvestNamesRepository().getInvestNameList(isar: widget.isar).then(
+          (List<InvestName>? value) => setState(() => investNameList = value));
 
   ///
   Future<void> _makeInvestRecordList() async {
@@ -827,8 +846,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       if (value != null) {
         value
-          ..forEach((InvestRecord element) => investRecordMap[element.date] = <InvestRecord>[])
-          ..forEach((InvestRecord element) => investRecordMap[element.date]?.add(element));
+          ..forEach((InvestRecord element) =>
+              investRecordMap[element.date] = <InvestRecord>[])
+          ..forEach((InvestRecord element) =>
+              investRecordMap[element.date]?.add(element));
       }
     });
   }

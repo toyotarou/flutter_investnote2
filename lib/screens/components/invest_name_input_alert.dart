@@ -24,11 +24,13 @@ class InvestNameInputAlert extends ConsumerStatefulWidget {
       {super.key,
       required this.isar,
       this.investName,
-      required this.investKind});
+      required this.investKind,
+      required this.investNameList});
 
   final Isar isar;
   InvestName? investName;
   final InvestKind investKind;
+  final List<InvestName> investNameList;
 
   ///
   @override
@@ -389,7 +391,8 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
       ..frame = frame
       ..dealNumber = _investNumberEditingController.text.trim().toInt()
       ..name = _investNameEditingController.text.trim()
-      ..kind = widget.investKind.name;
+      ..kind = widget.investKind.name
+      ..relationalId = widget.investNameList.length + 1;
 
     await InvestNamesRepository()
         .inputInvestName(isar: widget.isar, investName: investName)
