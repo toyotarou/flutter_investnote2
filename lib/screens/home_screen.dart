@@ -855,16 +855,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void makeCalendarCellSumDataMap() {
-    final List<int> stockIds = <int>[];
-    final List<int> shintakuIds = <int>[];
+    final List<int> stockRelationalIds = <int>[];
+    final List<int> shintakuRelationalIds = <int>[];
 
     investNameList?.forEach((InvestName element) {
       if (element.kind == InvestKind.stock.name) {
-        stockIds.add(element.id);
+        stockRelationalIds.add(element.relationalId);
       }
 
       if (element.kind == InvestKind.shintaku.name) {
-        shintakuIds.add(element.id);
+        shintakuRelationalIds.add(element.relationalId);
       }
     });
 
@@ -889,12 +889,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
         if (investRecordMap[element.date] != null) {
           for (final InvestRecord element in investRecordMap[element.date]!) {
-            if (stockIds.contains(element.investId)) {
+            if (stockRelationalIds.contains(element.investId)) {
               stockCost += element.cost;
               stockPrice += element.price;
             }
 
-            if (shintakuIds.contains(element.investId)) {
+            if (shintakuRelationalIds.contains(element.investId)) {
               shintakuCost += element.cost;
               shintakuPrice += element.price;
             }
