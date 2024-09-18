@@ -42,8 +42,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
     setChartData();
 
-    final String selectedGraphName = ref
-        .watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
+    final String selectedGraphName = ref.watch(totalGraphProvider
+        .select((TotalGraphState value) => value.selectedGraphName));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -52,12 +52,12 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              Container(height: 70),
+              Container(height: 50 + 20),
               Expanded(child: LineChart(graphData2)),
             ],
           ),
           SizedBox(
-            width: context.screenSize.width * 0.65,
+            width: context.screenSize.width,
             height: context.screenSize.height - 50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,16 +102,16 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
   ///
   void makeGraphData() {
-    final List<int> stockIds = <int>[];
-    final List<int> shintakuIds = <int>[];
+    final List<int> stockRelationalIds = <int>[];
+    final List<int> shintakuRelationalIds = <int>[];
 
     for (final InvestName element in widget.investNameList) {
       if (element.kind == InvestKind.stock.name) {
-        stockIds.add(element.id);
+        stockRelationalIds.add(element.relationalId);
       }
 
       if (element.kind == InvestKind.shintaku.name) {
-        shintakuIds.add(element.id);
+        shintakuRelationalIds.add(element.relationalId);
       }
     }
 
@@ -133,13 +133,13 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
       int allSum = 0;
 
       for (final InvestRecord element in value) {
-        if (stockIds.contains(element.investId)) {
+        if (stockRelationalIds.contains(element.investId)) {
           stockCost += element.cost;
           stockPrice += element.price;
           stockSum += element.price - element.cost;
         }
 
-        if (shintakuIds.contains(element.investId)) {
+        if (shintakuRelationalIds.contains(element.investId)) {
           shintakuCost += element.cost;
           shintakuPrice += element.price;
           shintakuSum += element.price - element.cost;
@@ -175,8 +175,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
   ///
   void setChartData() {
-    final String selectedGraphName = ref
-        .watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
+    final String selectedGraphName = ref.watch(totalGraphProvider
+        .select((TotalGraphState value) => value.selectedGraphName));
 
     final List<String> graphInvestKind = <String>[];
 
@@ -205,6 +205,11 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
     final List<FlSpot> flspotsAllSum = <FlSpot>[];
 
     final List<int> points = <int>[];
+
+    int allGuidePriceMin = 0;
+    int allGuidePriceMax = 0;
+    int allGuideSumMin = 0;
+    int allGuideSumMax = 0;
 
     int i = 0;
     investPriceMap.forEach((String key, InvestPrice value) {
@@ -252,6 +257,13 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
           ..add(value.allPrice)
           ..add(value.allSum);
 
+        if (i == 0) {
+          allGuidePriceMin = value.allPrice;
+          allGuideSumMin = value.allSum;
+        }
+        allGuidePriceMax = value.allPrice;
+        allGuideSumMax = value.allSum;
+
         flspotsAllCost.add(FlSpot(i.toDouble(), value.allCost.toDouble()));
         flspotsAllPrice.add(FlSpot(i.toDouble(), value.allPrice.toDouble()));
         flspotsAllSum.add(FlSpot(i.toDouble(), value.allSum.toDouble()));
@@ -261,6 +273,17 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
       i++;
     });
+
+    final List<FlSpot> flspotsAllPriceGuide = <FlSpot>[
+      FlSpot(0, allGuidePriceMin.toDouble()),
+      FlSpot(
+          (flspotsAllPrice.length - 1).toDouble(), allGuidePriceMax.toDouble()),
+    ];
+
+    final List<FlSpot> flspotsAllSumGuide = <FlSpot>[
+      FlSpot(0, allGuideSumMin.toDouble()),
+      FlSpot((flspotsAllSum.length - 1).toDouble(), allGuideSumMax.toDouble()),
+    ];
 
     final int maxPoint = points.reduce(max);
     final int minPoint = points.reduce(min);
@@ -394,6 +417,22 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
             barWidth: 1,
             isStrokeCapRound: true,
             color: const Color(0xFFFBB6CE),
+            dotData: const FlDotData(show: false),
+          ),
+
+          LineChartBarData(
+            spots: flspotsAllPriceGuide,
+            barWidth: 1,
+            isStrokeCapRound: true,
+            color: Colors.orangeAccent,
+            dotData: const FlDotData(show: false),
+          ),
+
+          LineChartBarData(
+            spots: flspotsAllSumGuide,
+            barWidth: 1,
+            isStrokeCapRound: true,
+            color: Colors.orangeAccent,
             dotData: const FlDotData(show: false),
           ),
         ],
