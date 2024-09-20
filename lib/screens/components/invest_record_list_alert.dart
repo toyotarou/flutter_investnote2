@@ -1,9 +1,8 @@
-// ignore_for_file: use_named_constants, lines_longer_than_80_chars
-
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../collections/invest_name.dart';
 import '../../collections/invest_record.dart';
@@ -30,27 +29,23 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
   Widget build(BuildContext context) {
     setChartData();
 
-    return AlertDialog(
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      content: SingleChildScrollView(
-        child: SizedBox(
-          height: context.screenSize.height,
-          child: DefaultTextStyle(
-            style: const TextStyle(fontSize: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 20),
-                Container(width: context.screenSize.width),
-                Text(widget.investName.name),
-                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-                const SizedBox(height: 10),
-                SizedBox(height: 150, child: LineChart(graphData)),
-                const SizedBox(height: 20),
-                Expanded(child: _displayInvestRecordList()),
-              ],
-            ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: DefaultTextStyle(
+          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          child: Column(
+            children: <Widget>[
+              const SizedBox(height: 20),
+              Container(width: context.screenSize.width),
+              Text(widget.investName.name),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              const SizedBox(height: 10),
+              SizedBox(height: 150, child: LineChart(graphData)),
+              const SizedBox(height: 20),
+              Expanded(child: _displayInvestRecordList()),
+            ],
           ),
         ),
       ),
@@ -116,9 +111,16 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
         lastCost = element.cost;
       });
 
-    list.add(const SizedBox(height: 200));
-
-    return SingleChildScrollView(child: Column(children: list));
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) => list[index],
+            childCount: list.length,
+          ),
+        ),
+      ],
+    );
   }
 
   ///
@@ -130,8 +132,8 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
     double startPrice = 0.0;
     double endPrice = 0.0;
 
-    FlSpot startSpot = const FlSpot(0, 0);
-    FlSpot endSpot = const FlSpot(0, 0);
+    FlSpot startSpot = FlSpot.zero;
+    FlSpot endSpot = FlSpot.zero;
     List<FlSpot> flspotsTrend = <FlSpot>[];
 
     for (int i = 0; i < widget.allInvestRecord.length; i++) {

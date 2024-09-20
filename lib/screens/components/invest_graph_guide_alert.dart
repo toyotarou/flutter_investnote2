@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../collections/invest_name.dart';
 import '../../extensions/extensions.dart';
 import '../../state/invest_graph/invest_graph.dart';
@@ -30,44 +31,49 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
     final bool wideGraphDisplay = ref.watch(investGraphProvider
         .select((InvestGraphState value) => value.wideGraphDisplay));
 
-    return AlertDialog(
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(width: context.screenSize.width),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: DefaultTextStyle(
+          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          child: Column(
             children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  ref
-                      .read(investGraphProvider.notifier)
-                      .setWideGraphDisplay(flag: !wideGraphDisplay);
-                },
-                icon: Icon(
-                  Icons.show_chart,
-                  color: wideGraphDisplay ? Colors.yellowAccent : Colors.white,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  ref
-                      .read(investGraphProvider.notifier)
-                      .setSelectedGraphId(id: 0);
+              Container(width: context.screenSize.width),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setWideGraphDisplay(flag: !wideGraphDisplay);
+                    },
+                    icon: Icon(
+                      Icons.show_chart,
+                      color:
+                          wideGraphDisplay ? Colors.yellowAccent : Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setSelectedGraphId(id: 0);
 
-                  ref
-                      .read(investGraphProvider.notifier)
-                      .setSelectedGraphName(name: '');
-                },
-                icon: const Icon(Icons.close),
+                      ref
+                          .read(investGraphProvider.notifier)
+                          .setSelectedGraphName(name: '');
+                    },
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
               ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Expanded(child: displayGraphGuide()),
             ],
           ),
-          Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-          Expanded(child: displayGraphGuide()),
-        ],
+        ),
       ),
     );
   }
@@ -158,6 +164,15 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
       ));
     }
 
-    return SingleChildScrollView(child: Column(children: list));
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) => list[index],
+            childCount: list.length,
+          ),
+        ),
+      ],
+    );
   }
 }
