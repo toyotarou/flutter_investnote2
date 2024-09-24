@@ -205,8 +205,20 @@ class _DataImportAlertState extends State<DataImportAlert> {
           );
 
         case 'investRecord':
+          // var exDate = exLine[1].trim().split('/');
+          //
+          // var date = '';
+          //
+          // if (exDate.length > 1) {
+          //   date =
+          //       '${exDate[0]}-${exDate[1].padLeft(2, '0')}-${exDate[2].padLeft(2, '0')}';
+          // } else {
+          //   date = exLine[1].trim();
+          // }
+
           importDataList.add(InvestRecord()
             ..date = exLine[1].trim()
+//            ..date = date
             ..investId = exLine[2].trim().toInt()
             ..cost = exLine[3].trim().toInt()
             ..price = exLine[4].trim().toInt());
