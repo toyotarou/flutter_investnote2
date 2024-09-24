@@ -155,13 +155,15 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
     }
 
     for (final InvestRecord element in widget.allInvestRecord) {
-      map[element.investId]?[element.date] =
-          (element.price != 0 && element.cost != 0)
-              ? ((element.price / element.cost) * 100)
-                  .toString()
-                  .split('.')[0]
-                  .toInt()
-              : 0;
+      if (element.price > 0 && element.cost > 0) {
+        map[element.investId]?[element.date] =
+            (element.price != 0 && element.cost != 0)
+                ? ((element.price / element.cost) * 100)
+                    .toString()
+                    .split('.')[0]
+                    .toInt()
+                : 0;
+      }
     }
 
     final int selectedGraphId = ref.watch(investGraphProvider

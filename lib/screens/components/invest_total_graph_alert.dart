@@ -215,58 +215,68 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
     investPriceMap.forEach((String key, InvestPrice value) {
       final List<int> values = <int>[];
       if (graphInvestKind.contains('stock')) {
-        values
-          ..add(value.stockCost)
-          ..add(value.stockPrice)
-          ..add(value.stockSum);
+        if (value.stockCost > 0 && value.stockPrice > 0) {
+          values
+            ..add(value.stockCost)
+            ..add(value.stockPrice)
+            ..add(value.stockSum);
 
-        flspotsStockCost.add(FlSpot(i.toDouble(), value.stockCost.toDouble()));
-        flspotsStockPrice
-            .add(FlSpot(i.toDouble(), value.stockPrice.toDouble()));
-        flspotsStockSum.add(FlSpot(i.toDouble(), value.stockSum.toDouble()));
+          flspotsStockCost
+              .add(FlSpot(i.toDouble(), value.stockCost.toDouble()));
+          flspotsStockPrice
+              .add(FlSpot(i.toDouble(), value.stockPrice.toDouble()));
+          flspotsStockSum.add(FlSpot(i.toDouble(), value.stockSum.toDouble()));
+        }
       }
 
       if (graphInvestKind.contains('shintaku')) {
-        values
-          ..add(value.shintakuCost)
-          ..add(value.shintakuPrice)
-          ..add(value.shintakuSum);
+        if (value.shintakuCost > 0 && value.shintakuPrice > 0) {
+          values
+            ..add(value.shintakuCost)
+            ..add(value.shintakuPrice)
+            ..add(value.shintakuSum);
 
-        flspotsShintakuCost
-            .add(FlSpot(i.toDouble(), value.shintakuCost.toDouble()));
-        flspotsShintakuPrice
-            .add(FlSpot(i.toDouble(), value.shintakuPrice.toDouble()));
-        flspotsShintakuSum
-            .add(FlSpot(i.toDouble(), value.shintakuSum.toDouble()));
+          flspotsShintakuCost
+              .add(FlSpot(i.toDouble(), value.shintakuCost.toDouble()));
+          flspotsShintakuPrice
+              .add(FlSpot(i.toDouble(), value.shintakuPrice.toDouble()));
+          flspotsShintakuSum
+              .add(FlSpot(i.toDouble(), value.shintakuSum.toDouble()));
+        }
       }
 
       if (graphInvestKind.contains('gold')) {
-        values
-          ..add(value.goldCost)
-          ..add(value.goldPrice)
-          ..add(value.goldSum);
+        if (value.goldCost > 0 && value.goldPrice > 0) {
+          values
+            ..add(value.goldCost)
+            ..add(value.goldPrice)
+            ..add(value.goldSum);
 
-        flspotsGoldCost.add(FlSpot(i.toDouble(), value.goldCost.toDouble()));
-        flspotsGoldPrice.add(FlSpot(i.toDouble(), value.goldPrice.toDouble()));
-        flspotsGoldSum.add(FlSpot(i.toDouble(), value.goldSum.toDouble()));
+          flspotsGoldCost.add(FlSpot(i.toDouble(), value.goldCost.toDouble()));
+          flspotsGoldPrice
+              .add(FlSpot(i.toDouble(), value.goldPrice.toDouble()));
+          flspotsGoldSum.add(FlSpot(i.toDouble(), value.goldSum.toDouble()));
+        }
       }
 
       if (graphInvestKind.contains('blank')) {
-        values
-          ..add(value.allCost)
-          ..add(value.allPrice)
-          ..add(value.allSum);
+        if (value.allCost > 0 && value.allPrice > 0) {
+          values
+            ..add(value.allCost)
+            ..add(value.allPrice)
+            ..add(value.allSum);
 
-        if (i == 0) {
-          allGuidePriceMin = value.allPrice;
-          allGuideSumMin = value.allSum;
+          if (i == 0) {
+            allGuidePriceMin = value.allPrice;
+            allGuideSumMin = value.allSum;
+          }
+          allGuidePriceMax = value.allPrice;
+          allGuideSumMax = value.allSum;
+
+          flspotsAllCost.add(FlSpot(i.toDouble(), value.allCost.toDouble()));
+          flspotsAllPrice.add(FlSpot(i.toDouble(), value.allPrice.toDouble()));
+          flspotsAllSum.add(FlSpot(i.toDouble(), value.allSum.toDouble()));
         }
-        allGuidePriceMax = value.allPrice;
-        allGuideSumMax = value.allSum;
-
-        flspotsAllCost.add(FlSpot(i.toDouble(), value.allCost.toDouble()));
-        flspotsAllPrice.add(FlSpot(i.toDouble(), value.allPrice.toDouble()));
-        flspotsAllSum.add(FlSpot(i.toDouble(), value.allSum.toDouble()));
       }
 
       values.forEach(points.add);
