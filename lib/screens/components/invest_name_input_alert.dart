@@ -387,12 +387,23 @@ class _InvestNameInputAlertState extends ConsumerState<InvestNameInputAlert> {
         break;
     }
 
+    final List<int> relationalIdList = <int>[];
+    await InvestNamesRepository()
+        .getInvestNameList(isar: widget.isar)
+        .then((List<InvestName>? value) {
+      value?.forEach((InvestName element) {
+        relationalIdList.add(element.relationalId);
+      });
+    });
+
+    relationalIdList.sort();
+
     final InvestName investName = InvestName()
       ..frame = frame
       ..dealNumber = _investNumberEditingController.text.trim().toInt()
       ..name = _investNameEditingController.text.trim()
       ..kind = widget.investKind.name
-      ..relationalId = widget.investNameList.length + 1;
+      ..relationalId = relationalIdList.last + 1;
 
     await InvestNamesRepository()
         .inputInvestName(isar: widget.isar, investName: investName)
