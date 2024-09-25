@@ -18,6 +18,7 @@ import 'components/csv_data/data_export_alert.dart';
 import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_invest_display_alert.dart';
 import 'components/invest_name_list_alert.dart';
+import 'components/invest_result_list_alert.dart';
 import 'components/invest_total_graph_alert.dart';
 import 'components/parts/back_ground_image.dart';
 import 'components/parts/invest_dialog.dart';
@@ -137,6 +138,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              InvestDialog(
+                context: context,
+                widget: InvestResultListAlert(
+                  isar: widget.isar,
+                  investRecordMap: investRecordMap,
+                ),
+              );
+            },
+            icon: Icon(Icons.list,
+                color: Colors.white.withOpacity(0.6), size: 20),
+          ),
           IconButton(
             onPressed: () {
               InvestDialog(
