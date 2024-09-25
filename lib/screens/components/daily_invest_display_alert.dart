@@ -86,12 +86,67 @@ class _DailyInvestDisplayAlertState
                 ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () => _showDeleteDialog(),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      margin: const EdgeInsets.all(2),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 20),
+                      child: const Text('レコード削除')),
+                ),
+              ),
               Expanded(child: _displayDailyInvest()),
             ],
           ),
         ),
       ),
     );
+  }
+
+  ///
+  void _showDeleteDialog() {
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+
+    final Widget continueButton = TextButton(
+        onPressed: () {
+          _deleteInvestRecords();
+
+          Navigator.pop(context);
+        },
+        child: const Text('はい'));
+
+    final AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.blueGrey.withOpacity(0.3),
+      content: const Text('このデータを消去しますか？'),
+      actions: <Widget>[cancelButton, continueButton],
+    );
+
+    // ignore: inference_failure_on_function_invocation
+    showDialog(context: context, builder: (BuildContext context) => alert);
+  }
+
+  ///
+  Future<void> _deleteInvestRecords() async {
+    InvestRecordsRepository()
+        .getInvestRecordListByDate(
+            isar: widget.isar, date: widget.date.yyyymmdd)
+        .then((List<InvestRecord>? value) async {
+      InvestRecordsRepository()
+          .deleteInvestRecordList(isar: widget.isar, investRecordList: value)
+          // ignore: always_specify_types
+          .then((value2) async {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
+    });
   }
 
   ///
