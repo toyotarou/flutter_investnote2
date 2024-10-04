@@ -215,8 +215,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
       ..investId = (widget.investName.kind == 'gold')
           ? 0
           : widget.investName.relationalId
-      ..cost = _costEditingController.text.trim().toInt()
-      ..price = _priceEditingController.text.trim().toInt();
+      ..cost = _costEditingController.text.replaceAll(',', '').trim().toInt()
+      ..price = _priceEditingController.text.replaceAll(',', '').trim().toInt();
 
     await InvestRecordsRepository()
         .inputInvestRecord(isar: widget.isar, investRecord: investRecord)
@@ -276,8 +276,10 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           ..investId = (widget.investName.kind == InvestKind.gold.name)
               ? 0
               : widget.investName.relationalId
-          ..cost = _costEditingController.text.trim().toInt()
-          ..price = _priceEditingController.text.trim().toInt();
+          ..cost =
+              _costEditingController.text.replaceAll(',', '').trim().toInt()
+          ..price =
+              _priceEditingController.text.replaceAll(',', '').trim().toInt();
 
         await InvestRecordsRepository()
             .updateInvestRecord(isar: widget.isar, investRecord: value)
