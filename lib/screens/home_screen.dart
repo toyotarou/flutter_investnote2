@@ -13,6 +13,7 @@ import '../state/calendars/calendars_response_state.dart';
 import '../state/daily_invest_display/daily_invest_display.dart';
 import '../state/holidays/holidays_notifier.dart';
 import '../state/holidays/holidays_response_state.dart';
+import '../state/total_graph/total_graph.dart';
 import '../utilities/utilities.dart';
 import 'components/csv_data/data_export_alert.dart';
 import 'components/csv_data/data_import_alert.dart';
@@ -153,12 +154,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
+              ref
+                  .read(totalGraphProvider.notifier)
+                  .setSelectedStartMonth(month: 0);
+
+              ref
+                  .read(totalGraphProvider.notifier)
+                  .setSelectedEndMonth(month: 0);
+
               InvestDialog(
                 context: context,
                 widget: InvestTotalGraphAlert(
                   isar: widget.isar,
                   investNameList: investNameList ?? <InvestName>[],
                   investRecordMap: investRecordMap,
+                  investRecordList: investRecordList ?? <InvestRecord>[],
                 ),
               );
             },

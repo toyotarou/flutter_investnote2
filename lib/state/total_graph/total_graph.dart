@@ -10,6 +10,8 @@ part 'total_graph.g.dart';
 class TotalGraphState with _$TotalGraphState {
   const factory TotalGraphState({
     @Default('blank') String selectedGraphName,
+    @Default(0) int selectedStartMonth,
+    @Default(0) int selectedEndMonth,
   }) = _TotalGraphState;
 }
 
@@ -24,4 +26,12 @@ class TotalGraph extends _$TotalGraph {
   ///
   void setSelectedGraphName({required String name}) =>
       state = state.copyWith(selectedGraphName: name);
+
+  ///
+  void setSelectedStartMonth({required int month}) =>
+      state = state.copyWith(selectedStartMonth: month);
+
+  ///
+  void setSelectedEndMonth({required int month}) =>
+      state = state.copyWith(selectedEndMonth: month);
 }

@@ -17,6 +17,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$TotalGraphState {
   String get selectedGraphName => throw _privateConstructorUsedError;
+  int get selectedStartMonth => throw _privateConstructorUsedError;
+  int get selectedEndMonth => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TotalGraphStateCopyWith<TotalGraphState> get copyWith =>
@@ -29,7 +31,8 @@ abstract class $TotalGraphStateCopyWith<$Res> {
           TotalGraphState value, $Res Function(TotalGraphState) then) =
       _$TotalGraphStateCopyWithImpl<$Res, TotalGraphState>;
   @useResult
-  $Res call({String selectedGraphName});
+  $Res call(
+      {String selectedGraphName, int selectedStartMonth, int selectedEndMonth});
 }
 
 /// @nodoc
@@ -46,12 +49,22 @@ class _$TotalGraphStateCopyWithImpl<$Res, $Val extends TotalGraphState>
   @override
   $Res call({
     Object? selectedGraphName = null,
+    Object? selectedStartMonth = null,
+    Object? selectedEndMonth = null,
   }) {
     return _then(_value.copyWith(
       selectedGraphName: null == selectedGraphName
           ? _value.selectedGraphName
           : selectedGraphName // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedStartMonth: null == selectedStartMonth
+          ? _value.selectedStartMonth
+          : selectedStartMonth // ignore: cast_nullable_to_non_nullable
+              as int,
+      selectedEndMonth: null == selectedEndMonth
+          ? _value.selectedEndMonth
+          : selectedEndMonth // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -64,7 +77,8 @@ abstract class _$$TotalGraphStateImplCopyWith<$Res>
       __$$TotalGraphStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String selectedGraphName});
+  $Res call(
+      {String selectedGraphName, int selectedStartMonth, int selectedEndMonth});
 }
 
 /// @nodoc
@@ -79,12 +93,22 @@ class __$$TotalGraphStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? selectedGraphName = null,
+    Object? selectedStartMonth = null,
+    Object? selectedEndMonth = null,
   }) {
     return _then(_$TotalGraphStateImpl(
       selectedGraphName: null == selectedGraphName
           ? _value.selectedGraphName
           : selectedGraphName // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedStartMonth: null == selectedStartMonth
+          ? _value.selectedStartMonth
+          : selectedStartMonth // ignore: cast_nullable_to_non_nullable
+              as int,
+      selectedEndMonth: null == selectedEndMonth
+          ? _value.selectedEndMonth
+          : selectedEndMonth // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -92,15 +116,24 @@ class __$$TotalGraphStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TotalGraphStateImpl implements _TotalGraphState {
-  const _$TotalGraphStateImpl({this.selectedGraphName = 'blank'});
+  const _$TotalGraphStateImpl(
+      {this.selectedGraphName = 'blank',
+      this.selectedStartMonth = 0,
+      this.selectedEndMonth = 0});
 
   @override
   @JsonKey()
   final String selectedGraphName;
+  @override
+  @JsonKey()
+  final int selectedStartMonth;
+  @override
+  @JsonKey()
+  final int selectedEndMonth;
 
   @override
   String toString() {
-    return 'TotalGraphState(selectedGraphName: $selectedGraphName)';
+    return 'TotalGraphState(selectedGraphName: $selectedGraphName, selectedStartMonth: $selectedStartMonth, selectedEndMonth: $selectedEndMonth)';
   }
 
   @override
@@ -109,11 +142,16 @@ class _$TotalGraphStateImpl implements _TotalGraphState {
         (other.runtimeType == runtimeType &&
             other is _$TotalGraphStateImpl &&
             (identical(other.selectedGraphName, selectedGraphName) ||
-                other.selectedGraphName == selectedGraphName));
+                other.selectedGraphName == selectedGraphName) &&
+            (identical(other.selectedStartMonth, selectedStartMonth) ||
+                other.selectedStartMonth == selectedStartMonth) &&
+            (identical(other.selectedEndMonth, selectedEndMonth) ||
+                other.selectedEndMonth == selectedEndMonth));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, selectedGraphName);
+  int get hashCode => Object.hash(
+      runtimeType, selectedGraphName, selectedStartMonth, selectedEndMonth);
 
   @JsonKey(ignore: true)
   @override
@@ -124,11 +162,17 @@ class _$TotalGraphStateImpl implements _TotalGraphState {
 }
 
 abstract class _TotalGraphState implements TotalGraphState {
-  const factory _TotalGraphState({final String selectedGraphName}) =
-      _$TotalGraphStateImpl;
+  const factory _TotalGraphState(
+      {final String selectedGraphName,
+      final int selectedStartMonth,
+      final int selectedEndMonth}) = _$TotalGraphStateImpl;
 
   @override
   String get selectedGraphName;
+  @override
+  int get selectedStartMonth;
+  @override
+  int get selectedEndMonth;
   @override
   @JsonKey(ignore: true)
   _$$TotalGraphStateImplCopyWith<_$TotalGraphStateImpl> get copyWith =>
