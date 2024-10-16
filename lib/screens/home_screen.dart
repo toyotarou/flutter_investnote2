@@ -627,7 +627,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         const SizedBox(height: 5),
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                              minHeight: context.screenSize.height / 4),
+                              minHeight: context.screenSize.height / 3.5),
                           child: (DateTime.parse('$generateYmd 00:00:00')
                                       .isAfter(DateTime.now()) ||
                                   allSum == 0)
@@ -841,6 +841,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           ],
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orangeAccent
+                                            .withOpacity(0.2),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(),
+                                          Text(
+                                            ((stockSum +
+                                                        shintakuSum +
+                                                        goldSum) -
+                                                    calendarCellSumDataMap[
+                                                            beforeDate]!
+                                                        .allSum)
+                                                .toString()
+                                                .toCurrency(),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

@@ -140,25 +140,31 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
         return Padding(
           padding: const EdgeInsets.all(1.2),
           child: GestureDetector(
-            onTap: () {
-              ref
-                  .read(totalGraphProvider.notifier)
-                  .setSelectedStartMonth(month: element + 1);
+            onTap: (widget.year == DateTime.now().year &&
+                    element >= DateTime.now().month)
+                ? null
+                : () {
+                    ref
+                        .read(totalGraphProvider.notifier)
+                        .setSelectedStartMonth(month: element + 1);
 
-              ref
-                  .read(totalGraphProvider.notifier)
-                  .setSelectedEndMonth(month: 0);
+                    ref
+                        .read(totalGraphProvider.notifier)
+                        .setSelectedEndMonth(month: 0);
 
-              if (element == selectedStartMonth - 1) {
-                ref
-                    .read(totalGraphProvider.notifier)
-                    .setSelectedStartMonth(month: 0);
-              }
-            },
+                    if (element == selectedStartMonth - 1) {
+                      ref
+                          .read(totalGraphProvider.notifier)
+                          .setSelectedStartMonth(month: 0);
+                    }
+                  },
             child: CircleAvatar(
               backgroundColor: (element + 1 == selectedStartMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.2),
+                  : (widget.year == DateTime.now().year &&
+                          element >= DateTime.now().month)
+                      ? Colors.grey.withOpacity(0.2)
+                      : Colors.white.withOpacity(0.2),
               radius: oneRadius.toDouble(),
               child: Text(
                 (element + 1).toString().padLeft(2, '0'),
@@ -193,7 +199,9 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
         return Padding(
           padding: const EdgeInsets.all(1.2),
           child: GestureDetector(
-            onTap: (element < selectedStartMonth - 1)
+            onTap: ((element < selectedStartMonth - 1) ||
+                    (widget.year == DateTime.now().year &&
+                        element >= DateTime.now().month))
                 ? null
                 : () {
                     ref
@@ -203,7 +211,10 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             child: CircleAvatar(
               backgroundColor: (element + 1 == selectedEndMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.2),
+                  : (widget.year == DateTime.now().year &&
+                          element >= DateTime.now().month)
+                      ? Colors.grey.withOpacity(0.2)
+                      : Colors.white.withOpacity(0.2),
               radius: oneRadius.toDouble(),
               child: Text(
                 (element + 1).toString().padLeft(2, '0'),
@@ -218,6 +229,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
   ///
   void makeGraphData() {
+    investPriceMap = <String, InvestPrice>{};
+
     final List<int> stockRelationalIds = <int>[];
     final List<int> shintakuRelationalIds = <int>[];
 
@@ -231,64 +244,79 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
       }
     }
 
+    final int selectedStartMonth = ref.watch(totalGraphProvider
+        .select((TotalGraphState value) => value.selectedStartMonth));
+    final int selectedEndMonth = ref.watch(totalGraphProvider
+        .select((TotalGraphState value) => value.selectedEndMonth));
+
+    final List<String> selectedMonthList = <String>[];
+
+    final int endMonth = (selectedEndMonth == 0) ? 12 : selectedEndMonth;
+
+    for (int i = selectedStartMonth; i <= endMonth; i++) {
+      selectedMonthList.add(i.toString().padLeft(2, '0'));
+    }
+
     widget.investRecordMap.forEach((String key, List<InvestRecord> value) {
       final List<String> exKey = key.split('-');
 
       if (exKey[0].toInt() == widget.year) {
-        int stockCost = 0;
-        int stockPrice = 0;
-        int stockSum = 0;
+        if (selectedMonthList.contains(exKey[1])) {
+          int stockCost = 0;
+          int stockPrice = 0;
+          int stockSum = 0;
 
-        int shintakuCost = 0;
-        int shintakuPrice = 0;
-        int shintakuSum = 0;
+          int shintakuCost = 0;
+          int shintakuPrice = 0;
+          int shintakuSum = 0;
 
-        int goldCost = 0;
-        int goldPrice = 0;
-        int goldSum = 0;
+          int goldCost = 0;
+          int goldPrice = 0;
+          int goldSum = 0;
 
-        int allCost = 0;
-        int allPrice = 0;
-        int allSum = 0;
+          int allCost = 0;
+          int allPrice = 0;
+          int allSum = 0;
 
-        for (final InvestRecord element in value) {
-          if (stockRelationalIds.contains(element.investId)) {
-            stockCost += element.cost;
-            stockPrice += element.price;
-            stockSum += element.price - element.cost;
+          for (final InvestRecord element in value) {
+            if (stockRelationalIds.contains(element.investId)) {
+              stockCost += element.cost;
+              stockPrice += element.price;
+              stockSum += element.price - element.cost;
+            }
+
+            if (shintakuRelationalIds.contains(element.investId)) {
+              shintakuCost += element.cost;
+              shintakuPrice += element.price;
+              shintakuSum += element.price - element.cost;
+            }
+
+            if (element.investId == 0) {
+              goldCost += element.cost;
+              goldPrice += element.price;
+              goldSum += element.price - element.cost;
+            }
+
+            allCost += element.cost;
+            allPrice += element.price;
+            allSum += element.price - element.cost;
           }
 
-          if (shintakuRelationalIds.contains(element.investId)) {
-            shintakuCost += element.cost;
-            shintakuPrice += element.price;
-            shintakuSum += element.price - element.cost;
-          }
-
-          if (element.investId == 0) {
-            goldCost += element.cost;
-            goldPrice += element.price;
-            goldSum += element.price - element.cost;
-          }
-
-          allCost += element.cost;
-          allPrice += element.price;
-          allSum += element.price - element.cost;
+          investPriceMap[key] = InvestPrice(
+            stockCost: stockCost,
+            stockPrice: stockPrice,
+            stockSum: stockSum,
+            shintakuCost: shintakuCost,
+            shintakuPrice: shintakuPrice,
+            shintakuSum: shintakuSum,
+            goldCost: goldCost,
+            goldPrice: goldPrice,
+            goldSum: goldSum,
+            allCost: allCost,
+            allPrice: allPrice,
+            allSum: allSum,
+          );
         }
-
-        investPriceMap[key] = InvestPrice(
-          stockCost: stockCost,
-          stockPrice: stockPrice,
-          stockSum: stockSum,
-          shintakuCost: shintakuCost,
-          shintakuPrice: shintakuPrice,
-          shintakuSum: shintakuSum,
-          goldCost: goldCost,
-          goldPrice: goldPrice,
-          goldSum: goldSum,
-          allCost: allCost,
-          allPrice: allPrice,
-          allSum: allSum,
-        );
       }
     });
   }
@@ -415,201 +443,203 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
       FlSpot((flspotsAllSum.length - 1).toDouble(), allGuideSumMax.toDouble()),
     ];
 
-    final int maxPoint = points.reduce(max);
-    final int minPoint = points.reduce(min);
+    if (points.isNotEmpty) {
+      final int maxPoint = points.reduce(max);
+      final int minPoint = points.reduce(min);
 
-    const int warisuu = 1000;
-    final int graphYMax = (maxPoint / warisuu).ceil() * warisuu;
-    final int graphYMin = (minPoint * -1 / warisuu).ceil() * warisuu * -1;
+      const int warisuu = 1000;
+      final int graphYMax = (maxPoint / warisuu).ceil() * warisuu;
+      final int graphYMin = (minPoint * -1 / warisuu).ceil() * warisuu * -1;
 
-    graphData = LineChartData(
-      maxY: graphYMax.toDouble(),
-      minY: graphYMin.toDouble(),
+      graphData = LineChartData(
+        maxY: graphYMax.toDouble(),
+        minY: graphYMin.toDouble(),
 
-      borderData: FlBorderData(show: false),
+        borderData: FlBorderData(show: false),
 
-      ///
-      lineTouchData: const LineTouchData(enabled: false),
+        ///
+        lineTouchData: const LineTouchData(enabled: false),
 
-      ///
-      titlesData: const FlTitlesData(
-        //-------------------------// 上部の目盛り
-        topTitles: AxisTitles(),
-        //-------------------------// 上部の目盛り
+        ///
+        titlesData: const FlTitlesData(
+          //-------------------------// 上部の目盛り
+          topTitles: AxisTitles(),
+          //-------------------------// 上部の目盛り
 
-        //-------------------------// 下部の目盛り
-        bottomTitles: AxisTitles(),
-        //-------------------------// 下部の目盛り
+          //-------------------------// 下部の目盛り
+          bottomTitles: AxisTitles(),
+          //-------------------------// 下部の目盛り
 
-        //-------------------------// 左側の目盛り
-        leftTitles: AxisTitles(),
-        //-------------------------// 左側の目盛り
+          //-------------------------// 左側の目盛り
+          leftTitles: AxisTitles(),
+          //-------------------------// 左側の目盛り
 
-        //-------------------------// 右側の目盛り
-        rightTitles: AxisTitles(),
-        //-------------------------// 右側の目盛り
-      ),
-
-      ///
-      lineBarsData: <LineChartBarData>[
-        if (graphInvestKind.contains('stock')) ...<LineChartBarData>[
-          LineChartBarData(
-            spots: flspotsStockPrice,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.yellowAccent,
-            dotData: const FlDotData(show: false),
-          ),
-          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
-            LineChartBarData(
-              spots: flspotsStockCost,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: Colors.white,
-              dotData: const FlDotData(show: false),
-            ),
-            LineChartBarData(
-              spots: flspotsStockSum,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: const Color(0xFFFBB6CE),
-              dotData: const FlDotData(show: false),
-            ),
-          ],
-        ],
-        if (graphInvestKind.contains('shintaku')) ...<LineChartBarData>[
-          LineChartBarData(
-            spots: flspotsShintakuPrice,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.yellowAccent,
-            dotData: const FlDotData(show: false),
-          ),
-          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
-            LineChartBarData(
-              spots: flspotsShintakuCost,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: Colors.white,
-              dotData: const FlDotData(show: false),
-            ),
-            LineChartBarData(
-              spots: flspotsShintakuSum,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: const Color(0xFFFBB6CE),
-              dotData: const FlDotData(show: false),
-            ),
-          ],
-        ],
-        if (graphInvestKind.contains('gold')) ...<LineChartBarData>[
-          LineChartBarData(
-            spots: flspotsGoldPrice,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.yellowAccent,
-            dotData: const FlDotData(show: false),
-          ),
-          if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
-            LineChartBarData(
-              spots: flspotsGoldCost,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: Colors.white,
-              dotData: const FlDotData(show: false),
-            ),
-            LineChartBarData(
-              spots: flspotsGoldSum,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: const Color(0xFFFBB6CE),
-              dotData: const FlDotData(show: false),
-            ),
-          ],
-        ],
-        if (graphInvestKind.contains('blank')) ...<LineChartBarData>[
-          LineChartBarData(
-            spots: flspotsAllPrice,
-            barWidth: 3,
-            isStrokeCapRound: true,
-            color: Colors.white,
-            dotData: const FlDotData(show: false),
-          ),
-          // LineChartBarData(
-          //   spots: flspotsAllCost,
-          //   barWidth: 1,
-          //   isStrokeCapRound: true,
-          //   color: Colors.white,
-          //   dotData: const FlDotData(show: false),
-          // ),
-          LineChartBarData(
-            spots: flspotsAllSum,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: const Color(0xFFFBB6CE),
-            dotData: const FlDotData(show: false),
-          ),
-
-          LineChartBarData(
-            spots: flspotsAllPriceGuide,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.orangeAccent,
-            dotData: const FlDotData(show: false),
-          ),
-
-          LineChartBarData(
-            spots: flspotsAllSumGuide,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.orangeAccent,
-            dotData: const FlDotData(show: false),
-          ),
-        ],
-      ],
-    );
-
-    graphData2 = LineChartData(
-      maxY: graphYMax.toDouble(),
-      minY: graphYMin.toDouble(),
-
-      borderData: FlBorderData(show: false),
-
-      ///
-      lineTouchData: const LineTouchData(enabled: false),
-
-      ///
-      titlesData: FlTitlesData(
-        //-------------------------// 上部の目盛り
-        topTitles: const AxisTitles(),
-        //-------------------------// 上部の目盛り
-
-        //-------------------------// 下部の目盛り
-        bottomTitles: const AxisTitles(),
-        //-------------------------// 下部の目盛り
-
-        //-------------------------// 左側の目盛り
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 60,
-            getTitlesWidget: (double value, TitleMeta meta) {
-              return Text(
-                value.toInt().toString(),
-                style: const TextStyle(fontSize: 12),
-              );
-            },
-          ),
+          //-------------------------// 右側の目盛り
+          rightTitles: AxisTitles(),
+          //-------------------------// 右側の目盛り
         ),
-        //-------------------------// 左側の目盛り
 
-        //-------------------------// 右側の目盛り
-        rightTitles: const AxisTitles(),
-        //-------------------------// 右側の目盛り
-      ),
+        ///
+        lineBarsData: <LineChartBarData>[
+          if (graphInvestKind.contains('stock')) ...<LineChartBarData>[
+            LineChartBarData(
+              spots: flspotsStockPrice,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: Colors.yellowAccent,
+              dotData: const FlDotData(show: false),
+            ),
+            if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
+              LineChartBarData(
+                spots: flspotsStockCost,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: Colors.white,
+                dotData: const FlDotData(show: false),
+              ),
+              LineChartBarData(
+                spots: flspotsStockSum,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: const Color(0xFFFBB6CE),
+                dotData: const FlDotData(show: false),
+              ),
+            ],
+          ],
+          if (graphInvestKind.contains('shintaku')) ...<LineChartBarData>[
+            LineChartBarData(
+              spots: flspotsShintakuPrice,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: Colors.yellowAccent,
+              dotData: const FlDotData(show: false),
+            ),
+            if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
+              LineChartBarData(
+                spots: flspotsShintakuCost,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: Colors.white,
+                dotData: const FlDotData(show: false),
+              ),
+              LineChartBarData(
+                spots: flspotsShintakuSum,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: const Color(0xFFFBB6CE),
+                dotData: const FlDotData(show: false),
+              ),
+            ],
+          ],
+          if (graphInvestKind.contains('gold')) ...<LineChartBarData>[
+            LineChartBarData(
+              spots: flspotsGoldPrice,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: Colors.yellowAccent,
+              dotData: const FlDotData(show: false),
+            ),
+            if (!graphInvestKind.contains('blank')) ...<LineChartBarData>[
+              LineChartBarData(
+                spots: flspotsGoldCost,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: Colors.white,
+                dotData: const FlDotData(show: false),
+              ),
+              LineChartBarData(
+                spots: flspotsGoldSum,
+                barWidth: 1,
+                isStrokeCapRound: true,
+                color: const Color(0xFFFBB6CE),
+                dotData: const FlDotData(show: false),
+              ),
+            ],
+          ],
+          if (graphInvestKind.contains('blank')) ...<LineChartBarData>[
+            LineChartBarData(
+              spots: flspotsAllPrice,
+              barWidth: 3,
+              isStrokeCapRound: true,
+              color: Colors.white,
+              dotData: const FlDotData(show: false),
+            ),
+            // LineChartBarData(
+            //   spots: flspotsAllCost,
+            //   barWidth: 1,
+            //   isStrokeCapRound: true,
+            //   color: Colors.white,
+            //   dotData: const FlDotData(show: false),
+            // ),
+            LineChartBarData(
+              spots: flspotsAllSum,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: const Color(0xFFFBB6CE),
+              dotData: const FlDotData(show: false),
+            ),
 
-      ///
-      lineBarsData: <LineChartBarData>[],
-    );
+            LineChartBarData(
+              spots: flspotsAllPriceGuide,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: Colors.orangeAccent,
+              dotData: const FlDotData(show: false),
+            ),
+
+            LineChartBarData(
+              spots: flspotsAllSumGuide,
+              barWidth: 1,
+              isStrokeCapRound: true,
+              color: Colors.orangeAccent,
+              dotData: const FlDotData(show: false),
+            ),
+          ],
+        ],
+      );
+
+      graphData2 = LineChartData(
+        maxY: graphYMax.toDouble(),
+        minY: graphYMin.toDouble(),
+
+        borderData: FlBorderData(show: false),
+
+        ///
+        lineTouchData: const LineTouchData(enabled: false),
+
+        ///
+        titlesData: FlTitlesData(
+          //-------------------------// 上部の目盛り
+          topTitles: const AxisTitles(),
+          //-------------------------// 上部の目盛り
+
+          //-------------------------// 下部の目盛り
+          bottomTitles: const AxisTitles(),
+          //-------------------------// 下部の目盛り
+
+          //-------------------------// 左側の目盛り
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 60,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                return Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(fontSize: 12),
+                );
+              },
+            ),
+          ),
+          //-------------------------// 左側の目盛り
+
+          //-------------------------// 右側の目盛り
+          rightTitles: const AxisTitles(),
+          //-------------------------// 右側の目盛り
+        ),
+
+        ///
+        lineBarsData: <LineChartBarData>[],
+      );
+    }
   }
 }
