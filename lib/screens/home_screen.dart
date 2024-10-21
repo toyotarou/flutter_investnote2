@@ -856,14 +856,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         children: <Widget>[
                                           Container(),
                                           Text(
-                                            ((stockSum +
-                                                        shintakuSum +
-                                                        goldSum) -
-                                                    calendarCellSumDataMap[
-                                                            beforeDate]!
-                                                        .allSum)
-                                                .toString()
-                                                .toCurrency(),
+                                            (calendarCellSumDataMap[
+                                                        beforeDate] !=
+                                                    null)
+                                                ? ((stockSum +
+                                                            shintakuSum +
+                                                            goldSum) -
+                                                        calendarCellSumDataMap[
+                                                                beforeDate]!
+                                                            .allSum)
+                                                    .toString()
+                                                    .toCurrency()
+                                                : '0',
                                           ),
                                         ],
                                       ),
