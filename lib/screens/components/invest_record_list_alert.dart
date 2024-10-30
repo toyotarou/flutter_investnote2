@@ -39,7 +39,13 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
             children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Text(widget.investName.name),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(widget.investName.name),
+                  Container(),
+                ],
+              ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               const SizedBox(height: 10),
               SizedBox(height: 150, child: LineChart(graphData)),

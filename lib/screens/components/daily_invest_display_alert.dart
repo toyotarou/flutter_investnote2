@@ -287,8 +287,8 @@ class _DailyInvestDisplayAlertState
                       const SizedBox(width: 20),
                       Row(
                         children: <Widget>[
-                          IconButton(
-                            onPressed: () {
+                          GestureDetector(
+                            onTap: () {
                               ref
                                   .read(dailyInvestDisplayProvider.notifier)
                                   .setSelectedInvestName(
@@ -303,33 +303,34 @@ class _DailyInvestDisplayAlertState
                                 clearBarrierColor: true,
                               );
                             },
-                            icon: Icon(Icons.info_outline,
+                            child: Icon(Icons.info_outline,
                                 color: (element3.name == selectedInvestName)
                                     ? Colors.redAccent.withOpacity(0.6)
                                     : Colors.greenAccent.withOpacity(0.6)),
                           ),
+                          const SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              InvestDialog(
+                                context: context,
+                                widget: InvestRecordInputAlert(
+                                  isar: widget.isar,
+                                  date: widget.date,
+                                  investName: element3,
+                                  investRecord: thisDayInvestRecordList
+                                      ?.where((InvestRecord element4) =>
+                                          element4.investId ==
+                                          element3.relationalId)
+                                      .toList(),
+                                  allInvestRecord: widget.allInvestRecord,
+                                ),
+                                clearBarrierColor: true,
+                              );
+                            },
+                            child: Icon(Icons.input,
+                                color: Colors.greenAccent.withOpacity(0.6)),
+                          ),
                         ],
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          InvestDialog(
-                            context: context,
-                            widget: InvestRecordInputAlert(
-                              isar: widget.isar,
-                              date: widget.date,
-                              investName: element3,
-                              investRecord: thisDayInvestRecordList
-                                  ?.where((InvestRecord element4) =>
-                                      element4.investId ==
-                                      element3.relationalId)
-                                  .toList(),
-                              allInvestRecord: widget.allInvestRecord,
-                            ),
-                            clearBarrierColor: true,
-                          );
-                        },
-                        child: Icon(Icons.input,
-                            color: Colors.greenAccent.withOpacity(0.6)),
                       ),
                     ],
                   ),
@@ -510,28 +511,59 @@ class _DailyInvestDisplayAlertState
                           ),
                         ),
                         const SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () {
-                            InvestDialog(
-                              context: context,
-                              widget: InvestRecordInputAlert(
-                                isar: widget.isar,
-                                date: widget.date,
-                                investRecord: thisDayInvestRecordList
-                                    ?.where((InvestRecord element4) =>
-                                        element4.investId == 0)
-                                    .toList(),
-                                allInvestRecord: widget.allInvestRecord,
-                                investName: InvestName()
-                                  ..id = 0
-                                  ..kind = InvestKind.gold.name
-                                  ..name = 'gold',
-                              ),
-                              clearBarrierColor: true,
-                            );
-                          },
-                          child: Icon(Icons.input,
-                              color: Colors.greenAccent.withOpacity(0.6)),
+                        Row(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                ref
+                                    .read(dailyInvestDisplayProvider.notifier)
+                                    .setSelectedInvestName(
+                                        selectedInvestName: 'gold');
+
+                                InvestDialog(
+                                  context: context,
+                                  widget: InvestRecordListAlert(
+                                    investName: InvestName()
+                                      ..kind = InvestKind.gold.name
+                                      ..frame = ''
+                                      ..name = 'gold'
+                                      ..dealNumber = 0
+                                      ..relationalId = 0,
+                                    allInvestRecord: widget.allInvestRecord,
+                                  ),
+                                  clearBarrierColor: true,
+                                );
+                              },
+                              child: Icon(Icons.info_outline,
+                                  color: ('gold' == selectedInvestName)
+                                      ? Colors.redAccent.withOpacity(0.6)
+                                      : Colors.greenAccent.withOpacity(0.6)),
+                            ),
+                            const SizedBox(width: 20),
+                            GestureDetector(
+                              onTap: () {
+                                InvestDialog(
+                                  context: context,
+                                  widget: InvestRecordInputAlert(
+                                    isar: widget.isar,
+                                    date: widget.date,
+                                    investRecord: thisDayInvestRecordList
+                                        ?.where((InvestRecord element4) =>
+                                            element4.investId == 0)
+                                        .toList(),
+                                    allInvestRecord: widget.allInvestRecord,
+                                    investName: InvestName()
+                                      ..id = 0
+                                      ..kind = InvestKind.gold.name
+                                      ..name = 'gold',
+                                  ),
+                                  clearBarrierColor: true,
+                                );
+                              },
+                              child: Icon(Icons.input,
+                                  color: Colors.greenAccent.withOpacity(0.6)),
+                            ),
+                          ],
                         ),
                       ],
                     ),
