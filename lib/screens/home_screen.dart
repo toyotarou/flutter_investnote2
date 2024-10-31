@@ -75,12 +75,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   List<InvestRecord>? investRecordList = <InvestRecord>[];
 
-  Map<String, List<InvestRecord>> investRecordMap =
-      <String, List<InvestRecord>>{};
+  Map<String, List<InvestRecord>> investRecordMap = <String, List<InvestRecord>>{};
 
   List<String> calendarCellDateDataList = <String>[];
-  Map<String, CalendarCellSumData> calendarCellSumDataMap =
-      <String, CalendarCellSumData>{};
+  Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
 
   ///
   void _init() {
@@ -97,9 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (widget.baseYm != null) {
       // ignore: always_specify_types
-      Future(() => ref
-          .read(calendarProvider.notifier)
-          .setCalendarYearMonth(baseYm: widget.baseYm));
+      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
     final CalendarsResponseState calendarState = ref.watch(calendarProvider);
@@ -119,13 +115,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(width: 10),
             IconButton(
               onPressed: _goPrevMonth,
-              icon: Icon(Icons.arrow_back_ios,
-                  color: Colors.white.withOpacity(0.8), size: 14),
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white.withOpacity(0.8), size: 14),
             ),
             IconButton(
-              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth)
-                  ? null
-                  : _goNextMonth,
+              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
                 color: (DateTime.now().yyyymm == calendarState.baseYearMonth)
@@ -143,24 +136,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onPressed: () {
               InvestDialog(
                 context: context,
-                widget: InvestResultListAlert(
-                  isar: widget.isar,
-                  investRecordMap: investRecordMap,
-                ),
+                widget: InvestResultListAlert(isar: widget.isar, investRecordMap: investRecordMap),
               );
             },
-            icon: Icon(Icons.list,
-                color: Colors.white.withOpacity(0.6), size: 20),
+            icon: Icon(Icons.list, color: Colors.white.withOpacity(0.6), size: 20),
           ),
           IconButton(
             onPressed: () {
-              ref
-                  .read(totalGraphProvider.notifier)
-                  .setSelectedStartMonth(month: 0);
+              ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: 0);
 
-              ref
-                  .read(totalGraphProvider.notifier)
-                  .setSelectedEndMonth(month: 0);
+              ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: 0);
 
               InvestDialog(
                 context: context,
@@ -172,13 +157,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               );
             },
-            icon: Icon(Icons.graphic_eq,
-                color: Colors.white.withOpacity(0.6), size: 20),
+            icon: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
           ),
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: Icon(Icons.settings,
-                color: Colors.white.withOpacity(0.6), size: 20),
+            icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
           )
         ],
       ),
@@ -186,9 +169,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: <Widget>[
           const BackGroundImage(),
           Container(
-              width: context.screenSize.width,
-              height: context.screenSize.height,
-              decoration: BoxDecoration(color: Colors.black.withOpacity(0.5))),
+            width: context.screenSize.width,
+            height: context.screenSize.height,
+            decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+          ),
           Column(
             children: <Widget>[
               displayMonthSummary(),
@@ -254,10 +238,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(firstCostTotal.toString().toCurrency()),
-                  Text(firstPriceTotal.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(firstDiff.toString().toCurrency(),
-                      style: const TextStyle(color: Color(0xFFFBB6CE))),
+                  Text(firstPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                  Text(firstDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                 ],
               ),
             ),
@@ -266,10 +248,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(lastCostTotal.toString().toCurrency()),
-                  Text(lastPriceTotal.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(lastDiff.toString().toCurrency(),
-                      style: const TextStyle(color: Color(0xFFFBB6CE))),
+                  Text(lastPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                  Text(lastDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                 ],
               ),
             ),
@@ -278,10 +258,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(monthCostDiff.toString().toCurrency()),
-                  Text(monthPriceDiff.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(monthDiffDiff.toString().toCurrency(),
-                      style: const TextStyle(color: Color(0xFFFBB6CE))),
+                  Text(monthPriceDiff.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                  Text(monthDiffDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
                 ],
               ),
             ),
@@ -317,8 +295,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('株式名称登録'),
                       ),
@@ -341,8 +318,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('信託名称登録'),
                       ),
@@ -352,19 +328,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               GestureDetector(
-                onTap: () {
-                  InvestDialog(
-                      context: context,
-                      widget: DataExportAlert(isar: widget.isar));
-                },
+                onTap: () => InvestDialog(context: context, widget: DataExportAlert(isar: widget.isar)),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('データエクスポート'),
                       ),
@@ -373,19 +344,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  InvestDialog(
-                      context: context,
-                      widget: DataImportAlert(isar: widget.isar));
-                },
+                onTap: () => InvestDialog(context: context, widget: DataImportAlert(isar: widget.isar)),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('データインポート'),
                       ),
@@ -409,8 +375,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(
-              isar: widget.isar, baseYm: calendarState.prevYearMonth)),
+        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.prevYearMonth),
+      ),
     );
   }
 
@@ -422,8 +388,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(
-              isar: widget.isar, baseYm: calendarState.nextYearMonth)),
+        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.nextYearMonth),
+      ),
     );
   }
 
@@ -437,18 +403,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
-    _calendarMonthFirst =
-        DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
+    _calendarMonthFirst = DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
 
-    final DateTime monthEnd =
-        DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
+    final DateTime monthEnd = DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
 
     final int diff = monthEnd.difference(_calendarMonthFirst).inDays;
     final int monthDaysNum = diff + 1;
 
     final String youbi = _calendarMonthFirst.youbiStr;
-    final int youbiNum =
-        _youbiList.indexWhere((String element) => element == youbi);
+    final int youbiNum = _youbiList.indexWhere((String element) => element == youbi);
 
     final int weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
 
@@ -457,8 +420,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     for (int i = 0; i < (weekNum * 7); i++) {
       if (i >= youbiNum) {
-        final DateTime gendate =
-            _calendarMonthFirst.add(Duration(days: i - youbiNum));
+        final DateTime gendate = _calendarMonthFirst.add(Duration(days: i - youbiNum));
 
         if (_calendarMonthFirst.month == gendate.month) {
           _calendarDays[i] = gendate.day.toString();
@@ -472,8 +434,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return DefaultTextStyle(
-        style: const TextStyle(fontSize: 11),
-        child: SingleChildScrollView(child: Column(children: list)));
+      style: const TextStyle(fontSize: 11),
+      child: SingleChildScrollView(child: Column(children: list)),
+    );
   }
 
   ///
@@ -496,15 +459,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     for (int i = week * 7; i < ((week + 1) * 7); i++) {
       final String generateYmd = (_calendarDays[i] == '')
           ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
-                  _calendarDays[i].toInt())
-              .yyyymmdd;
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).yyyymmdd;
 
       final String youbiStr = (_calendarDays[i] == '')
           ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
-                  _calendarDays[i].toInt())
-              .youbiStr;
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).youbiStr;
 
       //////////////////////////////////////////////////
 
@@ -544,23 +503,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       int allSum = 0;
-      for (final int element in <int>[
-        stockCost,
-        stockPrice,
-        shintakuCost,
-        shintakuPrice,
-        goldCost,
-        goldPrice
-      ]) {
+      for (final int element in <int>[stockCost, stockPrice, shintakuCost, shintakuPrice, goldCost, goldPrice]) {
         allSum += element;
       }
 
       //////////////////////////////////////////////////
 
-      final int index = calendarCellDateDataList
-          .indexWhere((String element) => element == generateYmd);
-      final String beforeDate =
-          (index > 0) ? calendarCellDateDataList[index - 1] : '';
+      final int index = calendarCellDateDataList.indexWhere((String element) => element == generateYmd);
+      final String beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
 
       bool tapFlag = true;
       if (i % 7 == 0 || i % 7 == 6) {
@@ -568,8 +518,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
       if (_calendarDays[i] == '') {
         tapFlag = false;
-      } else if (DateTime.parse('$generateYmd 00:00:00')
-          .isAfter(DateTime.now())) {
+      } else if (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now())) {
         tapFlag = false;
       }
 
@@ -579,20 +528,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: GestureDetector(
             onTap: tapFlag
                 ? () {
-                    ref
-                        .read(dailyInvestDisplayProvider.notifier)
-                        .setSelectedInvestName(selectedInvestName: '');
+                    ref.read(dailyInvestDisplayProvider.notifier).setSelectedInvestName(selectedInvestName: '');
 
                     InvestDialog(
                       context: context,
                       widget: DailyInvestDisplayAlert(
-                          date: DateTime.parse('$generateYmd 00:00:00'),
-                          isar: widget.isar,
-                          investNameList: investNameList ?? <InvestName>[],
-                          allInvestRecord: investRecordList ?? <InvestRecord>[],
-                          calendarCellDateDataList: calendarCellDateDataList,
-                          totalPrice: stockPrice + shintakuPrice + goldPrice,
-                          totalDiff: stockSum + shintakuSum + goldSum),
+                        date: DateTime.parse('$generateYmd 00:00:00'),
+                        isar: widget.isar,
+                        investNameList: investNameList ?? <InvestName>[],
+                        allInvestRecord: investRecordList ?? <InvestRecord>[],
+                        calendarCellDateDataList: calendarCellDateDataList,
+                        totalPrice: stockPrice + shintakuPrice + goldPrice,
+                        totalDiff: stockSum + shintakuSum + goldSum,
+                      ),
                     );
                   }
                 : null,
@@ -610,13 +558,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 color: (_calendarDays[i] == '')
                     ? Colors.transparent
-                    : (DateTime.parse('$generateYmd 00:00:00')
-                            .isAfter(DateTime.now()))
+                    : (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()))
                         ? Colors.white.withOpacity(0.1)
-                        : _utility.getYoubiColor(
-                            date: generateYmd,
-                            youbiStr: youbiStr,
-                            holidayMap: _holidayMap),
+                        : _utility.getYoubiColor(date: generateYmd, youbiStr: youbiStr, holidayMap: _holidayMap),
               ),
               child: (_calendarDays[i] == '')
                   ? const Text('')
@@ -626,11 +570,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Text(_calendarDays[i].padLeft(2, '0')),
                         const SizedBox(height: 5),
                         ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minHeight: context.screenSize.height / 3.5),
-                          child: (DateTime.parse('$generateYmd 00:00:00')
-                                      .isAfter(DateTime.now()) ||
-                                  allSum == 0)
+                          constraints: BoxConstraints(minHeight: context.screenSize.height / 3),
+                          child: (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()) || allSum == 0)
                               ? Container()
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -641,47 +582,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
-                                                aPrice: stockSum,
-                                                bPrice: calendarCellSumDataMap[
-                                                        beforeDate]!
-                                                    .stockSum),
+                                              aPrice: stockSum,
+                                              bPrice: calendarCellSumDataMap[beforeDate]!.stockSum,
+                                            ),
                                           ),
                                         ],
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                      colors: <Color>[
-                                                    Colors.indigo
-                                                        .withOpacity(0.8),
-                                                    Colors.transparent
-                                                  ],
-                                                      stops: const <double>[
-                                                    0.9,
-                                                    1
-                                                  ])),
+                                                gradient: LinearGradient(
+                                                  colors: <Color>[Colors.indigo.withOpacity(0.8), Colors.transparent],
+                                                  stops: const <double>[0.9, 1],
+                                                ),
+                                              ),
                                               child: const Text('stock'),
                                             ),
-                                            Text(stockCost
-                                                .toString()
-                                                .toCurrency()),
+                                            Text(stockCost.toString().toCurrency()),
                                             Text(
-                                                stockPrice
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color:
-                                                        Colors.yellowAccent)),
+                                              stockPrice.toString().toCurrency(),
+                                              style: const TextStyle(color: Colors.yellowAccent),
+                                            ),
                                             Text(
-                                                stockSum
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color: Color(0xFFFBB6CE))),
+                                              stockSum.toString().toCurrency(),
+                                              style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                            ),
+                                            Text(
+                                              (stockSum - calendarCellSumDataMap[beforeDate]!.stockSum)
+                                                  .toString()
+                                                  .toCurrency(),
+                                              style: const TextStyle(color: Colors.orangeAccent),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -693,47 +626,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
-                                                aPrice: shintakuSum,
-                                                bPrice: calendarCellSumDataMap[
-                                                        beforeDate]!
-                                                    .shintakuSum),
+                                              aPrice: shintakuSum,
+                                              bPrice: calendarCellSumDataMap[beforeDate]!.shintakuSum,
+                                            ),
                                           ),
                                         ],
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                      colors: <Color>[
-                                                    Colors.indigo
-                                                        .withOpacity(0.8),
-                                                    Colors.transparent
-                                                  ],
-                                                      stops: const <double>[
-                                                    0.7,
-                                                    1
-                                                  ])),
+                                                gradient: LinearGradient(
+                                                  colors: <Color>[Colors.indigo.withOpacity(0.8), Colors.transparent],
+                                                  stops: const <double>[0.7, 1],
+                                                ),
+                                              ),
                                               child: const Text('shintaku'),
                                             ),
-                                            Text(shintakuCost
-                                                .toString()
-                                                .toCurrency()),
+                                            Text(shintakuCost.toString().toCurrency()),
                                             Text(
-                                                shintakuPrice
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color:
-                                                        Colors.yellowAccent)),
+                                              shintakuPrice.toString().toCurrency(),
+                                              style: const TextStyle(color: Colors.yellowAccent),
+                                            ),
                                             Text(
-                                                shintakuSum
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color: Color(0xFFFBB6CE))),
+                                              shintakuSum.toString().toCurrency(),
+                                              style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                            ),
+                                            Text(
+                                              (shintakuSum - calendarCellSumDataMap[beforeDate]!.shintakuSum)
+                                                  .toString()
+                                                  .toCurrency(),
+                                              style: const TextStyle(color: Colors.orangeAccent),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -745,45 +670,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
-                                                aPrice: goldSum,
-                                                bPrice: calendarCellSumDataMap[
-                                                        beforeDate]!
-                                                    .goldSum),
+                                              aPrice: goldSum,
+                                              bPrice: calendarCellSumDataMap[beforeDate]!.goldSum,
+                                            ),
                                           ),
                                         ],
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: <Widget>[
                                             Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                      colors: <Color>[
-                                                    Colors.indigo
-                                                        .withOpacity(0.8),
-                                                    Colors.transparent
-                                                  ],
-                                                      stops: const <double>[
-                                                    0.7,
-                                                    1
-                                                  ])),
+                                                gradient: LinearGradient(
+                                                  colors: <Color>[Colors.indigo.withOpacity(0.8), Colors.transparent],
+                                                  stops: const <double>[0.7, 1],
+                                                ),
+                                              ),
                                               child: const Text('gold'),
                                             ),
-                                            Text(goldCost
-                                                .toString()
-                                                .toCurrency()),
+                                            Text(goldCost.toString().toCurrency()),
                                             Text(
-                                                goldPrice
-                                                    .toString()
-                                                    .toCurrency(),
-                                                style: const TextStyle(
-                                                    color:
-                                                        Colors.yellowAccent)),
+                                              goldPrice.toString().toCurrency(),
+                                              style: const TextStyle(color: Colors.yellowAccent),
+                                            ),
                                             Text(
-                                                goldSum.toString().toCurrency(),
-                                                style: const TextStyle(
-                                                    color: Color(0xFFFBB6CE))),
+                                              goldSum.toString().toCurrency(),
+                                              style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                            ),
+                                            Text(
+                                              (goldSum - calendarCellSumDataMap[beforeDate]!.goldSum)
+                                                  .toString()
+                                                  .toCurrency(),
+                                              style: const TextStyle(color: Colors.orangeAccent),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -795,82 +714,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           Positioned(
                                             bottom: 0,
                                             child: getUpDownMark(
-                                              aPrice: stockSum +
-                                                  shintakuSum +
-                                                  goldSum,
-                                              bPrice: calendarCellSumDataMap[
-                                                      beforeDate]!
-                                                  .allSum,
+                                              aPrice: stockSum + shintakuSum + goldSum,
+                                              bPrice: calendarCellSumDataMap[beforeDate]!.allSum,
                                             ),
                                           ),
                                         ],
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(),
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
                                               children: <Widget>[
-                                                Text((stockCost +
-                                                        shintakuCost +
-                                                        goldCost)
-                                                    .toString()
-                                                    .toCurrency()),
+                                                Text((stockCost + shintakuCost + goldCost).toString().toCurrency()),
                                                 Text(
-                                                    (stockPrice +
-                                                            shintakuPrice +
-                                                            goldPrice)
-                                                        .toString()
-                                                        .toCurrency(),
-                                                    style: const TextStyle(
-                                                        color: Colors
-                                                            .yellowAccent)),
+                                                  (stockPrice + shintakuPrice + goldPrice).toString().toCurrency(),
+                                                  style: const TextStyle(color: Colors.yellowAccent),
+                                                ),
                                                 Text(
-                                                    (stockSum +
-                                                            shintakuSum +
-                                                            goldSum)
-                                                        .toString()
-                                                        .toCurrency(),
-                                                    style: const TextStyle(
-                                                        color:
-                                                            Color(0xFFFBB6CE))),
+                                                  (stockSum + shintakuSum + goldSum).toString().toCurrency(),
+                                                  style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                                ),
+                                                Text(
+                                                  ((stockSum + shintakuSum + goldSum) -
+                                                          calendarCellSumDataMap[beforeDate]!.allSum)
+                                                      .toString()
+                                                      .toCurrency(),
+                                                  style: const TextStyle(color: Colors.orangeAccent),
+                                                ),
                                               ],
                                             ),
                                           ],
                                         ),
                                       ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: Colors.orangeAccent
-                                            .withOpacity(0.2),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Container(),
-                                          Text(
-                                            (calendarCellSumDataMap[
-                                                        beforeDate] !=
-                                                    null)
-                                                ? ((stockSum +
-                                                            shintakuSum +
-                                                            goldSum) -
-                                                        calendarCellSumDataMap[
-                                                                beforeDate]!
-                                                            .allSum)
-                                                    .toString()
-                                                    .toCurrency()
-                                                : '0',
-                                          ),
-                                        ],
-                                      ),
                                     ),
                                   ],
                                 ),
@@ -887,23 +763,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeInvestNameList() async =>
-      InvestNamesRepository().getInvestNameList(isar: widget.isar).then(
-          (List<InvestName>? value) => setState(() => investNameList = value));
+  Future<void> _makeInvestNameList() async => InvestNamesRepository()
+      .getInvestNameList(isar: widget.isar)
+      .then((List<InvestName>? value) => setState(() => investNameList = value));
 
   ///
   Future<void> _makeInvestRecordList() async {
-    await InvestRecordsRepository()
-        .getInvestRecordList(isar: widget.isar)
-        .then((List<InvestRecord>? value) {
+    await InvestRecordsRepository().getInvestRecordList(isar: widget.isar).then((List<InvestRecord>? value) {
       investRecordList = value;
 
       if (value != null) {
         value
-          ..forEach((InvestRecord element) =>
-              investRecordMap[element.date] = <InvestRecord>[])
-          ..forEach((InvestRecord element) =>
-              investRecordMap[element.date]?.add(element));
+          ..forEach((InvestRecord element) => investRecordMap[element.date] = <InvestRecord>[])
+          ..forEach((InvestRecord element) => investRecordMap[element.date]?.add(element));
       }
     });
   }
@@ -969,11 +841,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         calendarCellDateDataList.add(element.date);
 
         calendarCellSumDataMap[element.date] = CalendarCellSumData(
-            date: element.date,
-            stockSum: stockSum,
-            shintakuSum: shintakuSum,
-            goldSum: goldSum,
-            allSum: allSum);
+            date: element.date, stockSum: stockSum, shintakuSum: shintakuSum, goldSum: goldSum, allSum: allSum);
       }
 
       dateList.add(element.date);
@@ -983,11 +851,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Widget getUpDownMark({required int aPrice, required int bPrice}) {
     if (aPrice > bPrice) {
-      return Icon(Icons.arrow_upward,
-          color: Colors.greenAccent.withOpacity(0.6));
+      return Icon(Icons.arrow_upward, color: Colors.greenAccent.withOpacity(0.6));
     } else if (aPrice < bPrice) {
-      return Icon(Icons.arrow_downward,
-          color: Colors.redAccent.withOpacity(0.6));
+      return Icon(Icons.arrow_downward, color: Colors.redAccent.withOpacity(0.6));
     }
 
     return const Icon(Icons.crop_square, color: Colors.transparent);
