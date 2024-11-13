@@ -460,12 +460,24 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
         }
       }
 
+      //=================
+
       final int selectedStartMonth = ref.watch(totalGraphProvider
           .select((TotalGraphState value) => value.selectedStartMonth));
 
       if (selectedStartMonth > 0) {
         dispDateList = dispDateMap[selectedStartMonth.toString()] ?? <String>[];
       }
+
+      final int selectedEndMonth = ref.watch(totalGraphProvider
+          .select((TotalGraphState value) => value.selectedEndMonth));
+
+      if (selectedEndMonth > 0) {
+        dispDateMap[selectedEndMonth.toString()]?.forEach((String element) {
+          dispDateList.add(element);
+        });
+      }
+
       /////////////////////////////////////////////////
 
       graphData = LineChartData(
