@@ -354,11 +354,6 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
     final List<int> points = <int>[];
 
-    int allGuidePriceMin = 0;
-    int allGuidePriceMax = 0;
-    int allGuideSumMin = 0;
-    int allGuideSumMax = 0;
-
     int i = 0;
     investPriceMap.forEach((String key, InvestPrice value) {
       final List<int> values = <int>[];
@@ -414,13 +409,6 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             ..add(value.allPrice)
             ..add(value.allSum);
 
-          if (i == 0) {
-            allGuidePriceMin = value.allPrice;
-            allGuideSumMin = value.allSum;
-          }
-          allGuidePriceMax = value.allPrice;
-          allGuideSumMax = value.allSum;
-
           flspotsAllCost.add(FlSpot(i.toDouble(), value.allCost.toDouble()));
           flspotsAllPrice.add(FlSpot(i.toDouble(), value.allPrice.toDouble()));
           flspotsAllSum.add(FlSpot(i.toDouble(), value.allSum.toDouble()));
@@ -432,24 +420,53 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
       i++;
     });
 
-    final List<FlSpot> flspotsAllPriceGuide = <FlSpot>[
-      FlSpot(0, allGuidePriceMin.toDouble()),
-      FlSpot(
-          (flspotsAllPrice.length - 1).toDouble(), allGuidePriceMax.toDouble()),
-    ];
-
-    final List<FlSpot> flspotsAllSumGuide = <FlSpot>[
-      FlSpot(0, allGuideSumMin.toDouble()),
-      FlSpot((flspotsAllSum.length - 1).toDouble(), allGuideSumMax.toDouble()),
-    ];
-
     if (points.isNotEmpty) {
       final int maxPoint = points.reduce(max);
       final int minPoint = points.reduce(min);
 
-      const int warisuu = 1000;
-      final int graphYMax = (maxPoint / warisuu).ceil() * warisuu;
+      final int addNum = (selectedGraphName == 'blank') ? 20 : 0;
+
+      const int warisuu = 100000;
+      final int graphYMax = ((maxPoint / warisuu).ceil() + addNum) * warisuu;
       final int graphYMin = (minPoint * -1 / warisuu).ceil() * warisuu * -1;
+
+      /////////////////////////////////////////////////
+      List<String> dispDateList = <String>[];
+
+      final Map<String, List<String>> dispDateMap = <String, List<String>>{};
+      final List<String> monthList = <String>[];
+
+      for (final InvestRecord element in widget.investRecordList) {
+        if (!dispDateList.contains(element.date)) {
+          dispDateList.add(element.date);
+        }
+
+        final List<String> exDate = element.date.split('-');
+
+        if (!monthList.contains(exDate[1])) {
+          dispDateMap[exDate[1]] = <String>[];
+
+          monthList.add(exDate[1]);
+        }
+      }
+
+      for (final InvestRecord element in widget.investRecordList) {
+        final List<String> exDate = element.date.split('-');
+
+        if (dispDateMap[exDate[1]] != null) {
+          if (!dispDateMap[exDate[1]]!.contains(element.date)) {
+            dispDateMap[exDate[1]]?.add(element.date);
+          }
+        }
+      }
+
+      final int selectedStartMonth = ref.watch(totalGraphProvider
+          .select((TotalGraphState value) => value.selectedStartMonth));
+
+      if (selectedStartMonth > 0) {
+        dispDateList = dispDateMap[selectedStartMonth.toString()] ?? <String>[];
+      }
+      /////////////////////////////////////////////////
 
       graphData = LineChartData(
         maxY: graphYMax.toDouble(),
@@ -458,7 +475,40 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
         borderData: FlBorderData(show: false),
 
         ///
-        lineTouchData: const LineTouchData(enabled: false),
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+              tooltipRoundedRadius: 2,
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                final List<LineTooltipItem> list = <LineTooltipItem>[];
+
+                int i = 0;
+                for (final LineBarSpot element in touchedSpots) {
+                  final TextStyle textStyle = TextStyle(
+                    color: element.bar.gradient?.colors.first ??
+                        element.bar.color ??
+                        Colors.blueGrey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  );
+
+                  final String price =
+                      element.y.round().toString().split('.')[0].toCurrency();
+
+                  final String day = dispDateList[element.x.toInt()];
+
+                  final String dayStr = (i == 0) ? '$day\n' : '';
+
+                  list.add(
+                    LineTooltipItem('$dayStr$price', textStyle,
+                        textAlign: TextAlign.end),
+                  );
+
+                  i++;
+                }
+
+                return list;
+              }),
+        ),
 
         ///
         titlesData: const FlTitlesData(
@@ -564,34 +614,11 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
               color: Colors.white,
               dotData: const FlDotData(show: false),
             ),
-            // LineChartBarData(
-            //   spots: flspotsAllCost,
-            //   barWidth: 1,
-            //   isStrokeCapRound: true,
-            //   color: Colors.white,
-            //   dotData: const FlDotData(show: false),
-            // ),
             LineChartBarData(
               spots: flspotsAllSum,
               barWidth: 1,
               isStrokeCapRound: true,
               color: const Color(0xFFFBB6CE),
-              dotData: const FlDotData(show: false),
-            ),
-
-            LineChartBarData(
-              spots: flspotsAllPriceGuide,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: Colors.orangeAccent,
-              dotData: const FlDotData(show: false),
-            ),
-
-            LineChartBarData(
-              spots: flspotsAllSumGuide,
-              barWidth: 1,
-              isStrokeCapRound: true,
-              color: Colors.orangeAccent,
               dotData: const FlDotData(show: false),
             ),
           ],
