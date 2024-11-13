@@ -626,7 +626,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
               spots: flspotsAllPrice,
               barWidth: 3,
               isStrokeCapRound: true,
-              color: Colors.white,
+              color: Colors.greenAccent,
               dotData: const FlDotData(show: false),
             ),
             LineChartBarData(
