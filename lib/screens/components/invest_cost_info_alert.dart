@@ -54,7 +54,7 @@ class _InvestCostInfoAlertState extends ConsumerState<InvestCostInfoAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(widget.yearmonth),
-                  Text(widget.cost.toString()),
+                  Text(widget.cost.toString().toCurrency()),
                 ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
@@ -79,8 +79,10 @@ class _InvestCostInfoAlertState extends ConsumerState<InvestCostInfoAlert> {
         int keepCost = 0;
         widget.investItemRecordMap[element.relationalId]?.forEach((InvestRecord element2) {
           if (keepCost > 0 && keepCost != element2.cost) {
-            costRecordListMap[element.relationalId]
-                ?.add(CostRecord(date: element2.date, cost: element2.cost - keepCost));
+            if (widget.yearmonth == '${element2.date.split('-')[0]}-${element2.date.split('-')[1]}') {
+              costRecordListMap[element.relationalId]
+                  ?.add(CostRecord(date: element2.date, cost: element2.cost - keepCost));
+            }
           }
 
           keepCost = element2.cost;
@@ -95,7 +97,16 @@ class _InvestCostInfoAlertState extends ConsumerState<InvestCostInfoAlert> {
 
     costRecordListMap.forEach((int key, List<CostRecord> value) {
       if (value.isNotEmpty) {
-        list.add(Text(key.toString()));
+        final InvestName investName =
+            widget.investNameList.firstWhere((InvestName element) => element.relationalId == key);
+
+        list.add(Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(investName.frame),
+            Text(investName.name),
+          ],
+        ));
 
         final List<Widget> list2 = <Widget>[];
 
@@ -104,12 +115,14 @@ class _InvestCostInfoAlertState extends ConsumerState<InvestCostInfoAlert> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(element.date),
-              Text(element.cost.toString()),
+              Text(element.cost.toString().toCurrency()),
             ],
           ));
         }
 
         list.add(Column(children: list2));
+
+        list.add(const SizedBox(height: 10));
       }
     });
 
