@@ -80,6 +80,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<String> calendarCellDateDataList = <String>[];
   Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
 
+  Map<int, List<InvestRecord>> investItemRecordMap = <int, List<InvestRecord>>{};
+
   ///
   void _init() {
     _makeInvestNameList();
@@ -136,7 +138,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onPressed: () {
               InvestDialog(
                 context: context,
-                widget: InvestResultListAlert(isar: widget.isar, investRecordMap: investRecordMap),
+                widget: InvestResultListAlert(
+                  isar: widget.isar,
+                  investRecordMap: investRecordMap,
+                  investItemRecordMap: investItemRecordMap,
+                  investNameList: investNameList ?? <InvestName>[],
+                ),
               );
             },
             icon: Icon(Icons.list, color: Colors.white.withOpacity(0.6), size: 20),
@@ -774,8 +781,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       if (value != null) {
         value
-          ..forEach((InvestRecord element) => investRecordMap[element.date] = <InvestRecord>[])
-          ..forEach((InvestRecord element) => investRecordMap[element.date]?.add(element));
+          ..forEach((InvestRecord element) {
+            investRecordMap[element.date] = <InvestRecord>[];
+
+            if (element.investId != null) {
+              investItemRecordMap[element.investId!] = <InvestRecord>[];
+            }
+          })
+          ..forEach((InvestRecord element) {
+            investRecordMap[element.date]?.add(element);
+
+            if (element.investId != null) {
+              investItemRecordMap[element.investId!]?.add(element);
+            }
+          });
       }
     });
   }

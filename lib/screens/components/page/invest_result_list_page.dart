@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
+import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
 import '../../home_screen.dart';
+import '../invest_cost_info_alert.dart';
+import '../parts/invest_dialog.dart';
 
 class InvestResultListPage extends StatefulWidget {
   const InvestResultListPage({
@@ -12,11 +15,15 @@ class InvestResultListPage extends StatefulWidget {
     required this.isar,
     required this.investRecordMap,
     required this.year,
+    required this.investItemRecordMap,
+    required this.investNameList,
   });
 
   final Isar isar;
   final Map<String, List<InvestRecord>> investRecordMap;
   final int year;
+  final Map<int, List<InvestRecord>> investItemRecordMap;
+  final List<InvestName> investNameList;
 
   @override
   State<InvestResultListPage> createState() => _InvestResultListPageState();
@@ -59,8 +66,7 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
                             Text(totalCost.toString().toCurrency()),
                             Text(
                               totalPrice.toString().toCurrency(),
-                              style:
-                                  const TextStyle(color: Colors.yellowAccent),
+                              style: const TextStyle(color: Colors.yellowAccent),
                             ),
                             Text(
                               totalDiff.toString().toCurrency(),
@@ -154,78 +160,112 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
         ),
         child: DefaultTextStyle(
           style: const TextStyle(fontSize: 12),
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-
-                  Navigator.pushReplacement(
-                    context,
-                    // ignore: inference_failure_on_instance_creation, always_specify_types
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => HomeScreen(
-                        isar: widget.isar,
-                        baseYm: element,
-                      ),
-                    ),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.greenAccent.withOpacity(0.4),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[Container(), Text(element)],
               ),
-              const SizedBox(width: 20),
-              Expanded(child: Text(element)),
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(startCost.toString().toCurrency()),
-                  Text(
-                    startPrice.toString().toCurrency(),
-                    style: const TextStyle(color: Colors.yellowAccent),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      Navigator.pushReplacement(
+                        context,
+                        // ignore: inference_failure_on_instance_creation, always_specify_types
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: element),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(radius: 10, backgroundColor: Colors.greenAccent.withOpacity(0.4)),
                   ),
-                  Text(
-                    (startPrice - startCost).toString().toCurrency(),
-                    style: const TextStyle(color: Color(0xFFFBB6CE)),
+                  const SizedBox(width: 20),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(startCost.toString().toCurrency()),
+                      Text(
+                        startPrice.toString().toCurrency(),
+                        style: const TextStyle(color: Colors.yellowAccent),
+                      ),
+                      Text(
+                        (startPrice - startCost).toString().toCurrency(),
+                        style: const TextStyle(color: Color(0xFFFBB6CE)),
+                      ),
+                    ],
+                  )),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(endCost.toString().toCurrency()),
+                      Text(
+                        endPrice.toString().toCurrency(),
+                        style: const TextStyle(color: Colors.yellowAccent),
+                      ),
+                      Text(
+                        (endPrice - endCost).toString().toCurrency(),
+                        style: const TextStyle(color: Color(0xFFFBB6CE)),
+                      ),
+                    ],
+                  )),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(width: 10),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
+                              alignment: Alignment.topRight,
+                              child: Text((endCost - startCost).toString().toCurrency()),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        (endPrice - startPrice).toString().toCurrency(),
+                        style: const TextStyle(color: Colors.yellowAccent),
+                      ),
+                      Text(
+                        ((endPrice - endCost) - (startPrice - startCost)).toString().toCurrency(),
+                        style: const TextStyle(color: Color(0xFFFBB6CE)),
+                      ),
+                    ],
+                  )),
+                  const SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () {
+                      InvestDialog(
+                        context: context,
+                        widget: InvestCostInfoAlert(
+                          yearmonth: element,
+                          cost: endCost - startCost,
+                          investItemRecordMap: widget.investItemRecordMap,
+                          investNameList: widget.investNameList,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white.withOpacity(0.4)),
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      child: const Text('cost'),
+                    ),
                   ),
                 ],
-              )),
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text(endCost.toString().toCurrency()),
-                  Text(
-                    endPrice.toString().toCurrency(),
-                    style: const TextStyle(color: Colors.yellowAccent),
-                  ),
-                  Text(
-                    (endPrice - endCost).toString().toCurrency(),
-                    style: const TextStyle(color: Color(0xFFFBB6CE)),
-                  ),
-                ],
-              )),
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text((endCost - startCost).toString().toCurrency()),
-                  Text(
-                    (endPrice - startPrice).toString().toCurrency(),
-                    style: const TextStyle(color: Colors.yellowAccent),
-                  ),
-                  Text(
-                    ((endPrice - endCost) - (startPrice - startCost))
-                        .toString()
-                        .toCurrency(),
-                    style: const TextStyle(color: Color(0xFFFBB6CE)),
-                  ),
-                ],
-              )),
+              ),
             ],
           ),
         ),
@@ -245,10 +285,8 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );

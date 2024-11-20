@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/invest_name.dart';
 import '../../collections/invest_record.dart';
 import '../../extensions/extensions.dart';
 import 'page/invest_result_list_page.dart';
@@ -14,15 +15,21 @@ class TabInfo {
 }
 
 class InvestResultListAlert extends ConsumerStatefulWidget {
-  const InvestResultListAlert(
-      {super.key, required this.isar, required this.investRecordMap});
+  const InvestResultListAlert({
+    super.key,
+    required this.isar,
+    required this.investRecordMap,
+    required this.investItemRecordMap,
+    required this.investNameList,
+  });
 
   final Isar isar;
   final Map<String, List<InvestRecord>> investRecordMap;
+  final Map<int, List<InvestRecord>> investItemRecordMap;
+  final List<InvestName> investNameList;
 
   @override
-  ConsumerState<InvestResultListAlert> createState() =>
-      _InvestResultListAlertState();
+  ConsumerState<InvestResultListAlert> createState() => _InvestResultListAlertState();
 }
 
 class _InvestResultListAlertState extends ConsumerState<InvestResultListAlert> {
@@ -81,6 +88,8 @@ class _InvestResultListAlertState extends ConsumerState<InvestResultListAlert> {
           year: element,
           isar: widget.isar,
           investRecordMap: widget.investRecordMap,
+          investItemRecordMap: widget.investItemRecordMap,
+          investNameList: widget.investNameList,
         ),
       ));
     }
