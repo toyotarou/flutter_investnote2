@@ -6,7 +6,7 @@ part of 'total_graph.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$totalGraphHash() => r'1606f1ccb95723dfee7a5ba049e1712f163a260a';
+String _$totalGraphHash() => r'a4ed86efd09490134d37bb13f08d46e8dc464aed';
 
 /// See also [TotalGraph].
 @ProviderFor(TotalGraph)

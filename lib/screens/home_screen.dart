@@ -15,6 +15,7 @@ import '../state/holidays/holidays_notifier.dart';
 import '../state/holidays/holidays_response_state.dart';
 import '../state/total_graph/total_graph.dart';
 import '../utilities/utilities.dart';
+import 'components/config_setting_alert.dart';
 import 'components/csv_data/data_export_alert.dart';
 import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_invest_display_alert.dart';
@@ -287,6 +288,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 60),
+              GestureDetector(
+                onTap: () {
+                  InvestDialog(
+                    context: context,
+                    widget: ConfigSettingAlert(isar: widget.isar),
+                  );
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('設定'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               GestureDetector(
                 onTap: () => InvestDialog(
                   context: context,
@@ -617,9 +640,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               style: const TextStyle(color: Color(0xFFFBB6CE)),
                                             ),
                                             Text(
-                                              (stockSum - calendarCellSumDataMap[beforeDate]!.stockSum)
-                                                  .toString()
-                                                  .toCurrency(),
+                                              (calendarCellSumDataMap[beforeDate] == null)
+                                                  ? ''
+                                                  : (stockSum - calendarCellSumDataMap[beforeDate]!.stockSum)
+                                                      .toString()
+                                                      .toCurrency(),
                                               style: const TextStyle(color: Colors.orangeAccent),
                                             ),
                                           ],
@@ -661,9 +686,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               style: const TextStyle(color: Color(0xFFFBB6CE)),
                                             ),
                                             Text(
-                                              (shintakuSum - calendarCellSumDataMap[beforeDate]!.shintakuSum)
-                                                  .toString()
-                                                  .toCurrency(),
+                                              (calendarCellSumDataMap[beforeDate] == null)
+                                                  ? ''
+                                                  : (shintakuSum - calendarCellSumDataMap[beforeDate]!.shintakuSum)
+                                                      .toString()
+                                                      .toCurrency(),
                                               style: const TextStyle(color: Colors.orangeAccent),
                                             ),
                                           ],
@@ -705,9 +732,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               style: const TextStyle(color: Color(0xFFFBB6CE)),
                                             ),
                                             Text(
-                                              (goldSum - calendarCellSumDataMap[beforeDate]!.goldSum)
-                                                  .toString()
-                                                  .toCurrency(),
+                                              (calendarCellSumDataMap[beforeDate] == null)
+                                                  ? ''
+                                                  : (goldSum - calendarCellSumDataMap[beforeDate]!.goldSum)
+                                                      .toString()
+                                                      .toCurrency(),
                                               style: const TextStyle(color: Colors.orangeAccent),
                                             ),
                                           ],
@@ -743,10 +772,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                   style: const TextStyle(color: Color(0xFFFBB6CE)),
                                                 ),
                                                 Text(
-                                                  ((stockSum + shintakuSum + goldSum) -
-                                                          calendarCellSumDataMap[beforeDate]!.allSum)
-                                                      .toString()
-                                                      .toCurrency(),
+                                                  (calendarCellSumDataMap[beforeDate] == null)
+                                                      ? ''
+                                                      : ((stockSum + shintakuSum + goldSum) -
+                                                              calendarCellSumDataMap[beforeDate]!.allSum)
+                                                          .toString()
+                                                          .toCurrency(),
                                                   style: const TextStyle(color: Colors.orangeAccent),
                                                 ),
                                               ],
