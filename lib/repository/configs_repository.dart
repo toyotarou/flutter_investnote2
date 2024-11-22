@@ -36,4 +36,15 @@ class ConfigsRepository {
     final IsarCollection<Config> configsCollection = getCollection(isar: isar);
     await configsCollection.put(config);
   }
+
+  ///
+  Future<void> deleteConfigList({required Isar isar, required List<Config>? configList}) async {
+    configList?.forEach((Config element) => deleteConfig(isar: isar, id: element.id));
+  }
+
+  ///
+  Future<void> deleteConfig({required Isar isar, required int id}) async {
+    final IsarCollection<Config> configsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => configsCollection.delete(id));
+  }
 }
