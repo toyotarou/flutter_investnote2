@@ -17,6 +17,8 @@ class InvestResultListPage extends StatefulWidget {
     required this.year,
     required this.investItemRecordMap,
     required this.investNameList,
+    required this.investRecordList,
+    required this.configMap,
   });
 
   final Isar isar;
@@ -24,6 +26,8 @@ class InvestResultListPage extends StatefulWidget {
   final int year;
   final Map<int, List<InvestRecord>> investItemRecordMap;
   final List<InvestName> investNameList;
+  final List<InvestRecord> investRecordList;
+  final Map<String, String> configMap;
 
   @override
   State<InvestResultListPage> createState() => _InvestResultListPageState();
@@ -34,9 +38,25 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
   int totalPrice = 0;
   int totalDiff = 0;
 
+  bool firstPriceSetted = false;
+  int firstCost = 0;
+  int firstPrice = 0;
+
   ///
   @override
   Widget build(BuildContext context) {
+    if (!firstPriceSetted) {
+      firstCost = (widget.configMap['startCostStock'] ?? '0').toInt() +
+          (widget.configMap['startCostShintaku'] ?? '0').toInt() +
+          (widget.configMap['startCostGold'] ?? '0').toInt();
+
+      firstPrice = (widget.configMap['startPriceStock'] ?? '0').toInt() +
+          (widget.configMap['startPriceShintaku'] ?? '0').toInt() +
+          (widget.configMap['startPriceGold'] ?? '0').toInt();
+
+      firstPriceSetted = true;
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -123,29 +143,23 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
     int tDiff = 0;
 
     for (final String element in yearmonthList) {
-      int startCost = 0;
+      final int startCost = getStartCost(yearmonth: element, costMap: costMap);
+
       int endCost = 0;
       costMap.forEach((String key, int value) {
         final List<String> exKey = key.split('-');
 
         if ('${exKey[0]}-${exKey[1]}' == element) {
-          if (startCost == 0) {
-            startCost = value;
-          }
-
           endCost = value;
         }
       });
 
-      int startPrice = 0;
+      final int startPrice = getStartPrice(yearmonth: element, priceMap: priceMap);
+
       int endPrice = 0;
       priceMap.forEach((String key, int value) {
         final List<String> exKey = key.split('-');
         if ('${exKey[0]}-${exKey[1]}' == element) {
-          if (startPrice == 0) {
-            startPrice = value;
-          }
-
           endPrice = value;
         }
       });
@@ -252,6 +266,7 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
                           cost: endCost - startCost,
                           investItemRecordMap: widget.investItemRecordMap,
                           investNameList: widget.investNameList,
+                          investRecordList: widget.investRecordList,
                         ),
                       );
                     },
@@ -290,5 +305,54 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
         ),
       ],
     );
+  }
+
+  int getStartCost({required String yearmonth, required Map<String, int> costMap}) {
+    final InvestRecord investRecordListFirst = widget.investRecordList.first;
+    final String firstYearMonth =
+        '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
+
+    if (yearmonth == firstYearMonth) {
+      return firstCost;
+    } else {
+      final DateTime prevYearMonth = DateTime(yearmonth.split('-')[0].toInt(), yearmonth.split('-')[1].toInt(), 0);
+
+      final List<int> costList = <int>[];
+
+      costMap.forEach((String key, int value) {
+        final List<String> exKey = key.split('-');
+
+        if ('${exKey[0]}-${exKey[1]}' == prevYearMonth.yyyymm) {
+          costList.add(value);
+        }
+      });
+
+      return costList.last;
+    }
+  }
+
+  ///
+  int getStartPrice({required String yearmonth, required Map<String, int> priceMap}) {
+    final InvestRecord investRecordListFirst = widget.investRecordList.first;
+    final String firstYearMonth =
+        '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
+
+    if (yearmonth == firstYearMonth) {
+      return firstPrice;
+    } else {
+      final DateTime prevYearMonth = DateTime(yearmonth.split('-')[0].toInt(), yearmonth.split('-')[1].toInt(), 0);
+
+      final List<int> priceList = <int>[];
+
+      priceMap.forEach((String key, int value) {
+        final List<String> exKey = key.split('-');
+
+        if ('${exKey[0]}-${exKey[1]}' == prevYearMonth.yyyymm) {
+          priceList.add(value);
+        }
+      });
+
+      return priceList.last;
+    }
   }
 }

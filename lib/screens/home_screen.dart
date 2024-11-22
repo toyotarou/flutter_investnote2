@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../collections/config.dart';
 import '../collections/invest_name.dart';
 import '../collections/invest_record.dart';
 import '../enum/invest_kind.dart';
 import '../extensions/extensions.dart';
+import '../repository/configs_repository.dart';
 import '../repository/invest_names_repository.dart';
 import '../repository/invest_records_repository.dart';
 import '../state/calendars/calendars_notifier.dart';
@@ -83,11 +85,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<int, List<InvestRecord>> investItemRecordMap = <int, List<InvestRecord>>{};
 
+  List<Config>? configList = <Config>[];
+
+  Map<String, String> configMap = <String, String>{};
+
   ///
   void _init() {
     _makeInvestNameList();
 
     _makeInvestRecordList();
+
+    _makeSettingConfigMap();
   }
 
   ///
@@ -144,6 +152,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   investRecordMap: investRecordMap,
                   investItemRecordMap: investItemRecordMap,
                   investNameList: investNameList ?? <InvestName>[],
+                  investRecordList: investRecordList ?? <InvestRecord>[],
+                  configMap: configMap,
                 ),
               );
             },
@@ -907,5 +917,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return const Icon(Icons.crop_square, color: Colors.transparent);
+  }
+
+  ///
+  Future<void> _makeSettingConfigMap() async {
+    await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
+      setState(() {
+        configList = value;
+
+        if (value!.isNotEmpty) {
+          for (final Config element in value) {
+            configMap[element.configKey] = element.configValue;
+          }
+        }
+      });
+    });
   }
 }

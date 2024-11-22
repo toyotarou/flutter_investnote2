@@ -22,7 +22,7 @@ class ConfigSettingAlert extends ConsumerStatefulWidget {
 class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
   List<Config>? configList = <Config>[];
 
-  Map<String, String> settingConfigMap = <String, String>{};
+  Map<String, String> configMap = <String, String>{};
 
   final TextEditingController _stockCostEditingController = TextEditingController();
   final TextEditingController _stockPriceEditingController = TextEditingController();
@@ -35,7 +35,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
 
   ///
   void _init() {
-    makeSettingConfigMap();
+    _makeSettingConfigMap();
   }
 
   bool configSetted = false;
@@ -46,13 +46,13 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
     // ignore: always_specify_types
     Future(_init);
 
-    if (!configSetted && settingConfigMap.isNotEmpty) {
-      _stockCostEditingController.text = settingConfigMap['startCostStock'] ?? '';
-      _stockPriceEditingController.text = settingConfigMap['startPriceStock'] ?? '';
-      _shintakuCostEditingController.text = settingConfigMap['startCostShintaku'] ?? '';
-      _shintakuPriceEditingController.text = settingConfigMap['startPriceShintaku'] ?? '';
-      _goldCostEditingController.text = settingConfigMap['startCostGold'] ?? '';
-      _goldPriceEditingController.text = settingConfigMap['startPriceGold'] ?? '';
+    if (!configSetted && configMap.isNotEmpty) {
+      _stockCostEditingController.text = configMap['startCostStock'] ?? '';
+      _stockPriceEditingController.text = configMap['startPriceStock'] ?? '';
+      _shintakuCostEditingController.text = configMap['startCostShintaku'] ?? '';
+      _shintakuPriceEditingController.text = configMap['startPriceShintaku'] ?? '';
+      _goldCostEditingController.text = configMap['startCostGold'] ?? '';
+      _goldPriceEditingController.text = configMap['startPriceGold'] ?? '';
 
       configSetted = true;
     }
@@ -263,14 +263,14 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
   }
 
   ///
-  Future<void> makeSettingConfigMap() async {
+  Future<void> _makeSettingConfigMap() async {
     await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
       setState(() {
         configList = value;
 
         if (value!.isNotEmpty) {
           for (final Config element in value) {
-            settingConfigMap[element.configKey] = element.configValue;
+            configMap[element.configKey] = element.configValue;
           }
         }
       });

@@ -21,12 +21,16 @@ class InvestResultListAlert extends ConsumerStatefulWidget {
     required this.investRecordMap,
     required this.investItemRecordMap,
     required this.investNameList,
+    required this.investRecordList,
+    required this.configMap,
   });
 
   final Isar isar;
   final Map<String, List<InvestRecord>> investRecordMap;
   final Map<int, List<InvestRecord>> investItemRecordMap;
   final List<InvestName> investNameList;
+  final List<InvestRecord> investRecordList;
+  final Map<String, String> configMap;
 
   @override
   ConsumerState<InvestResultListAlert> createState() => _InvestResultListAlertState();
@@ -49,10 +53,7 @@ class _InvestResultListAlertState extends ConsumerState<InvestResultListAlert> {
           child: AppBar(
             backgroundColor: Colors.transparent,
             //-------------------------//これを消すと「←」が出てくる（消さない）
-            leading: const Icon(
-              Icons.check_box_outline_blank,
-              color: Colors.transparent,
-            ),
+            leading: const Icon(Icons.check_box_outline_blank, color: Colors.transparent),
             //-------------------------//これを消すと「←」が出てくる（消さない）
 
             bottom: TabBar(
@@ -90,6 +91,8 @@ class _InvestResultListAlertState extends ConsumerState<InvestResultListAlert> {
           investRecordMap: widget.investRecordMap,
           investItemRecordMap: widget.investItemRecordMap,
           investNameList: widget.investNameList,
+          investRecordList: widget.investRecordList,
+          configMap: widget.configMap,
         ),
       ));
     }
