@@ -89,6 +89,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<String, String> configMap = <String, String>{};
 
+  int firstCost = 0;
+  int firstPrice = 0;
+
   ///
   void _init() {
     _makeInvestNameList();
@@ -207,29 +210,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget displayMonthSummary() {
     final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
-    List<InvestRecord> firstDateInvestRecordList = <InvestRecord>[];
     List<InvestRecord> lastDateInvestRecordList = <InvestRecord>[];
 
-    int i = 0;
     investRecordMap.forEach((String key, List<InvestRecord> value) {
       final List<String> exKey = key.split('-');
       if ('${exKey[0]}-${exKey[1]}' == calendarState.baseYearMonth) {
-        if (i == 0) {
-          firstDateInvestRecordList = value;
-        }
-
         lastDateInvestRecordList = value;
-
-        i++;
       }
     });
 
-    int firstCostTotal = 0;
-    int firstPriceTotal = 0;
-    for (final InvestRecord element in firstDateInvestRecordList) {
-      firstCostTotal += element.cost;
-      firstPriceTotal += element.price;
-    }
+    final int firstCostTotal = getFirstCostTotal();
+    final int firstPriceTotal = getFirstPriceTotal();
 
     int lastCostTotal = 0;
     int lastPriceTotal = 0;
@@ -285,6 +276,75 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
     );
+  }
+
+  ///
+  int getFirstCostTotal() {
+    if (investRecordList == null || investRecordList!.isEmpty) {
+      return 0;
+    } else {
+      final InvestRecord investRecordListFirst = investRecordList!.first;
+      final String firstYearMonth =
+          '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
+
+      final CalendarsResponseState calendarState = ref.watch(calendarProvider);
+
+      if (calendarState.baseYearMonth == firstYearMonth) {
+        return firstCost;
+      } else {
+        int total = 0;
+
+        for (final InvestRecord element in getCostPriceInvestRecord()) {
+          total += element.cost;
+        }
+
+        return total;
+      }
+    }
+  }
+
+  ///
+  int getFirstPriceTotal() {
+    if (investRecordList == null || investRecordList!.isEmpty) {
+      return 0;
+    } else {
+      final InvestRecord investRecordListFirst = investRecordList!.first;
+      final String firstYearMonth =
+          '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
+
+      final CalendarsResponseState calendarState = ref.watch(calendarProvider);
+
+      if (calendarState.baseYearMonth == firstYearMonth) {
+        return firstCost;
+      } else {
+        int total = 0;
+
+        for (final InvestRecord element in getCostPriceInvestRecord()) {
+          total += element.price;
+        }
+
+        return total;
+      }
+    }
+  }
+
+  ///
+  List<InvestRecord> getCostPriceInvestRecord() {
+    List<InvestRecord> list = <InvestRecord>[];
+
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
+
+    final DateTime prevYearMonth = DateTime(
+        calendarState.baseYearMonth.split('-')[0].toInt(), calendarState.baseYearMonth.split('-')[1].toInt(), 0);
+
+    investRecordMap.forEach((String key, List<InvestRecord> value) {
+      final List<String> exKey = key.split('-');
+      if ('${exKey[0]}-${exKey[1]}' == prevYearMonth.yyyymm) {
+        list = value;
+      }
+    });
+
+    return list;
   }
 
   ///
@@ -811,9 +871,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeInvestNameList() async => InvestNamesRepository()
-      .getInvestNameList(isar: widget.isar)
-      .then((List<InvestName>? value) => setState(() => investNameList = value));
+  Future<void> _makeInvestNameList() async =>
+      InvestNamesRepository().getInvestNameList(isar: widget.isar).then((List<InvestName>? value) {
+        if (mounted) {
+          setState(() => investNameList = value);
+        }
+      });
 
   ///
   Future<void> _makeInvestRecordList() async {
@@ -922,15 +985,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeSettingConfigMap() async {
     await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
-      setState(() {
-        configList = value;
+      if (mounted) {
+        setState(() {
+          configList = value;
 
-        if (value!.isNotEmpty) {
-          for (final Config element in value) {
-            configMap[element.configKey] = element.configValue;
+          if (value!.isNotEmpty) {
+            for (final Config element in value) {
+              configMap[element.configKey] = element.configValue;
+            }
+
+            firstCost = (configMap['startCostStock'] ?? '0').toInt() +
+                (configMap['startCostShintaku'] ?? '0').toInt() +
+                (configMap['startCostGold'] ?? '0').toInt();
+
+            firstPrice = (configMap['startPriceStock'] ?? '0').toInt() +
+                (configMap['startPriceShintaku'] ?? '0').toInt() +
+                (configMap['startPriceGold'] ?? '0').toInt();
           }
-        }
-      });
+        });
+      }
     });
   }
 }
