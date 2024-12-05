@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
+import '../../../collections/config.dart';
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
+import '../../../repository/configs_repository.dart';
 import '../../../repository/invest_names_repository.dart';
 import '../../../repository/invest_records_repository.dart';
 import '../parts/error_dialog.dart';
@@ -47,8 +49,8 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Future<void> _pickAndLoadCsvFile() async {
-    final FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: <String>['csv']);
+    final FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: <String>['csv']);
 
     if (result != null) {
       ///
@@ -109,8 +111,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _pickAndLoadCsvFile,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('CSV選択'),
                     ),
                   ),
@@ -118,8 +119,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: registData,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('登録'),
                     ),
                   ),
@@ -164,6 +164,9 @@ class _DataImportAlertState extends State<DataImportAlert> {
   ///
   Widget displayCsvContents() {
     switch (csvName) {
+      case 'config':
+        importDataList = <Config>[];
+
       case 'investName':
         importDataList = <InvestName>[];
 
@@ -185,8 +188,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
-            child:
-                Text(exLine[j], maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: Text(exLine[j], maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
         );
       }
@@ -194,6 +196,11 @@ class _DataImportAlertState extends State<DataImportAlert> {
       widgetList.add(Row(children: widgetList2));
 
       switch (csvName) {
+        case 'config':
+          importDataList.add(Config()
+            ..configKey = exLine[1].trim()
+            ..configValue = exLine[2].trim());
+
         case 'investName':
           importDataList.add(
             InvestName()
@@ -210,8 +217,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
           String date = '';
 
           if (exDate.length > 1) {
-            date =
-                '${exDate[0]}-${exDate[1].padLeft(2, '0')}-${exDate[2].padLeft(2, '0')}';
+            date = '${exDate[0]}-${exDate[1].padLeft(2, '0')}-${exDate[2].padLeft(2, '0')}';
           } else {
             date = exLine[1].trim();
           }
@@ -252,11 +258,19 @@ class _DataImportAlertState extends State<DataImportAlert> {
     }
 
     switch (csvName) {
+      case 'config':
+        await ConfigsRepository()
+            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
       case 'investName':
         await InvestNamesRepository()
-            .inputInvestNameList(
-                isar: widget.isar,
-                investNameList: importDataList as List<InvestName>)
+            .inputInvestNameList(isar: widget.isar, investNameList: importDataList as List<InvestName>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -266,9 +280,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'investRecord':
         await InvestRecordsRepository()
-            .inputInvestRecordList(
-                isar: widget.isar,
-                investRecordList: importDataList as List<InvestRecord>)
+            .inputInvestRecordList(isar: widget.isar, investRecordList: importDataList as List<InvestRecord>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {

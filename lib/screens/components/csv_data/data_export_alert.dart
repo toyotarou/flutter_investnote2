@@ -11,9 +11,11 @@ import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../collections/config.dart';
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
+import '../../../repository/configs_repository.dart';
 import '../../../repository/invest_names_repository.dart';
 import '../../../repository/invest_records_repository.dart';
 import '../parts/error_dialog.dart';
@@ -55,8 +57,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final String csvName = ref.watch(
-        dataExportProvider.select((DataExportState value) => value.csvName));
+    final String csvName = ref.watch(dataExportProvider.select((DataExportState value) => value.csvName));
 
     final List<String> colorChangeFileNameList = <String>[];
     for (final String element in displayFileNameList) {
@@ -84,6 +85,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <String>[
+                  'config',
                   'investName',
                   'investRecord',
                 ].map(
@@ -94,18 +96,15 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(dataExportProvider.notifier)
-                                  .setCsvName(csvName: e);
+                              ref.read(dataExportProvider.notifier).setCsvName(csvName: e);
                             },
                             child: CircleAvatar(
                               radius: 15,
-                              backgroundColor:
-                                  (colorChangeFileNameList.contains(e))
-                                      ? Colors.greenAccent.withOpacity(0.3)
-                                      : (csvName == e)
-                                          ? Colors.yellowAccent.withOpacity(0.3)
-                                          : Colors.white.withOpacity(0.3),
+                              backgroundColor: (colorChangeFileNameList.contains(e))
+                                  ? Colors.greenAccent.withOpacity(0.3)
+                                  : (csvName == e)
+                                      ? Colors.yellowAccent.withOpacity(0.3)
+                                      : Colors.white.withOpacity(0.3),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -122,8 +121,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: csvOutput,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('csv選択'),
                     ),
                   ),
@@ -131,8 +129,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: csvSend,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('送信'),
                     ),
                   ),
@@ -156,8 +153,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
   Future<void> csvOutput() async {
     outputValuesList.clear();
 
-    final String csvName = ref.watch(
-        dataExportProvider.select((DataExportState value) => value.csvName));
+    final String csvName = ref.watch(dataExportProvider.select((DataExportState value) => value.csvName));
 
     if (csvName == '') {
       getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');
@@ -168,10 +164,15 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
     outputValuesList.add('export_csv_from_invest_note');
 
     switch (csvName) {
+      case 'config':
+        await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
+          value?.forEach((Config element) {
+            outputValuesList.add(<Object>[element.id, element.configKey, element.configValue].join(','));
+          });
+        });
+
       case 'investName':
-        await InvestNamesRepository()
-            .getInvestNameList(isar: widget.isar)
-            .then((List<InvestName>? value) {
+        await InvestNamesRepository().getInvestNameList(isar: widget.isar).then((List<InvestName>? value) {
           value?.forEach((InvestName element) {
             outputValuesList.add(<Object>[
               element.id,
@@ -185,9 +186,7 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'investRecord':
-        await InvestRecordsRepository()
-            .getInvestRecordList(isar: widget.isar)
-            .then((List<InvestRecord>? value) {
+        await InvestRecordsRepository().getInvestRecordList(isar: widget.isar).then((List<InvestRecord>? value) {
           value?.forEach((InvestRecord element) {
             outputValuesList.add(<Object?>[
               element.id,
@@ -267,21 +266,15 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
 
 @freezed
 class DataExportState with _$DataExportState {
-  const factory DataExportState({
-    @Default('') String csvName,
-  }) = _DummyDownloadState;
+  const factory DataExportState({@Default('') String csvName}) = _DummyDownloadState;
 }
 
 @riverpod
 class DataExport extends _$DataExport {
   ///
   @override
-  DataExportState build() {
-    return const DataExportState();
-  }
+  DataExportState build() => const DataExportState();
 
   ///
-  void setCsvName({required String csvName}) {
-    state = state.copyWith(csvName: csvName);
-  }
+  void setCsvName({required String csvName}) => state = state.copyWith(csvName: csvName);
 }
