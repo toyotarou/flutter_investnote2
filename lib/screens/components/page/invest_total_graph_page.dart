@@ -30,8 +30,7 @@ class InvestTotalGraphPage extends ConsumerStatefulWidget {
   final List<InvestRecord> investRecordList;
 
   @override
-  ConsumerState<InvestTotalGraphPage> createState() =>
-      _InvestTotalGraphAlertState();
+  ConsumerState<InvestTotalGraphPage> createState() => _InvestTotalGraphAlertState();
 }
 
 class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
@@ -47,8 +46,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
     setChartData();
 
-    final String selectedGraphName = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedGraphName));
+    final String selectedGraphName =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -77,9 +76,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
                       children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            ref
-                                .read(totalGraphProvider.notifier)
-                                .setSelectedGraphName(name: e.name);
+                            ref.read(totalGraphProvider.notifier).setSelectedGraphName(name: e.name);
                           },
                           child: CircleAvatar(
                             backgroundColor: (selectedGraphName == e.name)
@@ -132,37 +129,29 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     // ignore: always_specify_types
     final List<int> list = List.generate(12, (int index) => index);
 
-    final int selectedStartMonth = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedStartMonth));
+    final int selectedStartMonth =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
 
     return Row(
       children: list.map((int element) {
         return Padding(
           padding: const EdgeInsets.all(1.2),
           child: GestureDetector(
-            onTap: (widget.year == DateTime.now().year &&
-                    element >= DateTime.now().month)
+            onTap: (widget.year == DateTime.now().year && element >= DateTime.now().month)
                 ? null
                 : () {
-                    ref
-                        .read(totalGraphProvider.notifier)
-                        .setSelectedStartMonth(month: element + 1);
+                    ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: element + 1);
 
-                    ref
-                        .read(totalGraphProvider.notifier)
-                        .setSelectedEndMonth(month: 0);
+                    ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: 0);
 
                     if (element == selectedStartMonth - 1) {
-                      ref
-                          .read(totalGraphProvider.notifier)
-                          .setSelectedStartMonth(month: 0);
+                      ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: 0);
                     }
                   },
             child: CircleAvatar(
               backgroundColor: (element + 1 == selectedStartMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
-                  : (widget.year == DateTime.now().year &&
-                          element >= DateTime.now().month)
+                  : (widget.year == DateTime.now().year && element >= DateTime.now().month)
                       ? Colors.grey.withOpacity(0.2)
                       : Colors.white.withOpacity(0.2),
               radius: oneRadius.toDouble(),
@@ -188,11 +177,11 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     // ignore: always_specify_types
     final List<int> list = List.generate(12, (int index) => index);
 
-    final int selectedStartMonth = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedStartMonth));
+    final int selectedStartMonth =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
 
-    final int selectedEndMonth = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedEndMonth));
+    final int selectedEndMonth =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
 
     return Row(
       children: list.map((int element) {
@@ -200,19 +189,15 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
           padding: const EdgeInsets.all(1.2),
           child: GestureDetector(
             onTap: ((element < selectedStartMonth - 1) ||
-                    (widget.year == DateTime.now().year &&
-                        element >= DateTime.now().month))
+                    (widget.year == DateTime.now().year && element >= DateTime.now().month))
                 ? null
                 : () {
-                    ref
-                        .read(totalGraphProvider.notifier)
-                        .setSelectedEndMonth(month: element + 1);
+                    ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: element + 1);
                   },
             child: CircleAvatar(
               backgroundColor: (element + 1 == selectedEndMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
-                  : (widget.year == DateTime.now().year &&
-                          element >= DateTime.now().month)
+                  : (widget.year == DateTime.now().year && element >= DateTime.now().month)
                       ? Colors.grey.withOpacity(0.2)
                       : Colors.white.withOpacity(0.2),
               radius: oneRadius.toDouble(),
@@ -244,10 +229,10 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
       }
     }
 
-    final int selectedStartMonth = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedStartMonth));
-    final int selectedEndMonth = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedEndMonth));
+    final int selectedStartMonth =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
+    final int selectedEndMonth =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
 
     final List<String> selectedMonthList = <String>[];
 
@@ -323,8 +308,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
   ///
   void setChartData() {
-    final String selectedGraphName = ref.watch(totalGraphProvider
-        .select((TotalGraphState value) => value.selectedGraphName));
+    final String selectedGraphName =
+        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
 
     final List<String> graphInvestKind = <String>[];
 
@@ -364,10 +349,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             ..add(value.stockPrice)
             ..add(value.stockSum);
 
-          flspotsStockCost
-              .add(FlSpot(i.toDouble(), value.stockCost.toDouble()));
-          flspotsStockPrice
-              .add(FlSpot(i.toDouble(), value.stockPrice.toDouble()));
+          flspotsStockCost.add(FlSpot(i.toDouble(), value.stockCost.toDouble()));
+          flspotsStockPrice.add(FlSpot(i.toDouble(), value.stockPrice.toDouble()));
           flspotsStockSum.add(FlSpot(i.toDouble(), value.stockSum.toDouble()));
         }
       }
@@ -379,12 +362,9 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             ..add(value.shintakuPrice)
             ..add(value.shintakuSum);
 
-          flspotsShintakuCost
-              .add(FlSpot(i.toDouble(), value.shintakuCost.toDouble()));
-          flspotsShintakuPrice
-              .add(FlSpot(i.toDouble(), value.shintakuPrice.toDouble()));
-          flspotsShintakuSum
-              .add(FlSpot(i.toDouble(), value.shintakuSum.toDouble()));
+          flspotsShintakuCost.add(FlSpot(i.toDouble(), value.shintakuCost.toDouble()));
+          flspotsShintakuPrice.add(FlSpot(i.toDouble(), value.shintakuPrice.toDouble()));
+          flspotsShintakuSum.add(FlSpot(i.toDouble(), value.shintakuSum.toDouble()));
         }
       }
 
@@ -396,8 +376,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             ..add(value.goldSum);
 
           flspotsGoldCost.add(FlSpot(i.toDouble(), value.goldCost.toDouble()));
-          flspotsGoldPrice
-              .add(FlSpot(i.toDouble(), value.goldPrice.toDouble()));
+          flspotsGoldPrice.add(FlSpot(i.toDouble(), value.goldPrice.toDouble()));
           flspotsGoldSum.add(FlSpot(i.toDouble(), value.goldSum.toDouble()));
         }
       }
@@ -423,6 +402,20 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     if (points.isNotEmpty) {
       final int maxPoint = points.reduce(max);
       final int minPoint = points.reduce(min);
+
+      List<FlSpot> basePricePosList = <FlSpot>[];
+
+      if (graphInvestKind.contains('blank')) {
+        basePricePosList = flspotsAllPrice;
+      } else if (graphInvestKind.contains('stock')) {
+        basePricePosList = flspotsStockPrice;
+      } else if (graphInvestKind.contains('shintaku')) {
+        basePricePosList = flspotsShintakuPrice;
+      } else if (graphInvestKind.contains('gold')) {
+        basePricePosList = flspotsGoldPrice;
+      }
+
+      final int posOfPrice = basePricePosList.indexWhere((FlSpot element) => element.y == maxPoint);
 
       final int addNum = (selectedGraphName == 'blank') ? 20 : 0;
 
@@ -462,22 +455,20 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
       //=================
 
-      final int selectedStartMonth = ref.watch(totalGraphProvider
-          .select((TotalGraphState value) => value.selectedStartMonth));
+      final int selectedStartMonth =
+          ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
 
       if (selectedStartMonth > 0) {
         dispDateList = <String>[];
 
-        int selectedEndMonth = ref.watch(totalGraphProvider
-            .select((TotalGraphState value) => value.selectedEndMonth));
+        int selectedEndMonth = ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
 
         if (selectedEndMonth == 0) {
           selectedEndMonth = DateTime.now().month;
         }
 
         for (int i = selectedStartMonth; i <= selectedEndMonth; i++) {
-          dispDateMap[i.toString().padLeft(2, '0')]
-              ?.forEach((String element) => dispDateList.add(element));
+          dispDateMap[i.toString().padLeft(2, '0')]?.forEach((String element) => dispDateList.add(element));
         }
       }
 
@@ -490,6 +481,17 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
         borderData: FlBorderData(show: false),
 
         ///
+        gridData: FlGridData(
+          verticalInterval: 1,
+          getDrawingVerticalLine: (double value) {
+            return FlLine(
+              color: (value.toInt() == posOfPrice) ? Colors.greenAccent : Colors.transparent,
+              strokeWidth: (value.toInt() == posOfPrice) ? 1 : 0,
+            );
+          },
+        ),
+
+        ///
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 2,
@@ -499,24 +501,30 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
                 int i = 0;
                 for (final LineBarSpot element in touchedSpots) {
                   final TextStyle textStyle = TextStyle(
-                    color: element.bar.gradient?.colors.first ??
-                        element.bar.color ??
-                        Colors.blueGrey,
+                    color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   );
 
-                  final String price =
-                      element.y.round().toString().split('.')[0].toCurrency();
+                  final String price = element.y.round().toString().split('.')[0].toCurrency();
 
                   final String day = dispDateList[element.x.toInt()];
 
-                  final String dayStr = (i == 0) ? '$day\n' : '';
+                  final List<String> dispStrList = <String>[];
 
-                  list.add(
-                    LineTooltipItem('$dayStr$price', textStyle,
-                        textAlign: TextAlign.end),
-                  );
+                  if (i == 0) {
+                    if (element.x.toInt() == posOfPrice) {
+                      dispStrList.add('[ TOP ]');
+                    }
+
+                    dispStrList.add(day);
+                  }
+
+                  dispStrList.add(price);
+
+                  final String dispStr = dispStrList.join('\n');
+
+                  list.add(LineTooltipItem(dispStr, textStyle, textAlign: TextAlign.end));
 
                   i++;
                 }
@@ -675,7 +683,18 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
           //-------------------------// 左側の目盛り
 
           //-------------------------// 右側の目盛り
-          rightTitles: const AxisTitles(),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 60,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                return Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(fontSize: 12),
+                );
+              },
+            ),
+          ),
           //-------------------------// 右側の目盛り
         ),
 
