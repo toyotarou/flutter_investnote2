@@ -417,7 +417,7 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
       final int posOfPrice = basePricePosList.indexWhere((FlSpot element) => element.y == maxPoint);
 
-      final int addNum = (selectedGraphName == 'blank') ? 20 : 0;
+      final int addNum = (selectedGraphName == 'blank' || selectedGraphName == 'shintaku') ? 20 : 0;
 
       const int warisuu = 100000;
       final int graphYMax = ((maxPoint / warisuu).ceil() + addNum) * warisuu;
