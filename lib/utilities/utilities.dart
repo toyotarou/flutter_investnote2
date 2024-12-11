@@ -39,8 +39,7 @@ class Utility {
       ),
 
       //縦線
-      getDrawingVerticalLine: (double value) =>
-          const FlLine(color: Colors.white30, strokeWidth: 1),
+      getDrawingVerticalLine: (double value) => const FlLine(color: Colors.white30, strokeWidth: 1),
     );
   }
 
@@ -61,4 +60,20 @@ class Utility {
       const Color(0xffdb2f5c),
     ];
   }
+
+  ///
+  void showError(String msg) {
+    ScaffoldMessenger.of(NavigationService.navigatorKey.currentContext!).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        duration: const Duration(seconds: 5),
+      ),
+    );
+  }
+}
+
+class NavigationService {
+  const NavigationService._();
+
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

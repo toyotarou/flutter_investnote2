@@ -1,25 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'data_export_alert.dart';
+part of 'fund.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dataExportHash() => r'075bb8c6ac5199aa2aeb52fda400b5565fbc81a2';
+String _$fundHash() => r'5e2b5444799c2056dec05f1e8f592cc6b4f91579';
 
-/// See also [DataExport].
-@ProviderFor(DataExport)
-final dataExportProvider =
-    AutoDisposeNotifierProvider<DataExport, DataExportState>.internal(
-  DataExport.new,
-  name: r'dataExportProvider',
+/// See also [Fund].
+@ProviderFor(Fund)
+final fundProvider = NotifierProvider<Fund, FundState>.internal(
+  Fund.new,
+  name: r'fundProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$dataExportHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$fundHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DataExport = AutoDisposeNotifier<DataExportState>;
+typedef _$Fund = Notifier<FundState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
