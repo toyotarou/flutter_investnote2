@@ -69,19 +69,14 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
               Container(width: context.screenSize.width),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(widget.date.yyyymmdd),
-                    Text(widget.investName.name)
-                  ]),
+                  children: <Widget>[Text(widget.date.yyyymmdd), Text(widget.investName.name)]),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
               if (widget.investName.kind == InvestKind.stock.name ||
-                  widget.investName.kind ==
-                      InvestKind.shintaku.name) ...<Widget>[
+                  widget.investName.kind == InvestKind.shintaku.name) ...<Widget>[
                 ElevatedButton(
                   onPressed: getLastCost,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                   child: const Text('get last cost'),
                 ),
               ],
@@ -92,13 +87,11 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                   if (widget.investRecord!.isNotEmpty)
                     TextButton(
                         onPressed: _updateInvestRecord,
-                        child: const Text('投資詳細レコードを更新する',
-                            style: TextStyle(fontSize: 12)))
+                        child: const Text('投資詳細レコードを更新する', style: TextStyle(fontSize: 12)))
                   else
                     TextButton(
                         onPressed: _inputInvestRecord,
-                        child: const Text('投資詳細レコードを追加する',
-                            style: TextStyle(fontSize: 12))),
+                        child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
               ),
             ],
@@ -111,12 +104,8 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   Widget _displayInputParts() {
     return DecoratedBox(
-      decoration: BoxDecoration(boxShadow: <BoxShadow>[
-        BoxShadow(
-            blurRadius: 24,
-            spreadRadius: 16,
-            color: Colors.black.withOpacity(0.2))
-      ]),
+      decoration: BoxDecoration(
+          boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
@@ -128,8 +117,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               children: <Widget>[
@@ -137,34 +125,28 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
                   controller: _costEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '取得総額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (PointerDownEvent event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _priceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '時価評価額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (PointerDownEvent event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
             ),
@@ -178,8 +160,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _inputInvestRecord() async {
     bool errFlg = false;
 
-    if (_costEditingController.text.trim() == '' ||
-        _priceEditingController.text.trim() == '') {
+    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
@@ -188,8 +169,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         <Object>[_costEditingController.text.trim(), 30],
         <Object>[_priceEditingController.text.trim(), 10]
       ]) {
-        if (!checkInputValueLengthCheck(
-            value: element[0].toString(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -201,8 +181,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         Duration.zero,
         () {
           if (mounted) {
-            return error_dialog(
-                context: context, title: '登録できません。', content: '値を正しく入力してください。');
+            return error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。');
           }
         },
       );
@@ -212,9 +191,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     final InvestRecord investRecord = InvestRecord()
       ..date = widget.date.yyyymmdd
-      ..investId = (widget.investName.kind == 'gold')
-          ? 0
-          : widget.investName.relationalId
+      ..investId = (widget.investName.kind == 'gold') ? 0 : widget.investName.relationalId
       ..cost = _costEditingController.text.replaceAll(',', '').trim().toInt()
       ..price = _priceEditingController.text.replaceAll(',', '').trim().toInt();
 
@@ -235,8 +212,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   Future<void> _updateInvestRecord() async {
     bool errFlg = false;
 
-    if (_costEditingController.text.trim() == '' ||
-        _priceEditingController.text.trim() == '') {
+    if (_costEditingController.text.trim() == '' || _priceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
@@ -245,8 +221,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         <Object>[_costEditingController.text.trim(), 30],
         <Object>[_priceEditingController.text.trim(), 10]
       ]) {
-        if (!checkInputValueLengthCheck(
-            value: element[0].toString(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -258,8 +233,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
         Duration.zero,
         () {
           if (mounted) {
-            return error_dialog(
-                context: context, title: '登録できません。', content: '値を正しく入力してください。');
+            return error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。');
           }
         },
       );
@@ -273,13 +247,9 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
           .then((InvestRecord? value) async {
         value!
           ..date = widget.date.yyyymmdd
-          ..investId = (widget.investName.kind == InvestKind.gold.name)
-              ? 0
-              : widget.investName.relationalId
-          ..cost =
-              _costEditingController.text.replaceAll(',', '').trim().toInt()
-          ..price =
-              _priceEditingController.text.replaceAll(',', '').trim().toInt();
+          ..investId = (widget.investName.kind == InvestKind.gold.name) ? 0 : widget.investName.relationalId
+          ..cost = _costEditingController.text.replaceAll(',', '').trim().toInt()
+          ..price = _priceEditingController.text.replaceAll(',', '').trim().toInt();
 
         await InvestRecordsRepository()
             .updateInvestRecord(isar: widget.isar, investRecord: value)
@@ -300,7 +270,18 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   void getLastCost() {
     final List<String> dateList = <String>[];
 
-    for (int i = 1; i < 10; i++) {
+    final List<String> yearList = <String>[];
+    for (final InvestRecord element in widget.allInvestRecord) {
+      final List<String> exDate = element.date.split('-');
+
+      if (!yearList.contains(exDate[0])) {
+        yearList.add(exDate[0]);
+      }
+    }
+
+    final int roopNum = (yearList.contains(DateTime.now().year.toString())) ? 10 : 30;
+
+    for (int i = 1; i < roopNum; i++) {
       final DateTime day = widget.date.add(Duration(days: i * -1));
 
       dateList.add(day.yyyymmdd);
@@ -310,8 +291,7 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
 
     for (final String element3 in dateList) {
       widget.allInvestRecord
-          .where((InvestRecord element) =>
-              element.investId == widget.investName.relationalId)
+          .where((InvestRecord element) => element.investId == widget.investName.relationalId)
           .forEach((InvestRecord element2) {
         if (cost == 0) {
           if (element3 == element2.date) {
