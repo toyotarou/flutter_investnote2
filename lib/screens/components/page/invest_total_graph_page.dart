@@ -431,7 +431,9 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
       for (final InvestRecord element in widget.investRecordList) {
         if (!dispDateList.contains(element.date)) {
-          dispDateList.add(element.date);
+          if (element.date.split('-')[0] == widget.year.toString()) {
+            dispDateList.add(element.date);
+          }
         }
 
         final List<String> exDate = element.date.split('-');
