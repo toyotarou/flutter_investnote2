@@ -118,23 +118,21 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
     widget.investRecordMap.forEach((String key, List<InvestRecord> value) {
       final List<String> exKey = key.split('-');
 
-      if (exKey[0].toInt() == widget.year) {
-        int cost = 0;
-        int price = 0;
+      int cost = 0;
+      int price = 0;
 
-        for (final InvestRecord element in value) {
-          cost += element.cost;
-          price += element.price;
-        }
+      for (final InvestRecord element in value) {
+        cost += element.cost;
+        price += element.price;
+      }
 
-        costMap[key] = cost;
-        priceMap[key] = price;
+      costMap[key] = cost;
+      priceMap[key] = price;
 
-        final String yearmonth = '${exKey[0]}-${exKey[1]}';
+      final String yearmonth = '${exKey[0]}-${exKey[1]}';
 
-        if (!yearmonthList.contains(yearmonth)) {
-          yearmonthList.add(yearmonth);
-        }
+      if (!yearmonthList.contains(yearmonth)) {
+        yearmonthList.add(yearmonth);
       }
     });
 
@@ -143,152 +141,154 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
     int tDiff = 0;
 
     for (final String element in yearmonthList) {
-      final int startCost = getStartCost(yearmonth: element, costMap: costMap);
+      if (element.split('-')[0].toInt() == widget.year) {
+        final int startCost = getStartCost(yearmonth: element, costMap: costMap);
 
-      int endCost = 0;
-      costMap.forEach((String key, int value) {
-        final List<String> exKey = key.split('-');
+        int endCost = 0;
+        costMap.forEach((String key, int value) {
+          final List<String> exKey = key.split('-');
 
-        if ('${exKey[0]}-${exKey[1]}' == element) {
-          endCost = value;
-        }
-      });
+          if ('${exKey[0]}-${exKey[1]}' == element) {
+            endCost = value;
+          }
+        });
 
-      final int startPrice = getStartPrice(yearmonth: element, priceMap: priceMap);
+        final int startPrice = getStartPrice(yearmonth: element, priceMap: priceMap);
 
-      int endPrice = 0;
-      priceMap.forEach((String key, int value) {
-        final List<String> exKey = key.split('-');
-        if ('${exKey[0]}-${exKey[1]}' == element) {
-          endPrice = value;
-        }
-      });
+        int endPrice = 0;
+        priceMap.forEach((String key, int value) {
+          final List<String> exKey = key.split('-');
+          if ('${exKey[0]}-${exKey[1]}' == element) {
+            endPrice = value;
+          }
+        });
 
-      list.add(Container(
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.white.withOpacity(0.3)),
+        list.add(Container(
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.white.withOpacity(0.3)),
+            ),
           ),
-        ),
-        child: DefaultTextStyle(
-          style: const TextStyle(fontSize: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[Container(), Text(element)],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
+          child: DefaultTextStyle(
+            style: const TextStyle(fontSize: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[Container(), Text(element)],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
 
-                      Navigator.pushReplacement(
-                        context,
-                        // ignore: inference_failure_on_instance_creation, always_specify_types
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: element),
-                        ),
-                      );
-                    },
-                    child: CircleAvatar(radius: 10, backgroundColor: Colors.greenAccent.withOpacity(0.4)),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(startCost.toString().toCurrency()),
-                      Text(
-                        startPrice.toString().toCurrency(),
-                        style: const TextStyle(color: Colors.yellowAccent),
-                      ),
-                      Text(
-                        (startPrice - startCost).toString().toCurrency(),
-                        style: const TextStyle(color: Color(0xFFFBB6CE)),
-                      ),
-                    ],
-                  )),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(endCost.toString().toCurrency()),
-                      Text(
-                        endPrice.toString().toCurrency(),
-                        style: const TextStyle(color: Colors.yellowAccent),
-                      ),
-                      Text(
-                        (endPrice - endCost).toString().toCurrency(),
-                        style: const TextStyle(color: Color(0xFFFBB6CE)),
-                      ),
-                    ],
-                  )),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(width: 10),
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
-                              alignment: Alignment.topRight,
-                              child: Text((endCost - startCost).toString().toCurrency()),
-                            ),
+                        Navigator.pushReplacement(
+                          context,
+                          // ignore: inference_failure_on_instance_creation, always_specify_types
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: element),
                           ),
-                        ],
-                      ),
-                      Text(
-                        (endPrice - startPrice).toString().toCurrency(),
-                        style: const TextStyle(color: Colors.yellowAccent),
-                      ),
-                      Text(
-                        ((endPrice - endCost) - (startPrice - startCost)).toString().toCurrency(),
-                        style: const TextStyle(color: Color(0xFFFBB6CE)),
-                      ),
-                    ],
-                  )),
-                  const SizedBox(width: 5),
-                  GestureDetector(
-                    onTap: () {
-                      InvestDialog(
-                        context: context,
-                        widget: InvestCostInfoAlert(
-                          yearmonth: element,
-                          cost: endCost - startCost,
-                          investItemRecordMap: widget.investItemRecordMap,
-                          investNameList: widget.investNameList,
-                          investRecordList: widget.investRecordList,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white.withOpacity(0.4)),
-                        color: Colors.white.withOpacity(0.2),
-                      ),
-                      child: const Text('cost'),
+                        );
+                      },
+                      child: CircleAvatar(radius: 10, backgroundColor: Colors.greenAccent.withOpacity(0.4)),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 20),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(startCost.toString().toCurrency()),
+                        Text(
+                          startPrice.toString().toCurrency(),
+                          style: const TextStyle(color: Colors.yellowAccent),
+                        ),
+                        Text(
+                          (startPrice - startCost).toString().toCurrency(),
+                          style: const TextStyle(color: Color(0xFFFBB6CE)),
+                        ),
+                      ],
+                    )),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(endCost.toString().toCurrency()),
+                        Text(
+                          endPrice.toString().toCurrency(),
+                          style: const TextStyle(color: Colors.yellowAccent),
+                        ),
+                        Text(
+                          (endPrice - endCost).toString().toCurrency(),
+                          style: const TextStyle(color: Color(0xFFFBB6CE)),
+                        ),
+                      ],
+                    )),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(width: 10),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
+                                alignment: Alignment.topRight,
+                                child: Text((endCost - startCost).toString().toCurrency()),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          (endPrice - startPrice).toString().toCurrency(),
+                          style: const TextStyle(color: Colors.yellowAccent),
+                        ),
+                        Text(
+                          ((endPrice - endCost) - (startPrice - startCost)).toString().toCurrency(),
+                          style: const TextStyle(color: Color(0xFFFBB6CE)),
+                        ),
+                      ],
+                    )),
+                    const SizedBox(width: 5),
+                    GestureDetector(
+                      onTap: () {
+                        InvestDialog(
+                          context: context,
+                          widget: InvestCostInfoAlert(
+                            yearmonth: element,
+                            cost: endCost - startCost,
+                            investItemRecordMap: widget.investItemRecordMap,
+                            investNameList: widget.investNameList,
+                            investRecordList: widget.investRecordList,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white.withOpacity(0.4)),
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                        child: const Text('cost'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ));
+        ));
 
-      tCost += endCost - startCost;
-      tPrice += endPrice - startPrice;
-      tDiff += (endPrice - endCost) - (startPrice - startCost);
+        tCost += endCost - startCost;
+        tPrice += endPrice - startPrice;
+        tDiff += (endPrice - endCost) - (startPrice - startCost);
+      }
     }
 
     setState(() {
