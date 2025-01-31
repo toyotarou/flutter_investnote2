@@ -46,6 +46,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
 
   Map<int, Map<String, InvestRecord>> investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
 
+  Map<int, Map<String, dynamic>> investRatingDataMap = <int, Map<String, dynamic>>{};
+
   ///
   @override
   void initState() {
@@ -157,6 +159,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
 
   ///
   Widget _displayDailyInvest() {
+    makeInvestRatingDataMap();
+
     final List<Widget> list = <Widget>[];
 
     final String selectedInvestName =
@@ -315,7 +319,25 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                     style: const TextStyle(color: Colors.lightBlueAccent, fontSize: 12),
                     child: Row(
                       children: <Widget>[
-                        Expanded(child: Container()),
+                        Expanded(
+                            child: DefaultTextStyle(
+                          style: const TextStyle(color: Colors.purpleAccent),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              if (investRatingDataMap[element3.relationalId] != null) ...<Widget>[
+                                Text(investRatingDataMap[element3.relationalId]!['diff'].toString()),
+                                Text(investRatingDataMap[element3.relationalId]!['dateDiff'].toString()),
+                                Text(
+                                  investRatingDataMap[element3.relationalId]!['average']
+                                      .toString()
+                                      .toDouble()
+                                      .toStringAsFixed(2),
+                                ),
+                              ],
+                            ],
+                          ),
+                        )),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -627,6 +649,32 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
         ),
       ],
     );
+  }
+
+  ///
+  void makeInvestRatingDataMap() {
+    investRatingDataMap = <int, Map<String, dynamic>>{};
+
+    investGrowthRateDataMap.forEach((int key, Map<String, InvestRecord> value) {
+      final String startDate = value['start']!.date;
+      final int startPrice = value['start']!.price;
+
+      final String endDate = value['end']!.date;
+      final int endPrice = value['end']!.price;
+
+      final int dateDiff = DateTime.parse('$endDate 00:00:00').difference(DateTime.parse('$startDate 00:00:00')).inDays;
+      final int diff = endPrice - startPrice;
+
+      investRatingDataMap[key] = <String, dynamic>{
+        'startDate': startDate,
+        'startPrice': startPrice,
+        'endDate': endDate,
+        'endPrice': endPrice,
+        'dateDiff': dateDiff,
+        'diff': diff,
+        'average': diff / dateDiff,
+      };
+    });
   }
 
   ///
