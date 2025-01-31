@@ -44,6 +44,16 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
 class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAlert> {
   List<InvestRecord>? thisDayInvestRecordList = <InvestRecord>[];
 
+  Map<int, Map<String, InvestRecord>> investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    makeInvestGrowthRateData();
+  }
+
   ///
   void _init() {
     _makeThisDayInvestRecordList();
@@ -250,7 +260,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                               (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
                                   ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
                                   : '0',
-                              style: const TextStyle(color: Colors.grey),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ],
                         ),
@@ -300,6 +310,50 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                         ],
                       ),
                     ],
+                  ),
+                  DefaultTextStyle(
+                    style: const TextStyle(color: Colors.lightBlueAccent, fontSize: 12),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(child: Container()),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              if (investGrowthRateDataMap[element3.relationalId] != null) ...<Widget>[
+                                Text(investGrowthRateDataMap[element3.relationalId]!['start']!.date),
+                                Text(investGrowthRateDataMap[element3.relationalId]!['start']!
+                                    .cost
+                                    .toString()
+                                    .toCurrency()),
+                                Text(investGrowthRateDataMap[element3.relationalId]!['start']!
+                                    .price
+                                    .toString()
+                                    .toCurrency()),
+                              ],
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              if (investGrowthRateDataMap[element3.relationalId] != null) ...<Widget>[
+                                Text(investGrowthRateDataMap[element3.relationalId]!['end']!.date),
+                                Text(investGrowthRateDataMap[element3.relationalId]!['end']!
+                                    .cost
+                                    .toString()
+                                    .toCurrency()),
+                                Text(investGrowthRateDataMap[element3.relationalId]!['end']!
+                                    .price
+                                    .toString()
+                                    .toCurrency()),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -458,7 +512,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                 (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
                                     ? '${((dispInvestRecordGold[0].price / dispInvestRecordGold[0].cost) * 100).toString().split('.')[0]} %'
                                     : '0',
-                                style: const TextStyle(color: Colors.grey),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ],
                           ),
@@ -517,6 +571,38 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                         ),
                       ],
                     ),
+                    DefaultTextStyle(
+                      style: const TextStyle(color: Colors.lightBlueAccent, fontSize: 12),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: Container()),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                if (investGrowthRateDataMap[0] != null) ...<Widget>[
+                                  Text(investGrowthRateDataMap[0]!['start']!.date),
+                                  Text(investGrowthRateDataMap[0]!['start']!.cost.toString().toCurrency()),
+                                  Text(investGrowthRateDataMap[0]!['start']!.price.toString().toCurrency()),
+                                ],
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                if (investGrowthRateDataMap[0] != null) ...<Widget>[
+                                  Text(investGrowthRateDataMap[0]!['end']!.date),
+                                  Text(investGrowthRateDataMap[0]!['end']!.cost.toString().toCurrency()),
+                                  Text(investGrowthRateDataMap[0]!['end']!.price.toString().toCurrency()),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -547,4 +633,40 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
   Future<void> _makeThisDayInvestRecordList() async => InvestRecordsRepository()
       .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
       .then((List<InvestRecord>? value) => setState(() => thisDayInvestRecordList = value));
+
+  ///
+  void makeInvestGrowthRateData() {
+    investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
+
+    for (final InvestName element in widget.investNameList) {
+      InvestRecord investRecordStart = InvestRecord()..price = 0;
+      InvestRecord investRecordEnd = InvestRecord();
+
+      InvestRecord investRecordStartGold = InvestRecord()..price = 0;
+      InvestRecord investRecordEndGold = InvestRecord();
+
+      for (final InvestRecord element2 in widget.allInvestRecord) {
+        if (element2.investId == 0) {
+          if (investRecordStartGold.price == 0) {
+            investRecordStartGold = element2;
+          }
+
+          investRecordEndGold = element2;
+        } else if (element.relationalId == element2.investId) {
+          if (investRecordStart.price == 0) {
+            investRecordStart = element2;
+          }
+
+          investRecordEnd = element2;
+        }
+      }
+
+      investGrowthRateDataMap[element.relationalId] = <String, InvestRecord>{
+        'start': investRecordStart,
+        'end': investRecordEnd
+      };
+
+      investGrowthRateDataMap[0] = <String, InvestRecord>{'start': investRecordStartGold, 'end': investRecordEndGold};
+    }
+  }
 }
