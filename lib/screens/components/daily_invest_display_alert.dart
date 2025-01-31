@@ -320,23 +320,27 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                            child: DefaultTextStyle(
-                          style: const TextStyle(color: Colors.purpleAccent),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              if (investRatingDataMap[element3.relationalId] != null) ...<Widget>[
-                                Text(investRatingDataMap[element3.relationalId]!['diff'].toString()),
-                                Text(investRatingDataMap[element3.relationalId]!['dateDiff'].toString()),
-                                Text(
-                                  investRatingDataMap[element3.relationalId]!['average']
-                                      .toString()
-                                      .toDouble()
-                                      .toStringAsFixed(2),
-                                ),
-                              ],
-                            ],
-                          ),
+                            child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  if (investRatingDataMap[element3.relationalId] != null) ...<Widget>[
+                                    Text(investRatingDataMap[element3.relationalId]!['diff'].toString()),
+                                    Text(investRatingDataMap[element3.relationalId]!['dateDiff'].toString()),
+                                    Text(
+                                      investRatingDataMap[element3.relationalId]!['average']
+                                          .toString()
+                                          .toDouble()
+                                          .toStringAsFixed(2),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                          ],
                         )),
                         Expanded(
                           child: Column(
