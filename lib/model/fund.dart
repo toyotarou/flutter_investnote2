@@ -53,7 +53,8 @@ enum Fundname {
   IFREE_SP500,
   ITRUST_INDIA,
   NZAM_SP500,
-  TAWARA_SP500
+  TAWARA_SP500,
+  TAWARA_SENSHINKOKU,
 }
 
 // ignore: always_specify_types
@@ -67,7 +68,8 @@ final EnumValues<Fundname> fundnameValues = EnumValues(<String, Fundname>{
   'iFree　S&P500インデックス(大和アセットマネジメント)': Fundname.IFREE_SP500,
   'iTrustインド株式(ピクテ・ジャパン)': Fundname.ITRUST_INDIA,
   'NZAM・ベータ　S&P500(農林中金全共連アセットマネジメント)': Fundname.NZAM_SP500,
-  'たわらノーロード　S&P500(アセットマネジメントOne)': Fundname.TAWARA_SP500
+  'たわらノーロード　S&P500(アセットマネジメントOne)': Fundname.TAWARA_SP500,
+  'たわらノーロード　先進国株式(アセットマネジメントOne)': Fundname.TAWARA_SENSHINKOKU,
 });
 
 class EnumValues<T> {

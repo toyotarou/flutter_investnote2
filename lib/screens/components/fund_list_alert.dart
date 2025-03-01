@@ -34,6 +34,8 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
             Container(width: context.screenSize.width),
             displayFundNamePulldown(),
             Divider(color: Colors.white.withOpacity(0.1), thickness: 5),
+            displayStartEndDate(),
+            Divider(color: Colors.white.withOpacity(0.1), thickness: 5),
             Expanded(child: displayFundList()),
           ],
         ),
@@ -124,6 +126,36 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
           ),
         ),
       ],
+    );
+  }
+
+  ///
+  Widget displayStartEndDate() {
+    String startDate = '';
+    String endDate = '';
+
+    final String selectedFundName = ref.watch(fundProvider.select((FundState value) => value.selectedFundName));
+
+    ref
+        .watch(fundProvider.select((FundState value) => value.fundNameMap))
+        .forEach((Fundname key, List<FundModel> value) {
+      if (key.name == selectedFundName) {
+        for (final FundModel element in value) {
+          if (startDate == '') {
+            startDate = '${element.year}-${element.month}-${element.day}';
+          }
+
+          endDate = '${element.year}-${element.month}-${element.day}';
+        }
+      }
+    });
+
+    return DefaultTextStyle(
+      style: const TextStyle(fontSize: 12, color: Colors.pinkAccent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[Text(startDate), Text(endDate)],
+      ),
     );
   }
 }
