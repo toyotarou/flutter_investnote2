@@ -47,8 +47,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   Widget build(BuildContext context) {
     setChartData();
 
-    final bool wideGraphDisplay = ref.watch(investGraphProvider
-        .select((InvestGraphState value) => value.wideGraphDisplay));
+    final bool wideGraphDisplay =
+        ref.watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -66,8 +66,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
             controller: _controller,
             child: SizedBox(
               width: wideGraphDisplay
-                  ? context.screenSize.width *
-                      (widget.calendarCellDateDataList.length / 10)
+                  ? context.screenSize.width * (widget.calendarCellDateDataList.length / 10)
                   : context.screenSize.width * 0.65,
               height: context.screenSize.height - 50,
               child: Column(
@@ -82,21 +81,16 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.pinkAccent.withOpacity(0.3)),
-                                onPressed: () => _controller.jumpTo(
-                                    _controller.position.maxScrollExtent),
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                                onPressed: () => _controller.jumpTo(_controller.position.maxScrollExtent),
                                 child: const Text('jump'),
                               ),
                               Row(
                                 children: <Widget>[
                                   ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.pinkAccent.withOpacity(0.3)),
-                                    onPressed: () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent),
+                                    style:
+                                        ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                                    onPressed: () => _controller.jumpTo(_controller.position.minScrollExtent),
                                     child: const Text('back'),
                                   ),
                                   const SizedBox(width: 50),
@@ -131,11 +125,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
     if (widget.kind == InvestKind.gold.name) {
       idList.add(0);
     } else {
-      widget.investNameList
-          .where((InvestName element) => element.kind == widget.kind)
-          .toList()
-        ..sort((InvestName a, InvestName b) =>
-            a.dealNumber.compareTo(b.dealNumber))
+      widget.investNameList.where((InvestName element) => element.kind == widget.kind).toList()
+        ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
         ..forEach((InvestName element2) {
           idList.add(element2.relationalId);
 
@@ -156,18 +147,14 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
     for (final InvestRecord element in widget.allInvestRecord) {
       if (element.price > 0 && element.cost > 0) {
-        map[element.investId]?[element.date] =
-            (element.price != 0 && element.cost != 0)
-                ? ((element.price / element.cost) * 100)
-                    .toString()
-                    .split('.')[0]
-                    .toInt()
-                : 0;
+        map[element.investId]?[element.date] = (element.price != 0 && element.cost != 0)
+            ? ((element.price / element.cost) * 100).toString().split('.')[0].toInt()
+            : 0;
       }
     }
 
-    final int selectedGraphId = ref.watch(investGraphProvider
-        .select((InvestGraphState value) => value.selectedGraphId));
+    final int selectedGraphId =
+        ref.watch(investGraphProvider.select((InvestGraphState value) => value.selectedGraphId));
 
     final List<List<FlSpot>> flspotsList = <List<FlSpot>>[];
 
@@ -233,15 +220,12 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
               for (final LineBarSpot element in touchedSpots) {
                 final TextStyle textStyle = TextStyle(
-                  color: element.bar.gradient?.colors.first ??
-                      element.bar.color ??
-                      Colors.blueGrey,
+                  color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 );
 
-                final String percent =
-                    element.y.round().toString().split('.')[0].toCurrency();
+                final String percent = element.y.round().toString().split('.')[0].toCurrency();
 
                 list.add(
                   LineTooltipItem(
@@ -272,14 +256,13 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
             reservedSize: 50,
             getTitlesWidget: (double value, TitleMeta meta) {
               return SideTitleWidget(
-                axisSide: meta.axisSide,
+                meta: meta,
                 child: DefaultTextStyle(
                   style: const TextStyle(fontSize: 10),
                   child: Column(
                     children: <Widget>[
                       Text(investGraphState.wideGraphDisplay
-                          ? widget.calendarCellDateDataList[value.toInt()]
-                              .split('-')[0]
+                          ? widget.calendarCellDateDataList[value.toInt()].split('-')[0]
                           : ''),
                       Text(
                         investGraphState.wideGraphDisplay
@@ -323,8 +306,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
             spots: flspotsList[i],
             barWidth: 3,
             isStrokeCapRound: true,
-            color: (investGraphState.selectedGraphName != '' &&
-                    investGraphState.selectedGraphColor != null)
+            color: (investGraphState.selectedGraphName != '' && investGraphState.selectedGraphColor != null)
                 ? investGraphState.selectedGraphColor
                 : twelveColor[i % 12],
             dotData: const FlDotData(show: false),
@@ -339,9 +321,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
       borderData: FlBorderData(show: false),
 
       ///
-      lineTouchData: LineTouchData(
-          touchTooltipData:
-              LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
+      lineTouchData: LineTouchData(touchTooltipData: LineTouchTooltipData(getTooltipItems: getGraphToolTip)),
 
       ///
       gridData: _utility.getFlGridData(),
@@ -375,7 +355,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
               }
 
               return SideTitleWidget(
-                  axisSide: AxisSide.left,
+                  meta: meta,
                   child: Text(
                     value.toInt().toString(),
                     style: const TextStyle(fontSize: 10),
@@ -401,14 +381,11 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
     for (final LineBarSpot element in touchedSpots) {
       final TextStyle textStyle = TextStyle(
-          color: element.bar.gradient?.colors.first ??
-              element.bar.color ??
-              Colors.blueGrey,
+          color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
           fontWeight: FontWeight.bold,
           fontSize: 12);
 
-      final String price =
-          element.y.round().toString().split('.')[0].toCurrency();
+      final String price = element.y.round().toString().split('.')[0].toCurrency();
 
       list.add(LineTooltipItem(price, textStyle, textAlign: TextAlign.end));
     }
