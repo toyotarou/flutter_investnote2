@@ -10,6 +10,7 @@ import '../../collections/invest_record.dart';
 import '../../controllers/controllers_mixin.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
+import '../../model/toushi_shintaku.dart';
 import '../../repository/invest_records_repository.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
@@ -54,69 +55,6 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
   ///
   @override
   Widget build(BuildContext context) {
-    // if (widget.investName.name == 'gold') {
-    //   print('gold');
-    // } else {
-    //   print('toushi shintaku');
-    // }
-    //
-    //
-
-/*
-
-
-    print(widget.investName.name);
-
-
-I/flutter (27306): ウィズダムツリー インド株収益ファンド
-I/flutter (27306): stock
-
-I/flutter (27306): エマージング・ボンド・ファンド・南アフリカランドコース（毎月分配型）
-I/flutter (27306): shintaku
-
-I/flutter (27306): gold
-I/flutter (27306): gold
-
-*/
-
-    // print(widget.investName.kind);
-    // if (widget.investName.kind == InvestKind.shintaku.name) {
-    //   print(toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd]);
-    // } else if (widget.investName.kind == InvestKind.gold.name) {
-    //   print(goldState.goldList.length);
-    // }
-
-/*
-    print(widget.investName.kind);
-    print(goldState.goldList.length);
-    print(goldState.goldMap[widget.date.yyyymmdd]?.payPrice);
-    print(goldState.goldMap[widget.date.yyyymmdd]?.goldValue);
-
-
-
-    I/flutter ( 4063): gold
-    I/flutter ( 4063): 1590
-    I/flutter ( 4063): 500303
-    I/flutter ( 4063): 882559
-    */
-
-/*
-
-
-    print(widget.investName.kind);
-
-    print(toushiShintakuState.toushiShintakuMap['2025-05-09']);
-
-
-    I/flutter ( 5126): shintaku
-    I/flutter ( 5126): [Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel']
-    */
-
-
-
-
-
-
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -160,6 +98,37 @@ I/flutter (27306): gold
                         child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
               ),
+              if (widget.investName.kind == InvestKind.gold.name) ...<Widget>[
+                if (goldState.goldMap[widget.date.yyyymmdd] != null) ...<Widget>[
+                  const Text('当日のGOLD'),
+                  Text(goldState.goldMap[widget.date.yyyymmdd]!.payPrice.toString()),
+                  Text(goldState.goldMap[widget.date.yyyymmdd]!.goldValue.toString()),
+                ],
+              ],
+              if (widget.investName.kind == InvestKind.shintaku.name) ...<Widget>[
+                if (toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd] != null) ...<Widget>[
+                  SizedBox(
+                    height: 300,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd]!.map((ToushiShintakuModel e) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(e.name),
+                              Text(e.cost),
+                              Text(e.price),
+                              const Divider(color: Colors.white),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ],
           ),
         ),
