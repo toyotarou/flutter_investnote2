@@ -4,10 +4,12 @@ import 'calendars/calendars_notifier.dart';
 import 'calendars/calendars_response_state.dart';
 import 'daily_invest_display/daily_invest_display.dart';
 import 'fund/fund.dart';
+import 'gold/gold.dart';
 import 'holidays/holidays_notifier.dart';
 import 'holidays/holidays_response_state.dart';
 import 'invest_graph/invest_graph.dart';
 import 'total_graph/total_graph.dart';
+import 'toushi_shintaku/toushi_shintaku.dart';
 
 mixin ControllersMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   //==========================================//
@@ -51,6 +53,18 @@ mixin ControllersMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   TotalGraphState get totalGraphState => ref.watch(totalGraphProvider);
 
   TotalGraph get totalGraphNotifier => ref.read(totalGraphProvider.notifier);
+
+//==========================================//
+
+  GoldState get goldState => ref.watch(goldProvider);
+
+  Gold get goldNotifier => ref.read(goldProvider.notifier);
+
+//==========================================//
+
+  ToushiShintakuState get toushiShintakuState => ref.watch(toushiShintakuProvider);
+
+  ToushiShintaku get toushiShintakuNotifier => ref.read(toushiShintakuProvider.notifier);
 
 //==========================================//
 }

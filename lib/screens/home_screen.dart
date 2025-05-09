@@ -100,6 +100,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   ///
   @override
+  void initState() {
+    super.initState();
+
+    goldNotifier.getAllGold();
+
+    toushiShintakuNotifier.getAllToushiShintaku();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     // ignore: always_specify_types
     Future(_init);

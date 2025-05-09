@@ -1,11 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
 import '../../collections/invest_record.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/invest_records_repository.dart';
@@ -13,7 +15,7 @@ import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
-class InvestRecordInputAlert extends StatefulWidget {
+class InvestRecordInputAlert extends ConsumerStatefulWidget {
   const InvestRecordInputAlert(
       {super.key,
       required this.isar,
@@ -30,10 +32,11 @@ class InvestRecordInputAlert extends StatefulWidget {
 
   ///
   @override
-  State<InvestRecordInputAlert> createState() => _InvestRecordInputAlertState();
+  ConsumerState<InvestRecordInputAlert> createState() => _InvestRecordInputAlertState();
 }
 
-class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
+class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
+    with ControllersMixin<InvestRecordInputAlert> {
   final TextEditingController _costEditingController = TextEditingController();
   final TextEditingController _priceEditingController = TextEditingController();
 
@@ -51,6 +54,69 @@ class _InvestRecordInputAlertState extends State<InvestRecordInputAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // if (widget.investName.name == 'gold') {
+    //   print('gold');
+    // } else {
+    //   print('toushi shintaku');
+    // }
+    //
+    //
+
+/*
+
+
+    print(widget.investName.name);
+
+
+I/flutter (27306): ウィズダムツリー インド株収益ファンド
+I/flutter (27306): stock
+
+I/flutter (27306): エマージング・ボンド・ファンド・南アフリカランドコース（毎月分配型）
+I/flutter (27306): shintaku
+
+I/flutter (27306): gold
+I/flutter (27306): gold
+
+*/
+
+    // print(widget.investName.kind);
+    // if (widget.investName.kind == InvestKind.shintaku.name) {
+    //   print(toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd]);
+    // } else if (widget.investName.kind == InvestKind.gold.name) {
+    //   print(goldState.goldList.length);
+    // }
+
+/*
+    print(widget.investName.kind);
+    print(goldState.goldList.length);
+    print(goldState.goldMap[widget.date.yyyymmdd]?.payPrice);
+    print(goldState.goldMap[widget.date.yyyymmdd]?.goldValue);
+
+
+
+    I/flutter ( 4063): gold
+    I/flutter ( 4063): 1590
+    I/flutter ( 4063): 500303
+    I/flutter ( 4063): 882559
+    */
+
+/*
+
+
+    print(widget.investName.kind);
+
+    print(toushiShintakuState.toushiShintakuMap['2025-05-09']);
+
+
+    I/flutter ( 5126): shintaku
+    I/flutter ( 5126): [Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel', Instance of 'ToushiShintakuModel']
+    */
+
+
+
+
+
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
