@@ -5,17 +5,14 @@ import 'package:isar/isar.dart';
 import '../collections/config.dart';
 import '../collections/invest_name.dart';
 import '../collections/invest_record.dart';
+
+import '../controllers/controllers_mixin.dart';
 import '../enum/invest_kind.dart';
 import '../extensions/extensions.dart';
 import '../repository/configs_repository.dart';
 import '../repository/invest_names_repository.dart';
 import '../repository/invest_records_repository.dart';
-import '../state/calendars/calendars_notifier.dart';
-import '../state/calendars/calendars_response_state.dart';
-import '../state/daily_invest_display/daily_invest_display.dart';
-import '../state/holidays/holidays_notifier.dart';
-import '../state/holidays/holidays_response_state.dart';
-import '../state/total_graph/total_graph.dart';
+
 import '../utilities/utilities.dart';
 import 'components/config_setting_alert.dart';
 import 'components/csv_data/data_export_alert.dart';
@@ -55,7 +52,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<HomeScreen> {
   DateTime _calendarMonthFirst = DateTime.now();
   final List<String> _youbiList = <String>[
     'Sunday',
@@ -109,10 +106,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (widget.baseYm != null) {
       // ignore: always_specify_types
-      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
+      Future(() => calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm));
     }
-
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     if (investRecordList!.isNotEmpty) {
       makeCalendarCellSumDataMap();
@@ -164,9 +159,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
-              ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: 0);
-
-              ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: 0);
+              totalGraphNotifier.setSelectedStartMonth(month: 0);
+              totalGraphNotifier.setSelectedEndMonth(month: 0);
 
               InvestDialog(
                 context: context,
@@ -208,8 +202,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget displayMonthSummary() {
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
     List<InvestRecord> lastDateInvestRecordList = <InvestRecord>[];
 
     investRecordMap.forEach((String key, List<InvestRecord> value) {
@@ -287,8 +279,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final String firstYearMonth =
           '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
 
-      final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
       if (calendarState.baseYearMonth == firstYearMonth) {
         return firstCost;
       } else {
@@ -312,8 +302,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final String firstYearMonth =
           '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
 
-      final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
       if (calendarState.baseYearMonth == firstYearMonth) {
         return firstCost;
       } else {
@@ -331,8 +319,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   List<InvestRecord> getCostPriceInvestRecord() {
     List<InvestRecord> list = <InvestRecord>[];
-
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     final DateTime prevYearMonth = DateTime(
         calendarState.baseYearMonth.split('-')[0].toInt(), calendarState.baseYearMonth.split('-')[1].toInt(), 0);
@@ -359,12 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: <Widget>[
               const SizedBox(height: 60),
               GestureDetector(
-                onTap: () {
-                  InvestDialog(
-                    context: context,
-                    widget: ConfigSettingAlert(isar: widget.isar),
-                  );
-                },
+                onTap: () => InvestDialog(context: context, widget: ConfigSettingAlert(isar: widget.isar)),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
@@ -469,8 +450,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   void _goPrevMonth() {
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
     Navigator.pushReplacement(
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
@@ -482,8 +461,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   void _goNextMonth() {
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
     Navigator.pushReplacement(
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
@@ -495,13 +472,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _getCalendar() {
-    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
-
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
-
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     _calendarMonthFirst = DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
 
@@ -628,7 +601,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: GestureDetector(
             onTap: tapFlag
                 ? () {
-                    ref.read(dailyInvestDisplayProvider.notifier).setSelectedInvestName(selectedInvestName: '');
+                    dailyInvestDisplayNotifier.setSelectedInvestName(selectedInvestName: '');
 
                     InvestDialog(
                       context: context,

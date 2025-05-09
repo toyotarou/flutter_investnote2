@@ -1,14 +1,14 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../collections/invest_name.dart';
 import '../../collections/invest_record.dart';
+
+import '../../controllers/controllers_mixin.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
-import '../../state/invest_graph/invest_graph.dart';
+
 import '../../utilities/utilities.dart';
 import 'parts/custom_scroll_bar.dart';
 
@@ -31,7 +31,7 @@ class InvestGraphAlert extends ConsumerStatefulWidget {
   ConsumerState<InvestGraphAlert> createState() => _InvestGraphAlertState();
 }
 
-class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
+class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with ControllersMixin<InvestGraphAlert> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -46,9 +46,6 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
   @override
   Widget build(BuildContext context) {
     setChartData();
-
-    final bool wideGraphDisplay =
-        ref.watch(investGraphProvider.select((InvestGraphState value) => value.wideGraphDisplay));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -65,7 +62,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
             scrollDirection: Axis.horizontal,
             controller: _controller,
             child: SizedBox(
-              width: wideGraphDisplay
+              width: investGraphState.wideGraphDisplay
                   ? context.screenSize.width * (widget.calendarCellDateDataList.length / 10)
                   : context.screenSize.width * 0.65,
               height: context.screenSize.height - 50,
@@ -76,7 +73,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
                   Expanded(child: LineChart(graphData)),
                   SizedBox(
                     height: 40,
-                    child: wideGraphDisplay
+                    child: investGraphState.wideGraphDisplay
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -153,16 +150,13 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
       }
     }
 
-    final int selectedGraphId =
-        ref.watch(investGraphProvider.select((InvestGraphState value) => value.selectedGraphId));
-
     final List<List<FlSpot>> flspotsList = <List<FlSpot>>[];
 
     final List<int> points = <int>[];
 
-    if (selectedGraphId != 0) {
+    if (investGraphState.selectedGraphId != 0) {
       map.forEach((int key, Map<String, int> value) {
-        if (selectedGraphId == key) {
+        if (investGraphState.selectedGraphId == key) {
           final List<FlSpot> flspots = <FlSpot>[];
 
           int j = 0;
@@ -201,8 +195,6 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
     const int graphYMax = 300;
     const int graphYMin = 0;
 
-    final InvestGraphState investGraphState = ref.watch(investGraphProvider);
-
     final List<Color> twelveColor = _utility.getTwelveColor();
 
     graphData = LineChartData(
@@ -227,13 +219,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
 
                 final String percent = element.y.round().toString().split('.')[0].toCurrency();
 
-                list.add(
-                  LineTooltipItem(
-                    '${element.x.toInt()} : $percent',
-                    textStyle,
-                    textAlign: TextAlign.start,
-                  ),
-                );
+                list.add(LineTooltipItem('${element.x.toInt()} : $percent', textStyle, textAlign: TextAlign.start));
               }
 
               return list;
@@ -337,9 +323,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 50,
-            getTitlesWidget: (double value, TitleMeta meta) {
-              return Container();
-            },
+            getTitlesWidget: (double value, TitleMeta meta) => Container(),
           ),
         ),
         //-------------------------// 下部の目盛り
@@ -355,11 +339,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> {
               }
 
               return SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    value.toInt().toString(),
-                    style: const TextStyle(fontSize: 10),
-                  ));
+                  meta: meta, child: Text(value.toInt().toString(), style: const TextStyle(fontSize: 10)));
             },
           ),
         ),

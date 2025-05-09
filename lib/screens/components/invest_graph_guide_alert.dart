@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../collections/invest_name.dart';
+
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/invest_graph/invest_graph.dart';
+
 import '../../utilities/utilities.dart';
 
 class InvestGraphGuideAlert extends ConsumerStatefulWidget {
@@ -18,19 +20,16 @@ class InvestGraphGuideAlert extends ConsumerStatefulWidget {
   final List<InvestName> investNameList;
 
   @override
-  ConsumerState<InvestGraphGuideAlert> createState() =>
-      _InvestGraphGuideAlertState();
+  ConsumerState<InvestGraphGuideAlert> createState() => _InvestGraphGuideAlertState();
 }
 
-class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
+class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert>
+    with ControllersMixin<InvestGraphGuideAlert> {
   final Utility _utility = Utility();
 
   ///
   @override
   Widget build(BuildContext context) {
-    final bool wideGraphDisplay = ref.watch(investGraphProvider
-        .select((InvestGraphState value) => value.wideGraphDisplay));
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -44,26 +43,17 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   IconButton(
-                    onPressed: () {
-                      ref
-                          .read(investGraphProvider.notifier)
-                          .setWideGraphDisplay(flag: !wideGraphDisplay);
-                    },
+                    onPressed: () => investGraphNotifier.setWideGraphDisplay(flag: !investGraphState.wideGraphDisplay),
                     icon: Icon(
                       Icons.show_chart,
-                      color:
-                          wideGraphDisplay ? Colors.yellowAccent : Colors.white,
+                      color: investGraphState.wideGraphDisplay ? Colors.yellowAccent : Colors.white,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
-                      ref
-                          .read(investGraphProvider.notifier)
-                          .setSelectedGraphId(id: 0);
+                      investGraphNotifier.setSelectedGraphId(id: 0);
 
-                      ref
-                          .read(investGraphProvider.notifier)
-                          .setSelectedGraphName(name: '');
+                      investGraphNotifier.setSelectedGraphName(name: '');
                     },
                     icon: const Icon(Icons.close),
                   ),
@@ -84,27 +74,18 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
 
     final List<Color> twelveColor = _utility.getTwelveColor();
 
-    final InvestGraphState investGraphState = ref.watch(investGraphProvider);
-
     for (int i = 0; i < widget.investGraphGuideNames.length; i++) {
       list.add(GestureDetector(
         onTap: () {
           final InvestName investName = widget.investNameList
-              .where((InvestName element) =>
-                  element.name == widget.investGraphGuideNames[i])
+              .where((InvestName element) => element.name == widget.investGraphGuideNames[i])
               .first;
 
-          ref
-              .read(investGraphProvider.notifier)
-              .setSelectedGraphId(id: investName.relationalId);
+          investGraphNotifier.setSelectedGraphId(id: investName.relationalId);
 
-          ref
-              .read(investGraphProvider.notifier)
-              .setSelectedGraphName(name: investName.name);
+          investGraphNotifier.setSelectedGraphName(name: investName.name);
 
-          ref
-              .read(investGraphProvider.notifier)
-              .setSelectedGraphColor(color: twelveColor[i % 12]);
+          investGraphNotifier.setSelectedGraphColor(color: twelveColor[i % 12]);
         },
         child: Container(
           margin: const EdgeInsets.only(bottom: 10),
@@ -112,8 +93,7 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
             border: Border(
               bottom: BorderSide(
                 color: (investGraphState.selectedGraphColor != null &&
-                        widget.investGraphGuideNames[i] ==
-                            investGraphState.selectedGraphName)
+                        widget.investGraphGuideNames[i] == investGraphState.selectedGraphName)
                     ? investGraphState.selectedGraphColor!
                     : Colors.transparent,
               ),
@@ -124,10 +104,7 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundColor: twelveColor[i % 12].withOpacity(0.4),
-                    radius: 15,
-                  ),
+                  CircleAvatar(backgroundColor: twelveColor[i % 12].withOpacity(0.4), radius: 15),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(
@@ -135,21 +112,16 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
                       children: <Widget>[
                         Text(
                           widget.investGraphGuideFrames[i],
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.lightBlueAccent,
-                          ),
+                          style: const TextStyle(fontSize: 12, color: Colors.lightBlueAccent),
                         ),
                         Text(
                           widget.investGraphGuideNames[i],
                           style: TextStyle(
                             fontSize: 12,
-                            color:
-                                (investGraphState.selectedGraphColor != null &&
-                                        widget.investGraphGuideNames[i] ==
-                                            investGraphState.selectedGraphName)
-                                    ? investGraphState.selectedGraphColor
-                                    : Colors.white,
+                            color: (investGraphState.selectedGraphColor != null &&
+                                    widget.investGraphGuideNames[i] == investGraphState.selectedGraphName)
+                                ? investGraphState.selectedGraphColor
+                                : Colors.white,
                           ),
                         ),
                       ],
@@ -167,10 +139,8 @@ class _InvestGraphGuideAlertState extends ConsumerState<InvestGraphGuideAlert> {
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );

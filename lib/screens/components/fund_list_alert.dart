@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../model/fund.dart';
-import '../../state/fund/fund.dart';
 
 class FundListAlert extends ConsumerStatefulWidget {
   const FundListAlert({super.key});
@@ -12,13 +12,13 @@ class FundListAlert extends ConsumerStatefulWidget {
   ConsumerState<FundListAlert> createState() => _FundListAlertState();
 }
 
-class _FundListAlertState extends ConsumerState<FundListAlert> {
+class _FundListAlertState extends ConsumerState<FundListAlert> with ControllersMixin<FundListAlert> {
   ///
   @override
   void initState() {
     super.initState();
 
-    ref.read(fundProvider.notifier).getAllFund();
+    fundNotifier.getAllFund();
   }
 
   ///
@@ -50,14 +50,9 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
 
     final Map<Fundname, String> fundNameReverseMap = fundnameValues.reverse;
 
-    ref
-        .watch(fundProvider.select((FundState value) => value.fundNameMap))
-        .forEach((Fundname key, List<FundModel> value) {
-      fundNamePulldownMap[key.name] = fundNameReverseMap[key].toString();
-    });
+    fundState.fundNameMap.forEach(
+        (Fundname key, List<FundModel> value) => fundNamePulldownMap[key.name] = fundNameReverseMap[key].toString());
     //--------------------------//
-
-    final String selectedFundName = ref.watch(fundProvider.select((FundState value) => value.selectedFundName));
 
     // ignore: always_specify_types
     return DropdownButton(
@@ -72,15 +67,15 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
             e.value,
             style: TextStyle(
               fontSize: 12,
-              color: (e.key == selectedFundName) ? Colors.yellowAccent : Colors.white,
+              color: (e.key == fundState.selectedFundName) ? Colors.yellowAccent : Colors.white,
             ),
           ),
         );
       }).toList(),
-      value: selectedFundName,
+      value: fundState.selectedFundName,
       onChanged: (String? value) {
         if (value != '') {
-          ref.read(fundProvider.notifier).setSelectedFundName(name: value!);
+          fundNotifier.setSelectedFundName(name: value!);
         }
       },
     );
@@ -90,12 +85,8 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
   Widget displayFundList() {
     final List<Widget> list = <Widget>[];
 
-    final String selectedFundName = ref.watch(fundProvider.select((FundState value) => value.selectedFundName));
-
-    ref
-        .watch(fundProvider.select((FundState value) => value.fundNameMap))
-        .forEach((Fundname key, List<FundModel> value) {
-      if (key.name == selectedFundName) {
+    fundState.fundNameMap.forEach((Fundname key, List<FundModel> value) {
+      if (key.name == fundState.selectedFundName) {
         for (final FundModel element in value) {
           list.add(Container(
             width: context.screenSize.width,
@@ -134,12 +125,8 @@ class _FundListAlertState extends ConsumerState<FundListAlert> {
     String startDate = '';
     String endDate = '';
 
-    final String selectedFundName = ref.watch(fundProvider.select((FundState value) => value.selectedFundName));
-
-    ref
-        .watch(fundProvider.select((FundState value) => value.fundNameMap))
-        .forEach((Fundname key, List<FundModel> value) {
-      if (key.name == selectedFundName) {
+    fundState.fundNameMap.forEach((Fundname key, List<FundModel> value) {
+      if (key.name == fundState.selectedFundName) {
         for (final FundModel element in value) {
           if (startDate == '') {
             startDate = '${element.year}-${element.month}-${element.day}';

@@ -7,10 +7,11 @@ import 'package:isar/isar.dart';
 
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
+
+import '../../../controllers/controllers_mixin.dart';
 import '../../../enum/invest_kind.dart';
 import '../../../extensions/extensions.dart';
 import '../../../model/invest_price.dart';
-import '../../../state/total_graph/total_graph.dart';
 
 class InvestTotalGraphPage extends ConsumerStatefulWidget {
   const InvestTotalGraphPage({
@@ -33,7 +34,8 @@ class InvestTotalGraphPage extends ConsumerStatefulWidget {
   ConsumerState<InvestTotalGraphPage> createState() => _InvestTotalGraphAlertState();
 }
 
-class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
+class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage>
+    with ControllersMixin<InvestTotalGraphPage> {
   Map<String, InvestPrice> investPriceMap = <String, InvestPrice>{};
 
   LineChartData graphData = LineChartData();
@@ -45,9 +47,6 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     makeGraphData();
 
     setChartData();
-
-    final String selectedGraphName =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -75,11 +74,9 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
                     return Row(
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () {
-                            ref.read(totalGraphProvider.notifier).setSelectedGraphName(name: e.name);
-                          },
+                          onTap: () => totalGraphNotifier.setSelectedGraphName(name: e.name),
                           child: CircleAvatar(
-                            backgroundColor: (selectedGraphName == e.name)
+                            backgroundColor: (totalGraphState.selectedGraphName == e.name)
                                 ? Colors.orangeAccent.withOpacity(0.6)
                                 : Colors.black.withOpacity(0.6),
                             child: Text(
@@ -129,9 +126,6 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     // ignore: always_specify_types
     final List<int> list = List.generate(12, (int index) => index);
 
-    final int selectedStartMonth =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
-
     return Row(
       children: list.map((int element) {
         return Padding(
@@ -140,16 +134,15 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             onTap: (widget.year == DateTime.now().year && element >= DateTime.now().month)
                 ? null
                 : () {
-                    ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: element + 1);
+                    totalGraphNotifier.setSelectedStartMonth(month: element + 1);
+                    totalGraphNotifier.setSelectedEndMonth(month: 0);
 
-                    ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: 0);
-
-                    if (element == selectedStartMonth - 1) {
-                      ref.read(totalGraphProvider.notifier).setSelectedStartMonth(month: 0);
+                    if (element == totalGraphState.selectedStartMonth - 1) {
+                      totalGraphNotifier.setSelectedStartMonth(month: 0);
                     }
                   },
             child: CircleAvatar(
-              backgroundColor: (element + 1 == selectedStartMonth)
+              backgroundColor: (element + 1 == totalGraphState.selectedStartMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
                   : (widget.year == DateTime.now().year && element >= DateTime.now().month)
                       ? Colors.grey.withOpacity(0.2)
@@ -177,25 +170,17 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
     // ignore: always_specify_types
     final List<int> list = List.generate(12, (int index) => index);
 
-    final int selectedStartMonth =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
-
-    final int selectedEndMonth =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
-
     return Row(
       children: list.map((int element) {
         return Padding(
           padding: const EdgeInsets.all(1.2),
           child: GestureDetector(
-            onTap: ((element < selectedStartMonth - 1) ||
+            onTap: ((element < totalGraphState.selectedStartMonth - 1) ||
                     (widget.year == DateTime.now().year && element >= DateTime.now().month))
                 ? null
-                : () {
-                    ref.read(totalGraphProvider.notifier).setSelectedEndMonth(month: element + 1);
-                  },
+                : () => totalGraphNotifier.setSelectedEndMonth(month: element + 1),
             child: CircleAvatar(
-              backgroundColor: (element + 1 == selectedEndMonth)
+              backgroundColor: (element + 1 == totalGraphState.selectedEndMonth)
                   ? Colors.yellowAccent.withOpacity(0.2)
                   : (widget.year == DateTime.now().year && element >= DateTime.now().month)
                       ? Colors.grey.withOpacity(0.2)
@@ -229,16 +214,11 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
       }
     }
 
-    final int selectedStartMonth =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
-    final int selectedEndMonth =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
-
     final List<String> selectedMonthList = <String>[];
 
-    final int endMonth = (selectedEndMonth == 0) ? 12 : selectedEndMonth;
+    final int endMonth = (totalGraphState.selectedEndMonth == 0) ? 12 : totalGraphState.selectedEndMonth;
 
-    for (int i = selectedStartMonth; i <= endMonth; i++) {
+    for (int i = totalGraphState.selectedStartMonth; i <= endMonth; i++) {
       selectedMonthList.add(i.toString().padLeft(2, '0'));
     }
 
@@ -308,17 +288,14 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
   ///
   void setChartData() {
-    final String selectedGraphName =
-        ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedGraphName));
-
     final List<String> graphInvestKind = <String>[];
 
-    if (selectedGraphName == 'blank') {
+    if (totalGraphState.selectedGraphName == 'blank') {
       for (final InvestKind element in InvestKind.values) {
         graphInvestKind.add(element.name);
       }
     } else {
-      graphInvestKind.add(selectedGraphName);
+      graphInvestKind.add(totalGraphState.selectedGraphName);
     }
 
     final List<FlSpot> flspotsStockCost = <FlSpot>[];
@@ -417,7 +394,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
       final int posOfPrice = basePricePosList.indexWhere((FlSpot element) => element.y == maxPoint);
 
-      final int addNum = (selectedGraphName == 'blank' || selectedGraphName == 'shintaku') ? 20 : 0;
+      final int addNum =
+          (totalGraphState.selectedGraphName == 'blank' || totalGraphState.selectedGraphName == 'shintaku') ? 20 : 0;
 
       const int warisuu = 100000;
       final int graphYMax = ((maxPoint / warisuu).ceil() + addNum) * warisuu;
@@ -457,19 +435,16 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
 
       //=================
 
-      final int selectedStartMonth =
-          ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedStartMonth));
-
-      if (selectedStartMonth > 0) {
+      if (totalGraphState.selectedStartMonth > 0) {
         dispDateList = <String>[];
 
-        int selectedEndMonth = ref.watch(totalGraphProvider.select((TotalGraphState value) => value.selectedEndMonth));
+        int selectedEndMonth = totalGraphState.selectedEndMonth;
 
         if (selectedEndMonth == 0) {
           selectedEndMonth = DateTime.now().month;
         }
 
-        for (int i = selectedStartMonth; i <= selectedEndMonth; i++) {
+        for (int i = totalGraphState.selectedStartMonth; i <= selectedEndMonth; i++) {
           dispDateMap[i.toString().padLeft(2, '0')]?.forEach((String element) => dispDateList.add(element));
         }
       }
@@ -674,12 +649,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 60,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(fontSize: 12),
-                );
-              },
+              getTitlesWidget: (double value, TitleMeta meta) =>
+                  Text(value.toInt().toString(), style: const TextStyle(fontSize: 12)),
             ),
           ),
           //-------------------------// 左側の目盛り
@@ -689,12 +660,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage> {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 60,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(fontSize: 12),
-                );
-              },
+              getTitlesWidget: (double value, TitleMeta meta) =>
+                  Text(value.toInt().toString(), style: const TextStyle(fontSize: 12)),
             ),
           ),
           //-------------------------// 右側の目盛り

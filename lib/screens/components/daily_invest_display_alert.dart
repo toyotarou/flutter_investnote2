@@ -5,12 +5,12 @@ import 'package:isar/isar.dart';
 
 import '../../collections/invest_name.dart';
 import '../../collections/invest_record.dart';
+
+import '../../controllers/controllers_mixin.dart';
 import '../../enum/invest_kind.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/invest_records_repository.dart';
-import '../../state/daily_invest_display/daily_invest_display.dart';
-import '../../state/fund/fund.dart';
-import '../../state/invest_graph/invest_graph.dart';
+
 import 'fund_list_alert.dart';
 import 'invest_graph_alert.dart';
 import 'invest_record_input_alert.dart';
@@ -41,7 +41,8 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
   ConsumerState<DailyInvestDisplayAlert> createState() => _DailyInvestDisplayAlertState();
 }
 
-class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAlert> {
+class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAlert>
+    with ControllersMixin<DailyInvestDisplayAlert> {
   List<InvestRecord>? thisDayInvestRecordList = <InvestRecord>[];
 
   Map<int, Map<String, InvestRecord>> investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
@@ -102,10 +103,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                 child: GestureDetector(
                   onTap: () => _showDeleteDialog(),
                   child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      decoration:
+                          BoxDecoration(color: Colors.grey.withOpacity(0.4), borderRadius: BorderRadius.circular(10)),
                       margin: const EdgeInsets.all(2),
                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       child: const Text('レコード削除')),
@@ -163,9 +162,6 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
 
     final List<Widget> list = <Widget>[];
 
-    final String selectedInvestName =
-        ref.watch(dailyInvestDisplayProvider.select((DailyInvestDisplayState value) => value.selectedInvestName));
-
     for (final InvestKind element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
         final List<InvestRecord>? dispInvestRecordGold =
@@ -208,11 +204,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                           element3.frame,
                           style: const TextStyle(color: Colors.lightBlueAccent),
                         ),
-                        Text(
-                          element3.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        Text(element3.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                       ],
                     ))
                   ]),
@@ -274,21 +266,17 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(dailyInvestDisplayProvider.notifier)
-                                  .setSelectedInvestName(selectedInvestName: element3.name);
+                              dailyInvestDisplayNotifier.setSelectedInvestName(selectedInvestName: element3.name);
 
                               InvestDialog(
                                 context: context,
                                 widget: InvestRecordListAlert(
-                                  investName: element3,
-                                  allInvestRecord: widget.allInvestRecord,
-                                ),
+                                    investName: element3, allInvestRecord: widget.allInvestRecord),
                                 clearBarrierColor: true,
                               );
                             },
                             child: Icon(Icons.info_outline,
-                                color: (element3.name == selectedInvestName)
+                                color: (element3.name == dailyInvestDisplayState.selectedInvestName)
                                     ? Colors.redAccent.withOpacity(0.6)
                                     : Colors.greenAccent.withOpacity(0.6)),
                           ),
@@ -431,12 +419,9 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                       if (element.name == 'shintaku') ...<Widget>[
                         GestureDetector(
                           onTap: () {
-                            ref.read(fundProvider.notifier).setSelectedFundName(name: '');
+                            fundNotifier.setSelectedFundName(name: '');
 
-                            InvestDialog(
-                              context: context,
-                              widget: const FundListAlert(),
-                            );
+                            InvestDialog(context: context, widget: const FundListAlert());
                           },
                           child: Icon(Icons.money, color: Colors.white.withOpacity(0.6), size: 20),
                         ),
@@ -444,11 +429,11 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                       ],
                       GestureDetector(
                         onTap: () {
-                          ref.read(investGraphProvider.notifier).setWideGraphDisplay(flag: true);
+                          investGraphNotifier.setWideGraphDisplay(flag: true);
 
-                          ref.read(investGraphProvider.notifier).setSelectedGraphId(id: 0);
+                          investGraphNotifier.setSelectedGraphId(id: 0);
 
-                          ref.read(investGraphProvider.notifier).setSelectedGraphName(name: '');
+                          investGraphNotifier.setSelectedGraphName(name: '');
 
                           InvestDialog(
                             context: context,
@@ -548,9 +533,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                           children: <Widget>[
                             GestureDetector(
                               onTap: () {
-                                ref
-                                    .read(dailyInvestDisplayProvider.notifier)
-                                    .setSelectedInvestName(selectedInvestName: 'gold');
+                                dailyInvestDisplayNotifier.setSelectedInvestName(selectedInvestName: 'gold');
 
                                 InvestDialog(
                                   context: context,
@@ -567,7 +550,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                 );
                               },
                               child: Icon(Icons.info_outline,
-                                  color: ('gold' == selectedInvestName)
+                                  color: ('gold' == dailyInvestDisplayState.selectedInvestName)
                                       ? Colors.redAccent.withOpacity(0.6)
                                       : Colors.greenAccent.withOpacity(0.6)),
                             ),
@@ -646,10 +629,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );
