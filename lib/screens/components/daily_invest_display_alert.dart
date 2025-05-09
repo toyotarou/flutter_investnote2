@@ -55,6 +55,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
     super.initState();
 
     makeInvestGrowthRateData();
+
+    toushiShintakuNotifier.getAllToushiShintaku();
   }
 
   ///
@@ -283,6 +285,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                           const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () {
+                              toushiShintakuNotifier.setSelectedToushiShintakuName(name: '');
+
                               InvestDialog(
                                 context: context,
                                 widget: InvestRecordInputAlert(
@@ -557,6 +561,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                             const SizedBox(width: 20),
                             GestureDetector(
                               onTap: () {
+                                goldNotifier.setGoldFlag(flag: false);
+
                                 InvestDialog(
                                   context: context,
                                   widget: InvestRecordInputAlert(

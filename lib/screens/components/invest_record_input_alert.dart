@@ -55,6 +55,14 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
   ///
   @override
   Widget build(BuildContext context) {
+    List<ToushiShintakuModel> shintakuList = <ToushiShintakuModel>[];
+    if (widget.investName.kind == InvestKind.shintaku.name) {
+      if (toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd] != null) {
+        shintakuList = toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd]!;
+        shintakuList.sort((ToushiShintakuModel a, ToushiShintakuModel b) => a.cost.toInt().compareTo(b.cost.toInt()));
+      }
+    }
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -98,34 +106,87 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
                         child: const Text('投資詳細レコードを追加する', style: TextStyle(fontSize: 12))),
                 ],
               ),
+              if (shintakuList.isNotEmpty) ...<Widget>[
+                SizedBox(
+                  height: 300,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: shintakuList.map((ToushiShintakuModel e) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(e.name),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        e.cost,
+                                        style: TextStyle(
+                                          color: (e.cost == _costEditingController.text)
+                                              ? Colors.yellowAccent
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                      Text(e.price),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    toushiShintakuNotifier.setSelectedToushiShintakuName(name: e.name);
+
+                                    _costEditingController.text = e.cost;
+                                    _priceEditingController.text = e.price;
+                                  },
+                                  icon: Icon(
+                                    Icons.input,
+                                    color: (toushiShintakuState.selectedToushiShintakuName == e.name)
+                                        ? Colors.yellowAccent.withValues(alpha: 0.6)
+                                        : Colors.white.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(color: Colors.white),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
               if (widget.investName.kind == InvestKind.gold.name) ...<Widget>[
                 if (goldState.goldMap[widget.date.yyyymmdd] != null) ...<Widget>[
-                  const Text('当日のGOLD'),
-                  Text(goldState.goldMap[widget.date.yyyymmdd]!.payPrice.toString()),
-                  Text(goldState.goldMap[widget.date.yyyymmdd]!.goldValue.toString()),
-                ],
-              ],
-              if (widget.investName.kind == InvestKind.shintaku.name) ...<Widget>[
-                if (toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd] != null) ...<Widget>[
-                  SizedBox(
-                    height: 300,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            toushiShintakuState.toushiShintakuMap[widget.date.yyyymmdd]!.map((ToushiShintakuModel e) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(e.name),
-                              Text(e.cost),
-                              Text(e.price),
-                              const Divider(color: Colors.white),
-                            ],
-                          );
-                        }).toList(),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(goldState.goldMap[widget.date.yyyymmdd]!.payPrice.toString()),
+                            Text(goldState.goldMap[widget.date.yyyymmdd]!.goldValue.toString()),
+                          ],
+                        ),
                       ),
-                    ),
+                      IconButton(
+                        onPressed: () {
+                          goldNotifier.setGoldFlag(flag: true);
+
+                          _costEditingController.text = goldState.goldMap[widget.date.yyyymmdd]!.payPrice.toString();
+                          _priceEditingController.text = goldState.goldMap[widget.date.yyyymmdd]!.goldValue.toString();
+                        },
+                        icon: Icon(
+                          Icons.input,
+                          color: (goldState.goldFlag)
+                              ? Colors.yellowAccent.withValues(alpha: 0.6)
+                              : Colors.white.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ],

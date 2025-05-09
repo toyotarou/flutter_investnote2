@@ -15,6 +15,7 @@ class GoldState with _$GoldState {
   const factory GoldState({
     @Default(<GoldModel>[]) List<GoldModel> goldList,
     @Default(<String, GoldModel>{}) Map<String, GoldModel> goldMap,
+    @Default(false) bool goldFlag,
   }) = _GoldState;
 }
 
@@ -64,4 +65,7 @@ class Gold extends _$Gold {
   }
 
 //============================================== api
+
+  ///
+  void setGoldFlag({required bool flag}) => state = state.copyWith(goldFlag: flag);
 }

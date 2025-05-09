@@ -15,6 +15,8 @@ class ToushiShintakuState with _$ToushiShintakuState {
   const factory ToushiShintakuState({
     @Default(<ToushiShintakuModel>[]) List<ToushiShintakuModel> toushiShintakuList,
     @Default(<String, List<ToushiShintakuModel>>{}) Map<String, List<ToushiShintakuModel>> toushiShintakuMap,
+    @Default('') String targetDate,
+    @Default('') String selectedToushiShintakuName,
   }) = _ToushiShintakuState;
 }
 
@@ -34,7 +36,7 @@ class ToushiShintaku extends _$ToushiShintaku {
     try {
       final dynamic value = await client.postByPath(
         path: 'http://toyohide.work/BrainLog/api/getDataShintaku',
-        body: <String, dynamic>{'date': DateTime.now().yyyymmdd},
+        body: <String, dynamic>{'date': state.targetDate},
       );
 
       final List<ToushiShintakuModel> list = <ToushiShintakuModel>[];
@@ -77,4 +79,11 @@ class ToushiShintaku extends _$ToushiShintaku {
   }
 
 //============================================== api
+
+  ///
+  void setTargetDate({required String date}) => state = state.copyWith(targetDate: date);
+
+  ///
+  void setSelectedToushiShintakuName({required String name}) =>
+      state = state.copyWith(selectedToushiShintakuName: name);
 }

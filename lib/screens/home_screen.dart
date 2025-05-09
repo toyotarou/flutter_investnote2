@@ -104,8 +104,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     super.initState();
 
     goldNotifier.getAllGold();
-
-    toushiShintakuNotifier.getAllToushiShintaku();
   }
 
   ///
@@ -612,6 +610,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             onTap: tapFlag
                 ? () {
                     dailyInvestDisplayNotifier.setSelectedInvestName(selectedInvestName: '');
+
+                    toushiShintakuNotifier.setTargetDate(date: generateYmd);
 
                     InvestDialog(
                       context: context,

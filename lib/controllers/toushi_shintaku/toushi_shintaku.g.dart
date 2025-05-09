@@ -6,7 +6,7 @@ part of 'toushi_shintaku.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$toushiShintakuHash() => r'0e28a8ad56e64f8dfe9baf4c60a662a615f0c84f';
+String _$toushiShintakuHash() => r'c4af70a2b4c95fb3bdc467f8884d8e6d4173b518';
 
 /// See also [ToushiShintaku].
 @ProviderFor(ToushiShintaku)

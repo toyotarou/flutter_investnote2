@@ -6,7 +6,7 @@ part of 'gold.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$goldHash() => r'd07e509916a23ba5d242be9efb7eabfcd3d9e4fe';
+String _$goldHash() => r'e3db3d88a3937ef1cf9e3bc9df9ebb723eccc248';
 
 /// See also [Gold].
 @ProviderFor(Gold)

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$GoldState {
   List<GoldModel> get goldList => throw _privateConstructorUsedError;
   Map<String, GoldModel> get goldMap => throw _privateConstructorUsedError;
+  bool get goldFlag => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GoldStateCopyWith<GoldState> get copyWith =>
@@ -29,7 +30,10 @@ abstract class $GoldStateCopyWith<$Res> {
   factory $GoldStateCopyWith(GoldState value, $Res Function(GoldState) then) =
       _$GoldStateCopyWithImpl<$Res, GoldState>;
   @useResult
-  $Res call({List<GoldModel> goldList, Map<String, GoldModel> goldMap});
+  $Res call(
+      {List<GoldModel> goldList,
+      Map<String, GoldModel> goldMap,
+      bool goldFlag});
 }
 
 /// @nodoc
@@ -47,6 +51,7 @@ class _$GoldStateCopyWithImpl<$Res, $Val extends GoldState>
   $Res call({
     Object? goldList = null,
     Object? goldMap = null,
+    Object? goldFlag = null,
   }) {
     return _then(_value.copyWith(
       goldList: null == goldList
@@ -57,6 +62,10 @@ class _$GoldStateCopyWithImpl<$Res, $Val extends GoldState>
           ? _value.goldMap
           : goldMap // ignore: cast_nullable_to_non_nullable
               as Map<String, GoldModel>,
+      goldFlag: null == goldFlag
+          ? _value.goldFlag
+          : goldFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -69,7 +78,10 @@ abstract class _$$GoldStateImplCopyWith<$Res>
       __$$GoldStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<GoldModel> goldList, Map<String, GoldModel> goldMap});
+  $Res call(
+      {List<GoldModel> goldList,
+      Map<String, GoldModel> goldMap,
+      bool goldFlag});
 }
 
 /// @nodoc
@@ -85,6 +97,7 @@ class __$$GoldStateImplCopyWithImpl<$Res>
   $Res call({
     Object? goldList = null,
     Object? goldMap = null,
+    Object? goldFlag = null,
   }) {
     return _then(_$GoldStateImpl(
       goldList: null == goldList
@@ -95,6 +108,10 @@ class __$$GoldStateImplCopyWithImpl<$Res>
           ? _value._goldMap
           : goldMap // ignore: cast_nullable_to_non_nullable
               as Map<String, GoldModel>,
+      goldFlag: null == goldFlag
+          ? _value.goldFlag
+          : goldFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -104,7 +121,8 @@ class __$$GoldStateImplCopyWithImpl<$Res>
 class _$GoldStateImpl implements _GoldState {
   const _$GoldStateImpl(
       {final List<GoldModel> goldList = const <GoldModel>[],
-      final Map<String, GoldModel> goldMap = const <String, GoldModel>{}})
+      final Map<String, GoldModel> goldMap = const <String, GoldModel>{},
+      this.goldFlag = false})
       : _goldList = goldList,
         _goldMap = goldMap;
 
@@ -127,8 +145,12 @@ class _$GoldStateImpl implements _GoldState {
   }
 
   @override
+  @JsonKey()
+  final bool goldFlag;
+
+  @override
   String toString() {
-    return 'GoldState(goldList: $goldList, goldMap: $goldMap)';
+    return 'GoldState(goldList: $goldList, goldMap: $goldMap, goldFlag: $goldFlag)';
   }
 
   @override
@@ -137,14 +159,17 @@ class _$GoldStateImpl implements _GoldState {
         (other.runtimeType == runtimeType &&
             other is _$GoldStateImpl &&
             const DeepCollectionEquality().equals(other._goldList, _goldList) &&
-            const DeepCollectionEquality().equals(other._goldMap, _goldMap));
+            const DeepCollectionEquality().equals(other._goldMap, _goldMap) &&
+            (identical(other.goldFlag, goldFlag) ||
+                other.goldFlag == goldFlag));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_goldList),
-      const DeepCollectionEquality().hash(_goldMap));
+      const DeepCollectionEquality().hash(_goldMap),
+      goldFlag);
 
   @JsonKey(ignore: true)
   @override
@@ -156,12 +181,15 @@ class _$GoldStateImpl implements _GoldState {
 abstract class _GoldState implements GoldState {
   const factory _GoldState(
       {final List<GoldModel> goldList,
-      final Map<String, GoldModel> goldMap}) = _$GoldStateImpl;
+      final Map<String, GoldModel> goldMap,
+      final bool goldFlag}) = _$GoldStateImpl;
 
   @override
   List<GoldModel> get goldList;
   @override
   Map<String, GoldModel> get goldMap;
+  @override
+  bool get goldFlag;
   @override
   @JsonKey(ignore: true)
   _$$GoldStateImplCopyWith<_$GoldStateImpl> get copyWith =>
