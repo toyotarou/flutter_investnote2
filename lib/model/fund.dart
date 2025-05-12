@@ -59,17 +59,19 @@ enum Fundname {
 
 // ignore: always_specify_types
 final EnumValues<Fundname> fundnameValues = EnumValues(<String, Fundname>{
-  'エマージング・ボンド・ファンド・南アフリカランドコース（毎月分配型）(三井住友ＤＳアセットマネジメント)': Fundname.EMERGING,
   'eMAXIS　Slim　全世界株式（オール・カントリー）(三菱ＵＦＪアセットマネジメント)': Fundname.E_MAXIS_SLIM_ALL_COUNTRY,
   'eMAXIS　Slim　米国株式（S&P500）(三菱ＵＦＪアセットマネジメント)': Fundname.E_MAXIS_SLIM_SP500,
-  '楽天・全米株式インデックス・ファンド(楽天投信投資顧問)': Fundname.RAKUTEN_ALL_AMERICA_INDEX_FUND,
   'eMAXIS　Slim　米国株式（S&P500）(三菱ＵＦＪ国際投信)': Fundname.E_MAXIS_SLIM_ALL_AMERICA_SP500,
   'iFreeNEXT　インド株インデックス(大和アセットマネジメント)': Fundname.I_FREE_NEXT_INDIA,
   'iFree　S&P500インデックス(大和アセットマネジメント)': Fundname.IFREE_SP500,
+  //---
   'iTrustインド株式(ピクテ・ジャパン)': Fundname.ITRUST_INDIA,
   'NZAM・ベータ　S&P500(農林中金全共連アセットマネジメント)': Fundname.NZAM_SP500,
   'たわらノーロード　S&P500(アセットマネジメントOne)': Fundname.TAWARA_SP500,
   'たわらノーロード　先進国株式(アセットマネジメントOne)': Fundname.TAWARA_SENSHINKOKU,
+  'エマージング・ボンド・ファンド・南アフリカランドコース（毎月分配型）(三井住友ＤＳアセットマネジメント)': Fundname.EMERGING,
+  //---
+  '楽天・全米株式インデックス・ファンド(楽天投信投資顧問)': Fundname.RAKUTEN_ALL_AMERICA_INDEX_FUND,
 });
 
 class EnumValues<T> {

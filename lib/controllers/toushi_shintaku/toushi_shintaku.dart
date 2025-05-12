@@ -34,7 +34,7 @@ class ToushiShintaku extends _$ToushiShintaku {
 
     try {
       final dynamic value = await client.postByPath(
-        path: 'http://toyohide.work/BrainLog/api/getDataShintaku',
+        path: 'http://toyohide.work/BrainLog/api/getInvestLastRecord',
         body: <String, dynamic>{'date': state.targetDate},
       );
 
@@ -42,7 +42,7 @@ class ToushiShintaku extends _$ToushiShintaku {
       final Map<String, List<ToushiShintakuModel>> map = <String, List<ToushiShintakuModel>>{};
 
       // ignore: always_specify_types, avoid_dynamic_calls
-      for (final item in (value['data']['record'] as List<dynamic>)) {
+      for (final item in (value['data'] as List<dynamic>)) {
         final ToushiShintakuModel val = ToushiShintakuModel.fromJson(item as Map<String, dynamic>);
 
         list.add(val);

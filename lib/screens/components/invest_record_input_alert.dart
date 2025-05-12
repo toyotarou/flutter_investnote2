@@ -113,10 +113,12 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: shintakuList.map((ToushiShintakuModel e) {
+                        final String displayName = e.name.split('|')[0];
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(e.name),
+                            Text(displayName),
                             Row(
                               children: <Widget>[
                                 Expanded(
@@ -137,14 +139,14 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    toushiShintakuNotifier.setSelectedToushiShintakuName(name: e.name);
+                                    toushiShintakuNotifier.setSelectedToushiShintakuName(name: displayName);
 
                                     _costEditingController.text = e.cost;
                                     _priceEditingController.text = e.price;
                                   },
                                   icon: Icon(
                                     Icons.input,
-                                    color: (toushiShintakuState.selectedToushiShintakuName == e.name)
+                                    color: (toushiShintakuState.selectedToushiShintakuName == displayName)
                                         ? Colors.yellowAccent.withValues(alpha: 0.6)
                                         : Colors.white.withValues(alpha: 0.6),
                                   ),
