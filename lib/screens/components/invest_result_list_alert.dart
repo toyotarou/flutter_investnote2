@@ -82,6 +82,8 @@ class _InvestResultListAlertState extends ConsumerState<InvestResultListAlert> {
       }
     });
 
+    years.sort((int a, int b) => a.compareTo(b) * -1);
+
     for (final int element in years) {
       _tabs.add(TabInfo(
         element.toString(),

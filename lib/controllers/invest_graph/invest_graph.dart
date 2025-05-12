@@ -26,18 +26,14 @@ class InvestGraph extends _$InvestGraph {
   }
 
   ///
-  void setWideGraphDisplay({required bool flag}) =>
-      state = state.copyWith(wideGraphDisplay: flag);
+  void setWideGraphDisplay({required bool flag}) => state = state.copyWith(wideGraphDisplay: flag);
 
   ///
-  void setSelectedGraphId({required int id}) =>
-      state = state.copyWith(selectedGraphId: id);
+  void setSelectedGraphId({required int id}) => state = state.copyWith(selectedGraphId: id);
 
   ///
-  void setSelectedGraphName({required String name}) =>
-      state = state.copyWith(selectedGraphName: name);
+  void setSelectedGraphName({required String name}) => state = state.copyWith(selectedGraphName: name);
 
   ///
-  void setSelectedGraphColor({required Color color}) =>
-      state = state.copyWith(selectedGraphColor: color);
+  void setSelectedGraphColor({required Color color}) => state = state.copyWith(selectedGraphColor: color);
 }

@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/http/client.dart';
-import '../../extensions/extensions.dart';
 import '../../model/toushi_shintaku.dart';
 import '../../utilities/utilities.dart';
 
@@ -42,24 +41,13 @@ class ToushiShintaku extends _$ToushiShintaku {
       final List<ToushiShintakuModel> list = <ToushiShintakuModel>[];
       final Map<String, List<ToushiShintakuModel>> map = <String, List<ToushiShintakuModel>>{};
 
-      // ignore: avoid_dynamic_calls
-      for (int i = 0; i < value['data']['record'].length.toString().toInt(); i++) {
-        final ToushiShintakuModel val =
-            // ignore: avoid_dynamic_calls
-            ToushiShintakuModel.fromJson(value['data']['record'][i] as Map<String, dynamic>);
+      // ignore: always_specify_types, avoid_dynamic_calls
+      for (final item in (value['data']['record'] as List<dynamic>)) {
+        final ToushiShintakuModel val = ToushiShintakuModel.fromJson(item as Map<String, dynamic>);
 
         list.add(val);
 
-        map[val.date] = <ToushiShintakuModel>[];
-      }
-
-      // ignore: avoid_dynamic_calls
-      for (int i = 0; i < value['data']['record'].length.toString().toInt(); i++) {
-        final ToushiShintakuModel val =
-            // ignore: avoid_dynamic_calls
-            ToushiShintakuModel.fromJson(value['data']['record'][i] as Map<String, dynamic>);
-
-        map[val.date]?.add(val);
+        (map[val.date] ??= <ToushiShintakuModel>[]).add(val);
       }
 
       return state.copyWith(toushiShintakuList: list, toushiShintakuMap: map);

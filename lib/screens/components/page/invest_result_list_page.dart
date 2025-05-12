@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
@@ -7,6 +8,7 @@ import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
 import '../../home_screen.dart';
 import '../invest_cost_info_alert.dart';
+import '../invest_cost_total_list_alert.dart';
 import '../parts/invest_dialog.dart';
 
 class InvestResultListPage extends StatefulWidget {
@@ -77,7 +79,27 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(),
+                    GestureDetector(
+                      onTap: () {
+                        InvestDialog(
+                          context: context,
+                          widget: InvestCostTotalListAlert(
+                            year: widget.year,
+                            investItemRecordMap: widget.investItemRecordMap,
+                            investNameList: widget.investNameList,
+                            investRecordList: widget.investRecordList,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(width: 10),
+                          Icon(FontAwesomeIcons.expand, color: Colors.white.withValues(alpha: 0.4)),
+                          const SizedBox(width: 10),
+                          const Text('cost'),
+                        ],
+                      ),
+                    ),
                     Row(
                       children: <Widget>[
                         Column(

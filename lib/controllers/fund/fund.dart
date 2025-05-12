@@ -53,17 +53,11 @@ class Fund extends _$Fund {
         final FundModel val = FundModel.fromJson(value[i] as Map<String, dynamic>);
 
         list.add(val);
-        map[val.fundname] = <FundModel>[];
-        map2['${val.year}-${val.month}-${val.day}'] = <FundModel>[];
-      }
 
-      // ignore: avoid_dynamic_calls
-      for (int i = 0; i < value.length.toString().toInt(); i++) {
-        // ignore: avoid_dynamic_calls
-        final FundModel val = FundModel.fromJson(value[i] as Map<String, dynamic>);
+        (map[val.fundname] ??= <FundModel>[]).add(val);
 
-        map[val.fundname]?.add(val);
-        map2['${val.year}-${val.month}-${val.day}']?.add(val);
+        final String dateKey = '${val.year}-${val.month}-${val.day}';
+        (map2[dateKey] ??= <FundModel>[]).add(val);
       }
 
       state = state.copyWith(fundList: list, fundNameMap: map, fundDateMap: map2);

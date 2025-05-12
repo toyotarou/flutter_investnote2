@@ -24,14 +24,11 @@ class TotalGraph extends _$TotalGraph {
   }
 
   ///
-  void setSelectedGraphName({required String name}) =>
-      state = state.copyWith(selectedGraphName: name);
+  void setSelectedGraphName({required String name}) => state = state.copyWith(selectedGraphName: name);
 
   ///
-  void setSelectedStartMonth({required int month}) =>
-      state = state.copyWith(selectedStartMonth: month);
+  void setSelectedStartMonth({required int month}) => state = state.copyWith(selectedStartMonth: month);
 
   ///
-  void setSelectedEndMonth({required int month}) =>
-      state = state.copyWith(selectedEndMonth: month);
+  void setSelectedEndMonth({required int month}) => state = state.copyWith(selectedEndMonth: month);
 }

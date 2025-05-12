@@ -4,8 +4,9 @@ import '../../enum/shintaku_frame.dart';
 import '../../enum/stock_frame.dart';
 import 'invest_names_response_state.dart';
 
-final AutoDisposeStateNotifierProvider<InvestNamesNotifier, InvestNamesResponseState> investNamesProvider = StateNotifierProvider.autoDispose<
-    InvestNamesNotifier, InvestNamesResponseState>((AutoDisposeStateNotifierProviderRef<InvestNamesNotifier, InvestNamesResponseState> ref) {
+final AutoDisposeStateNotifierProvider<InvestNamesNotifier, InvestNamesResponseState> investNamesProvider =
+    StateNotifierProvider.autoDispose<InvestNamesNotifier, InvestNamesResponseState>(
+        (AutoDisposeStateNotifierProviderRef<InvestNamesNotifier, InvestNamesResponseState> ref) {
   return InvestNamesNotifier(const InvestNamesResponseState());
 });
 
@@ -13,8 +14,7 @@ class InvestNamesNotifier extends StateNotifier<InvestNamesResponseState> {
   InvestNamesNotifier(super.state);
 
   ///
-  Future<void> setStockFrame({required StockFrame stockFrame}) async =>
-      state = state.copyWith(stockFrame: stockFrame);
+  Future<void> setStockFrame({required StockFrame stockFrame}) async => state = state.copyWith(stockFrame: stockFrame);
 
   ///
   Future<void> setShintakuFrame({required ShintakuFrame shintakuFrame}) async =>
