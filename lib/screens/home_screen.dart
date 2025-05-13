@@ -151,6 +151,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
         actions: <Widget>[
           IconButton(
             onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                // ignore: inference_failure_on_instance_creation, always_specify_types
+                MaterialPageRoute(builder: (context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm)),
+              );
+            },
+            icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20),
+          ),
+          IconButton(
+            onPressed: () {
               InvestDialog(
                 context: context,
                 widget: InvestResultListAlert(

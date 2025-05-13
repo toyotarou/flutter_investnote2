@@ -41,6 +41,8 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
   final TextEditingController _costEditingController = TextEditingController();
   final TextEditingController _priceEditingController = TextEditingController();
 
+  String selectedCost = '';
+
   ///
   @override
   void initState() {
@@ -146,7 +148,7 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
                                   },
                                   icon: Icon(
                                     Icons.input,
-                                    color: (toushiShintakuState.selectedToushiShintakuName == displayName)
+                                    color: (selectedCost == displayName)
                                         ? Colors.yellowAccent.withValues(alpha: 0.6)
                                         : Colors.white.withValues(alpha: 0.6),
                                   ),
@@ -398,6 +400,10 @@ class _InvestRecordInputAlertState extends ConsumerState<InvestRecordInputAlert>
         }
       });
     }
+
+    setState(() {
+      selectedCost = cost.toString().trim();
+    });
 
     _costEditingController.text = cost.toString().trim();
   }
