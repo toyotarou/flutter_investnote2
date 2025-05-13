@@ -19,7 +19,7 @@ class InvestTotalGraphPage extends ConsumerStatefulWidget {
     required this.isar,
     required this.investNameList,
     required this.investRecordMap,
-    required this.year,
+    this.year,
     required this.investRecordList,
   });
 
@@ -27,7 +27,7 @@ class InvestTotalGraphPage extends ConsumerStatefulWidget {
   final List<InvestName> investNameList;
 
   final Map<String, List<InvestRecord>> investRecordMap;
-  final int year;
+  final int? year;
   final List<InvestRecord> investRecordList;
 
   @override
@@ -101,9 +101,9 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage>
                         thickness: 5,
                       ),
                       const SizedBox(height: 10),
-                      displayStartMonthParts(),
+                      if (widget.year == null) const SizedBox.shrink() else displayStartMonthParts(),
                       const SizedBox(height: 20),
-                      displayEndMonthParts(),
+                      if (widget.year == null) const SizedBox.shrink() else displayEndMonthParts(),
                     ],
                   ),
                 ),
@@ -225,7 +225,17 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage>
     widget.investRecordMap.forEach((String key, List<InvestRecord> value) {
       final List<String> exKey = key.split('-');
 
-      if (exKey[0].toInt() == widget.year) {
+      bool flag = false;
+
+      if (widget.year == null) {
+        flag = true;
+      } else {
+        if (exKey[0].toInt() == widget.year) {
+          flag = true;
+        }
+      }
+
+      if (flag) {
         if (selectedMonthList.contains(exKey[1])) {
           int stockCost = 0;
           int stockPrice = 0;
@@ -409,7 +419,17 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphPage>
 
       for (final InvestRecord element in widget.investRecordList) {
         if (!dispDateList.contains(element.date)) {
-          if (element.date.split('-')[0] == widget.year.toString()) {
+          bool flag = false;
+
+          if (widget.year == null) {
+            flag = true;
+          } else {
+            if (element.date.split('-')[0] == widget.year.toString()) {
+              flag = true;
+            }
+          }
+
+          if (flag) {
             dispDateList.add(element.date);
           }
         }

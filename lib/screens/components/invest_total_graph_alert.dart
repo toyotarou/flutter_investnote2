@@ -8,10 +8,11 @@ import '../../extensions/extensions.dart';
 import 'page/invest_total_graph_page.dart';
 
 class TabInfo {
-  TabInfo(this.label, this.widget);
+  TabInfo(this.label, this.widget, {this.highlight = false});
 
   String label;
   Widget widget;
+  bool highlight;
 }
 
 class InvestTotalGraphAlert extends ConsumerStatefulWidget {
@@ -28,8 +29,7 @@ class InvestTotalGraphAlert extends ConsumerStatefulWidget {
   final List<InvestRecord> investRecordList;
 
   @override
-  ConsumerState<InvestTotalGraphAlert> createState() =>
-      _InvestTotalGraphAlertState();
+  ConsumerState<InvestTotalGraphAlert> createState() => _InvestTotalGraphAlertState();
 }
 
 class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
@@ -57,8 +57,19 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
             bottom: TabBar(
               isScrollable: true,
+              tabAlignment: TabAlignment.start,
               indicatorColor: Colors.blueAccent,
-              tabs: _tabs.map((TabInfo tab) => Tab(text: tab.label)).toList(),
+              tabs: _tabs.map((TabInfo tab) {
+                return Tab(
+                  child: Text(
+                    tab.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: tab.highlight ? Colors.yellowAccent : Colors.white,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -71,6 +82,8 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
 
   ///
   void _makeTab() {
+    _tabs.clear();
+
     final List<int> years = <int>[];
 
     widget.investRecordMap.forEach((String key, List<InvestRecord> value) {
@@ -80,6 +93,18 @@ class _InvestTotalGraphAlertState extends ConsumerState<InvestTotalGraphAlert> {
         years.add(exDate[0].toInt());
       }
     });
+
+    _tabs.add(TabInfo(
+        '[ALL]',
+        InvestTotalGraphPage(
+          isar: widget.isar,
+          investNameList: widget.investNameList,
+          investRecordMap: widget.investRecordMap,
+          investRecordList: widget.investRecordList,
+        ),
+        highlight: true));
+
+    years.sort((int a, int b) => a.compareTo(b) * -1);
 
     for (final int element in years) {
       _tabs.add(TabInfo(
