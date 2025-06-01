@@ -210,6 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             children: <Widget>[
               displayMonthSummary(),
               Expanded(child: _getCalendar()),
+              const SizedBox(height: 50),
             ],
           ),
         ],
