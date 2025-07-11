@@ -24,6 +24,7 @@ class InvestCostTotalListAlert extends ConsumerStatefulWidget {
 
 class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAlert> {
   Map<int, String> investNameMap = <int, String>{};
+  Map<int, String> investKindMap = <int, String>{};
 
   ///
   @override
@@ -32,6 +33,8 @@ class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAl
 
     for (final InvestName element in widget.investNameList) {
       investNameMap[element.relationalId] = element.name;
+
+      investKindMap[element.relationalId] = element.kind;
     }
   }
 
@@ -67,6 +70,7 @@ class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAl
   ///
   Widget displayCostTotalList() {
     final List<Widget> list = <Widget>[];
+    final List<Widget> list2 = <Widget>[];
 
     final Map<int, Map<int, List<int>>> nested = <int, Map<int, List<int>>>{};
 
@@ -133,7 +137,7 @@ class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAl
     investIdList.sort();
 
     for (final int element in investIdList) {
-      final List<Widget> list2 = <Widget>[];
+      final List<Widget> sublist = <Widget>[];
 
       if (accumulationCostMap[element] != null) {
         // ignore: always_specify_types
@@ -146,18 +150,27 @@ class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAl
               ? accumulationCostMap[element]![element2].toString()
               : '0';
 
-          list2.add(
-            Container(
-              width: 80,
-              height: 30,
-              margin: const EdgeInsets.all(2),
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: (element2 % 2).isOdd ? Colors.white.withValues(alpha: 0.1) : Colors.transparent,
-                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-              ),
-              alignment: Alignment.topRight,
-              child: Text(cost.toCurrency()),
+          sublist.add(
+            Stack(
+              children: <Widget>[
+                Container(
+                  width: 80,
+                  height: 30,
+                  margin: const EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white.withValues(alpha: 0.3))),
+                  child: Text(element2.toString().padLeft(2, '0'), style: const TextStyle(color: Colors.grey)),
+                ),
+                Container(
+                  width: 80,
+                  height: 30,
+                  margin: const EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white.withValues(alpha: 0.3))),
+                  alignment: Alignment.topRight,
+                  child: Text(cost.toCurrency()),
+                ),
+              ],
             ),
           );
         }
@@ -172,26 +185,48 @@ class _InvestCostTotalListAlertState extends ConsumerState<InvestCostTotalListAl
               margin: const EdgeInsets.all(2),
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(border: Border.all(color: Colors.white.withValues(alpha: 0.3))),
-              child: Text(
-                (element == 0)
-                    ? 'GOLD'
-                    : (investNameMap[element] != null)
-                        ? investNameMap[element]!
-                        : '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: const Text(''),
             ),
-            Row(children: list2),
+            Row(children: sublist),
           ],
+        ),
+      );
+
+      list2.add(
+        Container(
+          width: 200,
+          height: 30,
+          margin: const EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(border: Border.all(color: Colors.white.withValues(alpha: 0.3))),
+          child: Text(
+            (element == 0)
+                ? 'GOLD'
+                : (investNameMap[element] != null)
+                    ? investNameMap[element]!
+                    : '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                color: (element == 0)
+                    ? Colors.yellowAccent
+                    : (investKindMap[element] == 'stock')
+                        ? Colors.lightBlueAccent
+                        : const Color(0xFFFBB6CE)),
+          ),
         ),
       );
     }
 
     return SingleChildScrollView(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DefaultTextStyle(style: const TextStyle(fontSize: 12), child: Column(children: list)),
+      child: Stack(
+        children: <Widget>[
+          DefaultTextStyle(style: const TextStyle(fontSize: 12), child: Column(children: list2)),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DefaultTextStyle(style: const TextStyle(fontSize: 12), child: Column(children: list)),
+          ),
+        ],
       ),
     );
   }
