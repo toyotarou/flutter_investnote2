@@ -647,11 +647,16 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
     investRatingDataMap = <int, Map<String, dynamic>>{};
 
     investGrowthRateDataMap.forEach((int key, Map<String, InvestRecord> value) {
-      final String startDate = value['start']!.date;
-      final int startPrice = value['start']!.price;
+      final InvestRecord? start = value['start'];
+      final InvestRecord? end = value['end'];
 
-      final String endDate = value['end']!.date;
-      final int endPrice = value['end']!.price;
+      if (start == null || end == null) {
+        return;
+      }
+      final String startDate = start.date;
+      final int startPrice = start.price;
+      final String endDate = end.date;
+      final int endPrice = end.price;
 
       final int dateDiff = DateTime.parse('$endDate 00:00:00').difference(DateTime.parse('$startDate 00:00:00')).inDays;
       final int diff = endPrice - startPrice;
@@ -663,7 +668,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
         'endPrice': endPrice,
         'dateDiff': dateDiff,
         'diff': diff,
-        'average': diff / dateDiff,
+        'average': dateDiff == 0 ? 0 : diff / dateDiff,
       };
     });
   }
@@ -677,35 +682,35 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
   void makeInvestGrowthRateData() {
     investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
 
+    InvestRecord? investRecordStartGold;
+    InvestRecord? investRecordEndGold;
     for (final InvestName element in widget.investNameList) {
-      InvestRecord investRecordStart = InvestRecord()..price = 0;
-      InvestRecord investRecordEnd = InvestRecord();
-
-      InvestRecord investRecordStartGold = InvestRecord()..price = 0;
-      InvestRecord investRecordEndGold = InvestRecord();
+      InvestRecord? investRecordStart;
+      InvestRecord? investRecordEnd;
 
       for (final InvestRecord element2 in widget.allInvestRecord) {
         if (element2.investId == 0) {
-          if (investRecordStartGold.price == 0) {
-            investRecordStartGold = element2;
-          }
-
+          investRecordStartGold ??= element2;
           investRecordEndGold = element2;
         } else if (element.relationalId == element2.investId) {
-          if (investRecordStart.price == 0) {
-            investRecordStart = element2;
-          }
-
+          investRecordStart ??= element2;
           investRecordEnd = element2;
         }
       }
 
-      investGrowthRateDataMap[element.relationalId] = <String, InvestRecord>{
-        'start': investRecordStart,
-        'end': investRecordEnd
-      };
+      if (investRecordStart != null && investRecordEnd != null) {
+        investGrowthRateDataMap[element.relationalId] = <String, InvestRecord>{
+          'start': investRecordStart,
+          'end': investRecordEnd,
+        };
+      }
+    }
 
-      investGrowthRateDataMap[0] = <String, InvestRecord>{'start': investRecordStartGold, 'end': investRecordEndGold};
+    if (investRecordStartGold != null && investRecordEndGold != null) {
+      investGrowthRateDataMap[0] = <String, InvestRecord>{
+        'start': investRecordStartGold,
+        'end': investRecordEndGold,
+      };
     }
   }
 }

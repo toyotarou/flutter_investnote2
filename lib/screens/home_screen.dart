@@ -161,22 +161,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
           ),
           IconButton(
             onPressed: () {
-              InvestDialog(
-                context: context,
-                widget: InvestResultListAlert(
-                  isar: widget.isar,
-                  investRecordMap: investRecordMap,
-                  investItemRecordMap: investItemRecordMap,
-                  investNameList: investNameList ?? <InvestName>[],
-                  investRecordList: investRecordList ?? <InvestRecord>[],
-                  configMap: configMap,
-                ),
-              );
-            },
-            icon: Icon(Icons.list, color: Colors.white.withOpacity(0.6), size: 20),
-          ),
-          IconButton(
-            onPressed: () {
               totalGraphNotifier.setSelectedStartMonth(month: 0);
               totalGraphNotifier.setSelectedEndMonth(month: 0);
 
@@ -421,6 +405,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('信託名称登録'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              GestureDetector(
+                onTap: () {
+                  InvestDialog(
+                    context: context,
+                    widget: InvestResultListAlert(
+                      isar: widget.isar,
+                      investRecordMap: investRecordMap,
+                      investItemRecordMap: investItemRecordMap,
+                      investNameList: investNameList ?? <InvestName>[],
+                      investRecordList: investRecordList ?? <InvestRecord>[],
+                      configMap: configMap,
+                    ),
+                  );
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('コスト情報'),
                       ),
                     ),
                   ],
