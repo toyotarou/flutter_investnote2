@@ -398,25 +398,28 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      SizedBox(width: 60, child: Text(element.japanName)),
-                      if (element.name != InvestKind.gold.name) ...<Widget>[
-                        RichText(
-                          text: TextSpan(
-                            text: totalPrice.toString().toCurrency(),
-                            style: const TextStyle(color: Colors.yellowAccent),
-                            children: <TextSpan>[
-                              const TextSpan(text: ' / ', style: TextStyle(color: Colors.white)),
-                              TextSpan(
-                                text: totalDiff.toString().toCurrency(),
-                                style: const TextStyle(color: Color(0xFFFBB6CE)),
-                              ),
-                            ],
-                          ),
-                        )
+                  DefaultTextStyle(
+                    style: const TextStyle(fontSize: 12),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(width: 60, child: Text(element.japanName)),
+                        if (element.name != InvestKind.gold.name) ...<Widget>[
+                          RichText(
+                            text: TextSpan(
+                              text: totalPrice.toString().toCurrency(),
+                              style: const TextStyle(color: Colors.yellowAccent),
+                              children: <TextSpan>[
+                                const TextSpan(text: ' / ', style: TextStyle(color: Colors.white)),
+                                TextSpan(
+                                  text: totalDiff.toString().toCurrency(),
+                                  style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                   Row(
                     children: <Widget>[
