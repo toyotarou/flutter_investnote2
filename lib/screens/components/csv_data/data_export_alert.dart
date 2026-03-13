@@ -11,7 +11,7 @@ import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../collections/config.dart';
+import '../../../collections/config.dart' as app_config;
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
@@ -165,8 +165,8 @@ class _DataExportAlertState extends ConsumerState<DataExportAlert> {
 
     switch (csvName) {
       case 'config':
-        await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
-          value?.forEach((Config element) {
+        await ConfigsRepository().getConfigList(isar: widget.isar).then((List<app_config.Config>? value) {
+          value?.forEach((app_config.Config element) {
             outputValuesList.add(<Object>[element.id, element.configKey, element.configValue].join(','));
           });
         });

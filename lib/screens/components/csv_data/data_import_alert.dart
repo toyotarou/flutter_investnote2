@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
-import '../../../collections/config.dart';
+import '../../../collections/config.dart' as app_config;
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
@@ -165,7 +165,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
   Widget displayCsvContents() {
     switch (csvName) {
       case 'config':
-        importDataList = <Config>[];
+        importDataList = <app_config.Config>[];
 
       case 'investName':
         importDataList = <InvestName>[];
@@ -197,7 +197,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       switch (csvName) {
         case 'config':
-          importDataList.add(Config()
+          importDataList.add(app_config.Config()
             ..configKey = exLine[1].trim()
             ..configValue = exLine[2].trim());
 
@@ -260,7 +260,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
     switch (csvName) {
       case 'config':
         await ConfigsRepository()
-            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
+            .inputConfigList(isar: widget.isar, configList: importDataList as List<app_config.Config>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {

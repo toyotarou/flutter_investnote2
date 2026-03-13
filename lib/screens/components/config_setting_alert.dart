@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
-import '../../collections/config.dart';
+import '../../collections/config.dart' as app_config;
 import '../../extensions/extensions.dart';
 import '../../repository/configs_repository.dart';
 import 'parts/error_dialog.dart';
@@ -20,7 +20,7 @@ class ConfigSettingAlert extends ConsumerStatefulWidget {
 }
 
 class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
-  List<Config>? configList = <Config>[];
+  List<app_config.Config>? configList = <app_config.Config>[];
 
   Map<String, String> configMap = <String, String>{};
 
@@ -97,7 +97,14 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))]),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            blurRadius: 24,
+            spreadRadius: 16,
+            color: Colors.black.withOpacity(0.2),
+          ),
+        ],
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
@@ -264,12 +271,12 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
 
   ///
   Future<void> _makeSettingConfigMap() async {
-    await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
+    await ConfigsRepository().getConfigList(isar: widget.isar).then((List<app_config.Config>? value) {
       setState(() {
         configList = value;
 
         if (value!.isNotEmpty) {
-          for (final Config element in value) {
+          for (final app_config.Config element in value) {
             configMap[element.configKey] = element.configValue;
           }
         }
@@ -314,38 +321,38 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> {
       return;
     }
 
-    final List<Config> configList = <Config>[];
+    final List<app_config.Config> configList = <app_config.Config>[];
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startCostStock'
       ..configValue = _stockCostEditingController.text);
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startPriceStock'
       ..configValue = _stockPriceEditingController.text);
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startCostShintaku'
       ..configValue = _shintakuCostEditingController.text);
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startPriceShintaku'
       ..configValue = _shintakuPriceEditingController.text);
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startCostGold'
       ..configValue = _goldCostEditingController.text);
 
-    configList.add(Config()
+    configList.add(app_config.Config()
       ..configKey = 'startPriceGold'
       ..configValue = _goldPriceEditingController.text);
 
-    final List<Config> deleteConfigList = <Config>[];
+    final List<app_config.Config> deleteConfigList = <app_config.Config>[];
 
     await widget.isar.writeTxn(() async {
-      for (final Config element in configList) {
+      for (final app_config.Config element in configList) {
         ConfigsRepository().getConfigByKeyString(isar: widget.isar, key: element.configKey).then(
-          (Config? value) {
+          (app_config.Config? value) {
             if (value != null) {
               deleteConfigList.add(value);
             }
