@@ -40,11 +40,10 @@ class CalendarCellSumData {
   int allSum;
 }
 
-// ignore: must_be_immutable
 class HomeScreen extends ConsumerStatefulWidget {
-  HomeScreen({super.key, this.baseYm, required this.isar});
+  const HomeScreen({super.key, this.baseYm, required this.isar});
 
-  String? baseYm;
+  final String? baseYm;
   final Isar isar;
 
   ///
@@ -71,31 +70,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<InvestName>? investNameList = <InvestName>[];
+  List<InvestName> investNameList = <InvestName>[];
 
-  List<InvestRecord>? investRecordList = <InvestRecord>[];
+  List<InvestRecord> investRecordList = <InvestRecord>[];
 
-  Map<String, List<InvestRecord>> investRecordMap = <String, List<InvestRecord>>{};
+  final Map<String, List<InvestRecord>> investRecordMap = <String, List<InvestRecord>>{};
 
   List<String> calendarCellDateDataList = <String>[];
-  Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
+  final Map<String, CalendarCellSumData> calendarCellSumDataMap = <String, CalendarCellSumData>{};
 
-  Map<int, List<InvestRecord>> investItemRecordMap = <int, List<InvestRecord>>{};
+  final Map<int, List<InvestRecord>> investItemRecordMap = <int, List<InvestRecord>>{};
 
-  List<Config>? configList = <Config>[];
+  List<Config> configList = <Config>[];
 
-  Map<String, String> configMap = <String, String>{};
+  final Map<String, String> configMap = <String, String>{};
+
+  bool _isInitializing = false;
 
   int firstCost = 0;
   int firstPrice = 0;
 
   ///
-  void _init() {
-    _makeInvestNameList();
+  Future<void> _init() async {
+    if (_isInitializing) {
+      return;
+    }
 
-    _makeInvestRecordList();
+    _isInitializing = true;
+    try {
+      await Future.wait(<Future<void>>[
+        _makeInvestNameList(),
+        _makeInvestRecordList(),
+        _makeSettingConfigMap(),
+      ]);
 
-    _makeSettingConfigMap();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        if (investRecordList.isNotEmpty) {
+          makeCalendarCellSumDataMap();
+        } else {
+          calendarCellDateDataList = <String>[];
+          calendarCellSumDataMap.clear();
+        }
+      });
+    } finally {
+      _isInitializing = false;
+    }
   }
 
   ///
@@ -104,23 +127,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     super.initState();
 
     goldNotifier.getAllGold();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      if (widget.baseYm != null) {
+        calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm);
+      }
+
+      _init();
+    });
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
-    if (widget.baseYm != null) {
-      // ignore: always_specify_types
-      Future(() => calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm));
-    }
-
-    if (investRecordList!.isNotEmpty) {
-      makeCalendarCellSumDataMap();
-    }
-
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       key: _scaffoldKey,
@@ -154,7 +177,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               Navigator.pushReplacement(
                 context,
                 // ignore: inference_failure_on_instance_creation, always_specify_types
-                MaterialPageRoute(builder: (context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm)),
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm)),
               );
             },
             icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20),
@@ -168,16 +192,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 context: context,
                 widget: InvestTotalGraphAlert(
                   isar: widget.isar,
-                  investNameList: investNameList ?? <InvestName>[],
+                  investNameList: investNameList,
                   investRecordMap: investRecordMap,
-                  investRecordList: investRecordList ?? <InvestRecord>[],
+                  investRecordList: investRecordList,
                 ),
               );
             },
             icon: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
           ),
           IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
           )
         ],
@@ -275,10 +299,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   ///
   int getFirstCostTotal() {
-    if (investRecordList == null || investRecordList!.isEmpty) {
+    if (investRecordList.isEmpty) {
       return 0;
     } else {
-      final InvestRecord investRecordListFirst = investRecordList!.first;
+      final InvestRecord investRecordListFirst = investRecordList.first;
       final String firstYearMonth =
           '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
 
@@ -298,15 +322,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   ///
   int getFirstPriceTotal() {
-    if (investRecordList == null || investRecordList!.isEmpty) {
+    if (investRecordList.isEmpty) {
       return 0;
     } else {
-      final InvestRecord investRecordListFirst = investRecordList!.first;
+      final InvestRecord investRecordListFirst = investRecordList.first;
       final String firstYearMonth =
           '${investRecordListFirst.date.split('-')[0]}-${investRecordListFirst.date.split('-')[1]}';
 
       if (calendarState.baseYearMonth == firstYearMonth) {
-        return firstCost;
+        return firstPrice;
       } else {
         int total = 0;
 
@@ -370,7 +394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   widget: InvestNameListAlert(
                     isar: widget.isar,
                     investKind: InvestKind.stock,
-                    investNameList: investNameList ?? <InvestName>[],
+                    investNameList: investNameList,
                   ),
                 ),
                 child: Row(
@@ -393,7 +417,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   widget: InvestNameListAlert(
                     isar: widget.isar,
                     investKind: InvestKind.shintaku,
-                    investNameList: investNameList ?? <InvestName>[],
+                    investNameList: investNameList,
                   ),
                 ),
                 child: Row(
@@ -419,8 +443,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                       isar: widget.isar,
                       investRecordMap: investRecordMap,
                       investItemRecordMap: investItemRecordMap,
-                      investNameList: investNameList ?? <InvestName>[],
-                      investRecordList: investRecordList ?? <InvestRecord>[],
+                      investNameList: investNameList,
+                      investRecordList: investRecordList,
                       configMap: configMap,
                     ),
                   );
@@ -551,7 +575,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     final List<int> stockRelationalIds = <int>[];
     final List<int> shintakuRelationalIds = <int>[];
 
-    investNameList?.forEach((InvestName element) {
+    for (final InvestName element in investNameList) {
       if (element.kind == InvestKind.stock.name) {
         stockRelationalIds.add(element.relationalId);
       }
@@ -559,7 +583,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       if (element.kind == InvestKind.shintaku.name) {
         shintakuRelationalIds.add(element.relationalId);
       }
-    });
+    }
 
     for (int i = week * 7; i < ((week + 1) * 7); i++) {
       final String generateYmd = (_calendarDays[i] == '')
@@ -616,6 +640,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
       final int index = calendarCellDateDataList.indexWhere((String element) => element == generateYmd);
       final String beforeDate = (index > 0) ? calendarCellDateDataList[index - 1] : '';
+      final CalendarCellSumData? beforeSumData = beforeDate.isEmpty ? null : calendarCellSumDataMap[beforeDate];
 
       bool tapFlag = true;
       if (i % 7 == 0 || i % 7 == 6) {
@@ -629,9 +654,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
       bool flag = true;
 
-      if (i % 7 == 0 || i % 7 == 6) {
-        flag = false;
-      }
+      // if (i % 7 == 0 || i % 7 == 6) {
+      //   flag = false;
+      // }
 
       if (flag) {
         list.add(
@@ -649,8 +674,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         widget: DailyInvestDisplayAlert(
                           date: DateTime.parse('$generateYmd 00:00:00'),
                           isar: widget.isar,
-                          investNameList: investNameList ?? <InvestName>[],
-                          allInvestRecord: investRecordList ?? <InvestRecord>[],
+                          investNameList: investNameList,
+                          allInvestRecord: investRecordList,
                           calendarCellDateDataList: calendarCellDateDataList,
                           totalPrice: stockPrice + shintakuPrice + goldPrice,
                           totalDiff: stockSum + shintakuSum + goldSum,
@@ -693,13 +718,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                       Stack(
                                         children: <Widget>[
                                           if (index > 0) ...<Widget>[
-                                            Positioned(
-                                              bottom: 0,
-                                              child: getUpDownMark(
-                                                aPrice: stockSum,
-                                                bPrice: calendarCellSumDataMap[beforeDate]!.stockSum,
+                                            if (beforeSumData != null)
+                                              Positioned(
+                                                bottom: 0,
+                                                child: getUpDownMark(
+                                                  aPrice: stockSum,
+                                                  bPrice: beforeSumData.stockSum,
+                                                ),
                                               ),
-                                            ),
                                           ],
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -724,11 +750,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                 style: const TextStyle(color: Color(0xFFFBB6CE)),
                                               ),
                                               Text(
-                                                (calendarCellSumDataMap[beforeDate] == null)
+                                                (beforeSumData == null)
                                                     ? ''
-                                                    : (stockSum - calendarCellSumDataMap[beforeDate]!.stockSum)
-                                                        .toString()
-                                                        .toCurrency(),
+                                                    : (stockSum - beforeSumData.stockSum).toString().toCurrency(),
                                                 style: const TextStyle(color: Colors.orangeAccent),
                                               ),
                                             ],
@@ -739,13 +763,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                       Stack(
                                         children: <Widget>[
                                           if (index > 0) ...<Widget>[
-                                            Positioned(
-                                              bottom: 0,
-                                              child: getUpDownMark(
-                                                aPrice: shintakuSum,
-                                                bPrice: calendarCellSumDataMap[beforeDate]!.shintakuSum,
+                                            if (beforeSumData != null)
+                                              Positioned(
+                                                bottom: 0,
+                                                child: getUpDownMark(
+                                                  aPrice: shintakuSum,
+                                                  bPrice: beforeSumData.shintakuSum,
+                                                ),
                                               ),
-                                            ),
                                           ],
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -770,11 +795,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                 style: const TextStyle(color: Color(0xFFFBB6CE)),
                                               ),
                                               Text(
-                                                (calendarCellSumDataMap[beforeDate] == null)
+                                                (beforeSumData == null)
                                                     ? ''
-                                                    : (shintakuSum - calendarCellSumDataMap[beforeDate]!.shintakuSum)
-                                                        .toString()
-                                                        .toCurrency(),
+                                                    : (shintakuSum - beforeSumData.shintakuSum).toString().toCurrency(),
                                                 style: const TextStyle(color: Colors.orangeAccent),
                                               ),
                                             ],
@@ -785,13 +808,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                       Stack(
                                         children: <Widget>[
                                           if (index > 0) ...<Widget>[
-                                            Positioned(
-                                              bottom: 0,
-                                              child: getUpDownMark(
-                                                aPrice: goldSum,
-                                                bPrice: calendarCellSumDataMap[beforeDate]!.goldSum,
+                                            if (beforeSumData != null)
+                                              Positioned(
+                                                bottom: 0,
+                                                child: getUpDownMark(
+                                                  aPrice: goldSum,
+                                                  bPrice: beforeSumData.goldSum,
+                                                ),
                                               ),
-                                            ),
                                           ],
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -816,11 +840,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                 style: const TextStyle(color: Color(0xFFFBB6CE)),
                                               ),
                                               Text(
-                                                (calendarCellSumDataMap[beforeDate] == null)
+                                                (beforeSumData == null)
                                                     ? ''
-                                                    : (goldSum - calendarCellSumDataMap[beforeDate]!.goldSum)
-                                                        .toString()
-                                                        .toCurrency(),
+                                                    : (goldSum - beforeSumData.goldSum).toString().toCurrency(),
                                                 style: const TextStyle(color: Colors.orangeAccent),
                                               ),
                                             ],
@@ -831,13 +853,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                       Stack(
                                         children: <Widget>[
                                           if (index > 0) ...<Widget>[
-                                            Positioned(
-                                              bottom: 0,
-                                              child: getUpDownMark(
-                                                aPrice: stockSum + shintakuSum + goldSum,
-                                                bPrice: calendarCellSumDataMap[beforeDate]!.allSum,
+                                            if (beforeSumData != null)
+                                              Positioned(
+                                                bottom: 0,
+                                                child: getUpDownMark(
+                                                  aPrice: stockSum + shintakuSum + goldSum,
+                                                  bPrice: beforeSumData.allSum,
+                                                ),
                                               ),
-                                            ),
                                           ],
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -856,10 +879,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                     style: const TextStyle(color: Color(0xFFFBB6CE)),
                                                   ),
                                                   Text(
-                                                    (calendarCellSumDataMap[beforeDate] == null)
+                                                    (beforeSumData == null)
                                                         ? ''
-                                                        : ((stockSum + shintakuSum + goldSum) -
-                                                                calendarCellSumDataMap[beforeDate]!.allSum)
+                                                        : ((stockSum + shintakuSum + goldSum) - beforeSumData.allSum)
                                                             .toString()
                                                             .toCurrency(),
                                                     style: const TextStyle(color: Colors.orangeAccent),
@@ -888,18 +910,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   ///
   Future<void> _makeInvestNameList() async =>
       InvestNamesRepository().getInvestNameList(isar: widget.isar).then((List<InvestName>? value) {
-        if (mounted) {
-          setState(() => investNameList = value);
-        }
+        investNameList = value ?? <InvestName>[];
       });
 
   ///
   Future<void> _makeInvestRecordList() async {
     await InvestRecordsRepository().getInvestRecordList(isar: widget.isar).then((List<InvestRecord>? value) {
-      investRecordList = value;
+      investRecordList = value ?? <InvestRecord>[];
+      investRecordMap.clear();
+      investItemRecordMap.clear();
 
-      if (value != null) {
-        value
+      if (investRecordList.isNotEmpty) {
+        investRecordList
           ..forEach((InvestRecord element) {
             investRecordMap[element.date] = <InvestRecord>[];
 
@@ -918,11 +940,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     });
   }
 
+  ///
   void makeCalendarCellSumDataMap() {
     final List<int> stockRelationalIds = <int>[];
     final List<int> shintakuRelationalIds = <int>[];
 
-    investNameList?.forEach((InvestName element) {
+    for (final InvestName element in investNameList) {
       if (element.kind == InvestKind.stock.name) {
         stockRelationalIds.add(element.relationalId);
       }
@@ -930,12 +953,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       if (element.kind == InvestKind.shintaku.name) {
         shintakuRelationalIds.add(element.relationalId);
       }
-    });
+    }
 
     calendarCellDateDataList = <String>[];
+    calendarCellSumDataMap.clear();
 
     final List<String> dateList = <String>[];
-    for (final InvestRecord element in investRecordList!) {
+    for (final InvestRecord element in investRecordList) {
       if (!dateList.contains(element.date)) {
         int stockCost = 0;
         int stockPrice = 0;
@@ -1000,25 +1024,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   ///
   Future<void> _makeSettingConfigMap() async {
     await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
-      if (mounted) {
-        setState(() {
-          configList = value;
+      configList = value ?? <Config>[];
+      configMap.clear();
 
-          if (value!.isNotEmpty) {
-            for (final Config element in value) {
-              configMap[element.configKey] = element.configValue;
-            }
-
-            firstCost = (configMap['startCostStock'] ?? '0').toInt() +
-                (configMap['startCostShintaku'] ?? '0').toInt() +
-                (configMap['startCostGold'] ?? '0').toInt();
-
-            firstPrice = (configMap['startPriceStock'] ?? '0').toInt() +
-                (configMap['startPriceShintaku'] ?? '0').toInt() +
-                (configMap['startPriceGold'] ?? '0').toInt();
-          }
-        });
+      if (configList.isNotEmpty) {
+        for (final Config element in configList) {
+          configMap[element.configKey] = element.configValue;
+        }
       }
+
+      firstCost = (configMap['startCostStock'] ?? '0').toInt() +
+          (configMap['startCostShintaku'] ?? '0').toInt() +
+          (configMap['startCostGold'] ?? '0').toInt();
+
+      firstPrice = (configMap['startPriceStock'] ?? '0').toInt() +
+          (configMap['startPriceShintaku'] ?? '0').toInt() +
+          (configMap['startPriceGold'] ?? '0').toInt();
     });
   }
 }

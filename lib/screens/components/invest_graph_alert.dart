@@ -32,20 +32,21 @@ class InvestGraphAlert extends ConsumerStatefulWidget {
 }
 
 class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with ControllersMixin<InvestGraphAlert> {
-  LineChartData graphData = LineChartData();
-  LineChartData graphData2 = LineChartData();
-
   final ScrollController _controller = ScrollController();
 
   final Utility _utility = Utility();
 
-  List<String> investGraphGuideFrames = <String>[];
-  List<String> investGraphGuideNames = <String>[];
+  ///
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   ///
   @override
   Widget build(BuildContext context) {
-    setChartData();
+    final _GraphPayload payload = _buildGraphPayload();
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -54,7 +55,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
         children: <Widget>[
           Column(
             children: <Widget>[
-              Expanded(child: LineChart(graphData2)),
+              Expanded(child: LineChart(payload.graphData2)),
               const SizedBox(height: 40),
             ],
           ),
@@ -70,7 +71,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(width: context.screenSize.width),
-                  Expanded(child: LineChart(graphData)),
+                  Expanded(child: LineChart(payload.graphData)),
                   SizedBox(
                     height: 40,
                     child: investGraphState.wideGraphDisplay
@@ -79,7 +80,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
                             children: <Widget>[
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                                onPressed: () => _controller.jumpTo(_controller.position.maxScrollExtent),
+                                onPressed: _jumpToEnd,
                                 child: const Text('jump'),
                               ),
                               Row(
@@ -87,7 +88,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
                                   ElevatedButton(
                                     style:
                                         ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                                    onPressed: () => _controller.jumpTo(_controller.position.minScrollExtent),
+                                    onPressed: _jumpToStart,
                                     child: const Text('back'),
                                   ),
                                   const SizedBox(width: 50),
@@ -103,8 +104,8 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
           ),
           CustomScrollBar(
             scrollController: _controller,
-            investGraphGuideFrames: investGraphGuideFrames,
-            investGraphGuideNames: investGraphGuideNames,
+            investGraphGuideFrames: payload.investGraphGuideFrames,
+            investGraphGuideNames: payload.investGraphGuideNames,
             investNameList: widget.investNameList,
           ),
         ],
@@ -113,11 +114,10 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
   }
 
   ///
-  void setChartData() {
+  _GraphPayload _buildGraphPayload() {
     final List<int> idList = <int>[];
-
-    investGraphGuideFrames = <String>[];
-    investGraphGuideNames = <String>[];
+    final List<String> investGraphGuideFrames = <String>[];
+    final List<String> investGraphGuideNames = <String>[];
 
     if (widget.kind == InvestKind.gold.name) {
       idList.add(0);
@@ -144,15 +144,12 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
 
     for (final InvestRecord element in widget.allInvestRecord) {
       if (element.price > 0 && element.cost > 0) {
-        map[element.investId]?[element.date] = (element.price != 0 && element.cost != 0)
-            ? ((element.price / element.cost) * 100).toString().split('.')[0].toInt()
-            : 0;
+        map[element.investId]?[element.date] =
+            (element.price != 0 && element.cost != 0) ? ((element.price / element.cost) * 100).floor() : 0;
       }
     }
 
     final List<List<FlSpot>> flspotsList = <List<FlSpot>>[];
-
-    final List<int> points = <int>[];
 
     if (investGraphState.selectedGraphId != 0) {
       map.forEach((int key, Map<String, int> value) {
@@ -164,9 +161,6 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
             if (value2 > 0) {
               flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
             }
-
-            points.add(value2);
-
             j++;
           });
 
@@ -182,9 +176,6 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
           if (value2 > 0) {
             flspots.add(FlSpot(j.toDouble(), value2.toDouble()));
           }
-
-          points.add(value2);
-
           j++;
         });
 
@@ -197,7 +188,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
 
     final List<Color> twelveColor = _utility.getTwelveColor();
 
-    graphData = LineChartData(
+    final LineChartData graphData = LineChartData(
       maxY: graphYMax.toDouble(),
       minY: graphYMin.toDouble(),
 
@@ -247,13 +238,9 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
                   style: const TextStyle(fontSize: 10),
                   child: Column(
                     children: <Widget>[
-                      Text(investGraphState.wideGraphDisplay
-                          ? widget.calendarCellDateDataList[value.toInt()].split('-')[0]
-                          : ''),
+                      Text(investGraphState.wideGraphDisplay ? _dateLabel(value: value, part: 0) : ''),
                       Text(
-                        investGraphState.wideGraphDisplay
-                            ? '${widget.calendarCellDateDataList[value.toInt()].split('-')[1]}-${widget.calendarCellDateDataList[value.toInt()].split('-')[2]}'
-                            : '',
+                        investGraphState.wideGraphDisplay ? _dateMdLabel(value: value) : '',
                       ),
                     ],
                   ),
@@ -300,7 +287,7 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
       ],
     );
 
-    graphData2 = LineChartData(
+    final LineChartData graphData2 = LineChartData(
       maxY: graphYMax.toDouble(),
       minY: graphYMin.toDouble(),
 
@@ -353,6 +340,13 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
       ///
       lineBarsData: <LineChartBarData>[],
     );
+
+    return _GraphPayload(
+      graphData: graphData,
+      graphData2: graphData2,
+      investGraphGuideFrames: investGraphGuideFrames,
+      investGraphGuideNames: investGraphGuideNames,
+    );
   }
 
   ///
@@ -372,4 +366,62 @@ class _InvestGraphAlertState extends ConsumerState<InvestGraphAlert> with Contro
 
     return list;
   }
+
+  ///
+  void _jumpToEnd() {
+    if (_controller.hasClients) {
+      _controller.jumpTo(_controller.position.maxScrollExtent);
+    }
+  }
+
+  ///
+  void _jumpToStart() {
+    if (_controller.hasClients) {
+      _controller.jumpTo(_controller.position.minScrollExtent);
+    }
+  }
+
+  ///
+  String _dateLabel({required double value, required int part}) {
+    final int index = value.toInt();
+    if (index < 0 || index >= widget.calendarCellDateDataList.length) {
+      return '';
+    }
+
+    final List<String> dateParts = widget.calendarCellDateDataList[index].split('-');
+    if (part < 0 || part >= dateParts.length) {
+      return '';
+    }
+
+    return dateParts[part];
+  }
+
+  ///
+  String _dateMdLabel({required double value}) {
+    final int index = value.toInt();
+    if (index < 0 || index >= widget.calendarCellDateDataList.length) {
+      return '';
+    }
+
+    final List<String> dateParts = widget.calendarCellDateDataList[index].split('-');
+    if (dateParts.length < 3) {
+      return '';
+    }
+
+    return '${dateParts[1]}-${dateParts[2]}';
+  }
+}
+
+class _GraphPayload {
+  _GraphPayload({
+    required this.graphData,
+    required this.graphData2,
+    required this.investGraphGuideFrames,
+    required this.investGraphGuideNames,
+  });
+
+  final LineChartData graphData;
+  final LineChartData graphData2;
+  final List<String> investGraphGuideFrames;
+  final List<String> investGraphGuideNames;
 }

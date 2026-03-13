@@ -9,26 +9,41 @@ import '../../collections/invest_record.dart';
 import '../../extensions/extensions.dart';
 
 class InvestRecordListAlert extends ConsumerStatefulWidget {
-  const InvestRecordListAlert(
-      {super.key, required this.investName, required this.allInvestRecord});
+  const InvestRecordListAlert({super.key, required this.investName, required this.allInvestRecord});
 
   final InvestName investName;
   final List<InvestRecord> allInvestRecord;
 
   ///
   @override
-  ConsumerState<InvestRecordListAlert> createState() =>
-      _InvestRecordListAlertState();
+  ConsumerState<InvestRecordListAlert> createState() => _InvestRecordListAlertState();
 }
 
 class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
-  LineChartData graphData = LineChartData();
+  List<InvestRecord> _filteredRecords = <InvestRecord>[];
+  LineChartData _graphData = LineChartData();
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+    _refreshDisplayData();
+  }
+
+  ///
+  @override
+  void didUpdateWidget(covariant InvestRecordListAlert oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.investName.relationalId != widget.investName.relationalId ||
+        !identical(oldWidget.allInvestRecord, widget.allInvestRecord)) {
+      _refreshDisplayData();
+    }
+  }
 
   ///
   @override
   Widget build(BuildContext context) {
-    setChartData();
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -48,7 +63,7 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               const SizedBox(height: 10),
-              SizedBox(height: 150, child: LineChart(graphData)),
+              SizedBox(height: 150, child: LineChart(_graphData)),
               const SizedBox(height: 20),
               Expanded(child: _displayInvestRecordList()),
             ],
@@ -63,59 +78,47 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
     final List<Widget> list = <Widget>[];
 
     int lastCost = 0;
-    widget.allInvestRecord
-        .where((InvestRecord element) =>
-            element.investId == widget.investName.relationalId)
-        .toList()
-      ..sort((InvestRecord a, InvestRecord b) => a.date.compareTo(b.date))
-      ..forEach((InvestRecord element) {
-        final Color costColor =
-            (lastCost != element.cost) ? Colors.yellowAccent : Colors.white;
+    for (final InvestRecord element in _filteredRecords) {
+      final Color costColor = (lastCost != element.cost) ? Colors.yellowAccent : Colors.white;
 
-        list.add(Container(
-          padding:
-              const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(flex: 2, child: Text(element.date)),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.topRight,
-                      child: Text(
-                        element.cost.toString().toCurrency(),
-                        style: TextStyle(color: costColor),
-                      ),
+      list.add(Container(
+        padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(flex: 2, child: Text(element.date)),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.topRight,
+                    child: Text(
+                      element.cost.toString().toCurrency(),
+                      style: TextStyle(color: costColor),
                     ),
                   ),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.topRight,
-                          child: Text(element.price.toString().toCurrency()))),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.topRight,
-                          child: Text((element.price - element.cost)
-                              .toString()
-                              .toCurrency()))),
-                ],
-              ),
-            ],
-          ),
-        ));
+                ),
+                Expanded(
+                    child:
+                        Container(alignment: Alignment.topRight, child: Text(element.price.toString().toCurrency()))),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(),
+                Expanded(
+                    child: Container(
+                        alignment: Alignment.topRight,
+                        child: Text((element.price - element.cost).toString().toCurrency()))),
+              ],
+            ),
+          ],
+        ),
+      ));
 
-        lastCost = element.cost;
-      });
+      lastCost = element.cost;
+    }
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -130,153 +133,95 @@ class _InvestRecordListAlertState extends ConsumerState<InvestRecordListAlert> {
   }
 
   ///
-  void setChartData() {
-    final List<FlSpot> flspots = <FlSpot>[];
+  void _refreshDisplayData() {
+    _filteredRecords = widget.allInvestRecord
+        .where((InvestRecord element) => element.investId == widget.investName.relationalId)
+        .toList()
+      ..sort((InvestRecord a, InvestRecord b) => a.date.compareTo(b.date));
 
+    _graphData = _buildChartData(records: _filteredRecords);
+  }
+
+  ///
+  LineChartData _buildChartData({required List<InvestRecord> records}) {
+    final List<FlSpot> flspots = <FlSpot>[];
     final List<int> points = <int>[];
 
-    double startPrice = 0.0;
-    double endPrice = 0.0;
-
-    FlSpot startSpot = FlSpot.zero;
-    FlSpot endSpot = FlSpot.zero;
-    List<FlSpot> flspotsTrend = <FlSpot>[];
-
-    for (int i = 0; i < widget.allInvestRecord.length; i++) {
-      if (widget.allInvestRecord[i].investId ==
-          widget.investName.relationalId) {
-        if (startPrice == 0) {
-          startPrice =
-              (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
-                  .toDouble();
-
-          startSpot = FlSpot(
-              i.toDouble(),
-              (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
-                  .toDouble());
-        }
-
-        flspots.add(
-          FlSpot(
-              i.toDouble(),
-              (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
-                  .toDouble()),
-        );
-
-        points.add(
-            widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost);
-
-        endPrice =
-            (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
-                .toDouble();
-
-        endSpot = FlSpot(
-            i.toDouble(),
-            (widget.allInvestRecord[i].price - widget.allInvestRecord[i].cost)
-                .toDouble());
-      }
+    for (int i = 0; i < records.length; i++) {
+      final int diff = records[i].price - records[i].cost;
+      points.add(diff);
+      flspots.add(FlSpot(i.toDouble(), diff.toDouble()));
     }
 
-    flspotsTrend = <FlSpot>[startSpot, endSpot];
+    final double startPrice = points.isNotEmpty ? points.first.toDouble() : 0.0;
+    final double endPrice = points.isNotEmpty ? points.last.toDouble() : 0.0;
+
+    final List<FlSpot> flspotsTrend = (flspots.isNotEmpty) ? <FlSpot>[flspots.first, flspots.last] : <FlSpot>[];
 
     final int maxPoint = (points.isNotEmpty) ? points.reduce(max) : 0;
-
     final int minPoint = (points.isNotEmpty) ? points.reduce(min) : 0;
 
-    int devide = 0;
-    switch (maxPoint.toString().length) {
-      case 3:
-        devide = 100;
-      case 4:
-        devide = 1000;
-      case 5:
-        devide = 10000;
-      case 6:
-        devide = 100000;
-      case 7:
-        devide = 1000000;
+    double graphYMax = max(maxPoint, 0).toDouble();
+    final double graphYMin = min(minPoint, 0).toDouble();
+
+    if (graphYMax <= graphYMin) {
+      graphYMax = graphYMin + 1;
     }
 
-    if (devide != 0) {
-      final int graphYMax = (maxPoint / devide).round() * devide;
-      final int graphYMin = (minPoint < 0) ? minPoint : 0;
-
-      graphData = LineChartData(
-        maxY: graphYMax.toDouble(),
-        minY: graphYMin.toDouble(),
-
-        ///
-        lineTouchData: const LineTouchData(enabled: false),
-
-        ///
-        titlesData: FlTitlesData(
-          //-------------------------// 上部の目盛り
-          topTitles: const AxisTitles(),
-          //-------------------------// 上部の目盛り
-
-          //-------------------------// 下部の目盛り
-          bottomTitles: AxisTitles(
-            axisNameWidget: DefaultTextStyle(
-              style: const TextStyle(
-                color: Colors.orangeAccent,
-                fontSize: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(startPrice.toString().split('.')[0].toCurrency()),
-                  RichText(
-                    text: TextSpan(
-                      text: endPrice.toString().split('.')[0].toCurrency(),
-                      style: const TextStyle(
-                          fontSize: 10, color: Colors.orangeAccent),
-                      children: <TextSpan>[
-                        const TextSpan(
-                            text: ' / ', style: TextStyle(color: Colors.white)),
-                        TextSpan(
-                          text:
-                              '${(endPrice - startPrice) > 0 ? '+' : ''} ${(endPrice - startPrice).toString().split('.')[0].toCurrency()}',
-                          style: TextStyle(
-                              color: ((endPrice - startPrice) > 0)
-                                  ? const Color(0xFFFBB6CE)
-                                  : Colors.yellowAccent),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+    return LineChartData(
+      maxY: graphYMax,
+      minY: graphYMin,
+      lineTouchData: const LineTouchData(enabled: false),
+      titlesData: FlTitlesData(
+        topTitles: const AxisTitles(),
+        bottomTitles: AxisTitles(
+          axisNameWidget: DefaultTextStyle(
+            style: const TextStyle(
+              color: Colors.orangeAccent,
+              fontSize: 10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(startPrice.toString().split('.')[0].toCurrency()),
+                RichText(
+                  text: TextSpan(
+                    text: endPrice.toString().split('.')[0].toCurrency(),
+                    style: const TextStyle(fontSize: 10, color: Colors.orangeAccent),
+                    children: <TextSpan>[
+                      const TextSpan(text: ' / ', style: TextStyle(color: Colors.white)),
+                      TextSpan(
+                        text:
+                            '${(endPrice - startPrice) > 0 ? '+' : ''} ${(endPrice - startPrice).toString().split('.')[0].toCurrency()}',
+                        style: TextStyle(
+                            color: ((endPrice - startPrice) > 0) ? const Color(0xFFFBB6CE) : Colors.yellowAccent),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-          //-------------------------// 下部の目盛り
-
-          //-------------------------// 左側の目盛り
-          leftTitles: const AxisTitles(),
-          //-------------------------// 左側の目盛り
-
-          //-------------------------// 右側の目盛り
-          rightTitles: const AxisTitles(),
-          //-------------------------// 右側の目盛り
         ),
-
-        ///
-        lineBarsData: <LineChartBarData>[
-          LineChartBarData(
-            spots: flspots,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.yellowAccent,
-            dotData: const FlDotData(show: false),
-          ),
-          LineChartBarData(
-            spots: flspotsTrend,
-            barWidth: 1,
-            isStrokeCapRound: true,
-            color: Colors.redAccent,
-            dotData: const FlDotData(show: false),
-          ),
-        ],
-      );
-    }
+        leftTitles: const AxisTitles(),
+        rightTitles: const AxisTitles(),
+      ),
+      lineBarsData: <LineChartBarData>[
+        LineChartBarData(
+          spots: flspots,
+          barWidth: 1,
+          isStrokeCapRound: true,
+          color: Colors.yellowAccent,
+          dotData: const FlDotData(show: false),
+        ),
+        LineChartBarData(
+          spots: flspotsTrend,
+          barWidth: 1,
+          isStrokeCapRound: true,
+          color: Colors.redAccent,
+          dotData: const FlDotData(show: false),
+        ),
+      ],
+    );
   }
 }

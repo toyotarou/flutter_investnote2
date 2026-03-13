@@ -43,7 +43,7 @@ class DailyInvestDisplayAlert extends ConsumerStatefulWidget {
 
 class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAlert>
     with ControllersMixin<DailyInvestDisplayAlert> {
-  List<InvestRecord>? thisDayInvestRecordList = <InvestRecord>[];
+  List<InvestRecord> thisDayInvestRecordList = <InvestRecord>[];
 
   Map<int, Map<String, InvestRecord>> investGrowthRateDataMap = <int, Map<String, InvestRecord>>{};
 
@@ -55,21 +55,15 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
     super.initState();
 
     makeInvestGrowthRateData();
+    makeInvestRatingDataMap();
+    _makeThisDayInvestRecordList();
 
     toushiShintakuNotifier.getAllToushiShintaku();
   }
 
   ///
-  void _init() {
-    _makeThisDayInvestRecordList();
-  }
-
-  ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -125,10 +119,9 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
     final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
-        onPressed: () {
-          _deleteInvestRecords();
-
+        onPressed: () async {
           Navigator.pop(context);
+          await _deleteInvestRecords();
         },
         child: const Text('はい'));
 
@@ -144,30 +137,28 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
 
   ///
   Future<void> _deleteInvestRecords() async {
-    InvestRecordsRepository()
-        .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
-        .then((List<InvestRecord>? value) async {
-      InvestRecordsRepository()
-          .deleteInvestRecordList(isar: widget.isar, investRecordList: value)
-          // ignore: always_specify_types
-          .then((value2) async {
-        if (mounted) {
-          Navigator.pop(context);
-        }
-      });
-    });
+    final List<InvestRecord>? value =
+        await InvestRecordsRepository().getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd);
+
+    if (value != null && value.isNotEmpty) {
+      await InvestRecordsRepository().deleteInvestRecordList(isar: widget.isar, investRecordList: value);
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.pop(context);
   }
 
   ///
   Widget _displayDailyInvest() {
-    makeInvestRatingDataMap();
-
     final List<Widget> list = <Widget>[];
 
     for (final InvestKind element in InvestKind.values) {
       if (element.japanName != InvestKind.blank.japanName) {
-        final List<InvestRecord>? dispInvestRecordGold =
-            thisDayInvestRecordList?.where((InvestRecord element4) => element4.investId == 0).toList();
+        final List<InvestRecord> dispInvestRecordGold =
+            thisDayInvestRecordList.where((InvestRecord element4) => element4.investId == 0).toList();
 
         //---------------------------------//
 
@@ -178,8 +169,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
         widget.investNameList.where((InvestName element2) => element2.kind == element.name).toList()
           ..sort((InvestName a, InvestName b) => a.dealNumber.compareTo(b.dealNumber))
           ..forEach((InvestName element3) {
-            final List<InvestRecord>? dispInvestRecord = thisDayInvestRecordList
-                ?.where((InvestRecord element4) => element4.investId == element3.relationalId)
+            final List<InvestRecord> dispInvestRecord = thisDayInvestRecordList
+                .where((InvestRecord element4) => element4.investId == element3.relationalId)
                 .toList();
 
             list2.add(Container(
@@ -217,7 +208,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                           children: <Widget>[
                             Container(
                               alignment: Alignment.topRight,
-                              child: Text((dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                              child: Text((dispInvestRecord.isNotEmpty)
                                   ? dispInvestRecord[0].cost.toString().toCurrency()
                                   : '0'),
                             ),
@@ -231,9 +222,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                             Container(
                               alignment: Alignment.topRight,
                               child: Text(
-                                (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                                    ? dispInvestRecord[0].price.toString().toCurrency()
-                                    : '0',
+                                (dispInvestRecord.isNotEmpty) ? dispInvestRecord[0].price.toString().toCurrency() : '0',
                                 style: const TextStyle(color: Colors.yellowAccent),
                               ),
                             ),
@@ -248,16 +237,19 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                             Container(
                               alignment: Alignment.topRight,
                               child: Text(
-                                (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
+                                (dispInvestRecord.isNotEmpty)
                                     ? (dispInvestRecord[0].price - dispInvestRecord[0].cost).toString().toCurrency()
                                     : '0',
                                 style: const TextStyle(color: Color(0xFFFBB6CE)),
                               ),
                             ),
                             Text(
-                              (dispInvestRecord != null && dispInvestRecord.isNotEmpty)
-                                  ? '${((dispInvestRecord[0].price / dispInvestRecord[0].cost) * 100).toString().split('.')[0]} %'
-                                  : '0',
+                              (dispInvestRecord.isNotEmpty)
+                                  ? _toPercentText(
+                                      price: dispInvestRecord[0].price,
+                                      cost: dispInvestRecord[0].cost,
+                                    )
+                                  : '0 %',
                               style: const TextStyle(color: Colors.white),
                             ),
                           ],
@@ -294,7 +286,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                   date: widget.date,
                                   investName: element3,
                                   investRecord: thisDayInvestRecordList
-                                      ?.where((InvestRecord element4) => element4.investId == element3.relationalId)
+                                      .where((InvestRecord element4) => element4.investId == element3.relationalId)
                                       .toList(),
                                   allInvestRecord: widget.allInvestRecord,
                                 ),
@@ -377,7 +369,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
               ),
             ));
 
-            if (dispInvestRecord != null && dispInvestRecord.isNotEmpty) {
+            if (dispInvestRecord.isNotEmpty) {
               totalPrice += dispInvestRecord[0].price;
 
               totalDiff += dispInvestRecord[0].price - dispInvestRecord[0].cost;
@@ -487,7 +479,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                             children: <Widget>[
                               Container(
                                 alignment: Alignment.topRight,
-                                child: Text((dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                child: Text((dispInvestRecordGold.isNotEmpty)
                                     ? dispInvestRecordGold[0].cost.toString().toCurrency()
                                     : '0'),
                               ),
@@ -501,7 +493,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                  (dispInvestRecordGold.isNotEmpty)
                                       ? dispInvestRecordGold[0].price.toString().toCurrency()
                                       : '0',
                                   style: const TextStyle(color: Colors.yellowAccent),
@@ -518,7 +510,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                               Container(
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
+                                  (dispInvestRecordGold.isNotEmpty)
                                       ? (dispInvestRecordGold[0].price - dispInvestRecordGold[0].cost)
                                           .toString()
                                           .toCurrency()
@@ -527,9 +519,12 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                 ),
                               ),
                               Text(
-                                (dispInvestRecordGold != null && dispInvestRecordGold.isNotEmpty)
-                                    ? '${((dispInvestRecordGold[0].price / dispInvestRecordGold[0].cost) * 100).toString().split('.')[0]} %'
-                                    : '0',
+                                (dispInvestRecordGold.isNotEmpty)
+                                    ? _toPercentText(
+                                        price: dispInvestRecordGold[0].price,
+                                        cost: dispInvestRecordGold[0].cost,
+                                      )
+                                    : '0 %',
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ],
@@ -572,7 +567,7 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                     isar: widget.isar,
                                     date: widget.date,
                                     investRecord: thisDayInvestRecordList
-                                        ?.where((InvestRecord element4) => element4.investId == 0)
+                                        .where((InvestRecord element4) => element4.investId == 0)
                                         .toList(),
                                     allInvestRecord: widget.allInvestRecord,
                                     investName: InvestName()
@@ -678,8 +673,14 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
 
   ///
   Future<void> _makeThisDayInvestRecordList() async => InvestRecordsRepository()
-      .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
-      .then((List<InvestRecord>? value) => setState(() => thisDayInvestRecordList = value));
+          .getInvestRecordListByDate(isar: widget.isar, date: widget.date.yyyymmdd)
+          .then((List<InvestRecord>? value) {
+        if (!mounted) {
+          return;
+        }
+
+        setState(() => thisDayInvestRecordList = value ?? <InvestRecord>[]);
+      });
 
   ///
   void makeInvestGrowthRateData() {
@@ -715,5 +716,15 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
         'end': investRecordEndGold,
       };
     }
+  }
+
+  ///
+  String _toPercentText({required int price, required int cost}) {
+    if (cost <= 0) {
+      return '0 %';
+    }
+
+    final int percent = ((price / cost) * 100).floor();
+    return '$percent %';
   }
 }
