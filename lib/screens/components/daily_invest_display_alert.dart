@@ -276,10 +276,10 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                           ),
                           const SizedBox(width: 20),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               toushiShintakuNotifier.setSelectedToushiShintakuName(name: '');
 
-                              InvestDialog(
+                              await InvestDialog(
                                 context: context,
                                 widget: InvestRecordInputAlert(
                                   isar: widget.isar,
@@ -292,6 +292,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                 ),
                                 clearBarrierColor: true,
                               );
+
+                              await _makeThisDayInvestRecordList();
                             },
                             child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
                           ),
@@ -558,10 +560,10 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                             ),
                             const SizedBox(width: 20),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 goldNotifier.setGoldFlag(flag: false);
 
-                                InvestDialog(
+                                await InvestDialog(
                                   context: context,
                                   widget: InvestRecordInputAlert(
                                     isar: widget.isar,
@@ -577,6 +579,8 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
                                   ),
                                   clearBarrierColor: true,
                                 );
+
+                                await _makeThisDayInvestRecordList();
                               },
                               child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
                             ),
