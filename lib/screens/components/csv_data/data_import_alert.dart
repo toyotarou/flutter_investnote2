@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart' hide Config;
 import 'package:isar/isar.dart';
 
-import '../../../collections/config.dart' as app_config;
+import '../../../collections/config.dart';
 import '../../../collections/invest_name.dart';
 import '../../../collections/invest_record.dart';
 import '../../../extensions/extensions.dart';
@@ -56,14 +56,14 @@ class _DataImportAlertState extends State<DataImportAlert> {
       ///
       fileName = result.files.single.name;
 
-      csvName = fileName.split('_')[0];
+      csvName = fileName.split('.').first.split('_').first;
 
       ///
       final File file = File(result.files.single.path!);
       final String csvString = await file.readAsString();
       final List<String> exCsvString = csvString.split('\n');
 
-      if (exCsvString[0] != 'export_csv_from_invest_note') {
+      if (exCsvString[0].trim() != 'export_csv_from_invest_note') {
         setState(() {
           fileName = '';
 
@@ -82,7 +82,72 @@ class _DataImportAlertState extends State<DataImportAlert> {
       setState(() {
         csvContentsList = exCsvString;
       });
+
+      _buildImportDataList();
     }
+  }
+
+  ///
+  void _buildImportDataList() {
+    final List<dynamic> newList;
+
+    switch (csvName) {
+      case 'config':
+        newList = <Config>[];
+      case 'investName':
+        newList = <InvestName>[];
+      case 'investRecord':
+        newList = <InvestRecord>[];
+      default:
+        return;
+    }
+
+    for (int i = 1; i < csvContentsList.length; i++) {
+      if (csvContentsList[i].trim().isEmpty) {
+        continue;
+      }
+
+      final List<String> exLine = csvContentsList[i].split(',');
+
+      switch (csvName) {
+        case 'config':
+          newList.add(Config()
+            ..configKey = exLine[1].trim()
+            ..configValue = exLine[2].trim());
+
+        case 'investName':
+          newList.add(
+            InvestName()
+              ..kind = exLine[1].trim()
+              ..frame = exLine[2].trim()
+              ..name = exLine[3].trim()
+              ..dealNumber = exLine[4].trim().toInt()
+              ..relationalId = exLine[5].trim().toInt(),
+          );
+
+        case 'investRecord':
+          final List<String> exDate = exLine[1].trim().split('/');
+
+          String date = '';
+
+          if (exDate.length > 1) {
+            date = '${exDate[0]}-${exDate[1].padLeft(2, '0')}-${exDate[2].padLeft(2, '0')}';
+          } else {
+            date = exLine[1].trim();
+          }
+
+          newList.add(InvestRecord()
+            ..date = date
+            ..investId = exLine[2].trim().toInt()
+            ..cost = exLine[3].trim().toInt()
+            ..price = exLine[4].trim().toInt());
+      }
+    }
+
+    setState(() {
+      importDataList = newList;
+      importDataListLength = newList.length;
+    });
   }
 
   ///
@@ -163,17 +228,6 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Widget displayCsvContents() {
-    switch (csvName) {
-      case 'config':
-        importDataList = <app_config.Config>[];
-
-      case 'investName':
-        importDataList = <InvestName>[];
-
-      case 'investRecord':
-        importDataList = <InvestRecord>[];
-    }
-
     final List<Widget> widgetList = <Widget>[];
 
     for (int i = 1; i < csvContentsList.length; i++) {
@@ -194,47 +248,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
       }
 
       widgetList.add(Row(children: widgetList2));
-
-      switch (csvName) {
-        case 'config':
-          importDataList.add(app_config.Config()
-            ..configKey = exLine[1].trim()
-            ..configValue = exLine[2].trim());
-
-        case 'investName':
-          importDataList.add(
-            InvestName()
-              ..kind = exLine[1].trim()
-              ..frame = exLine[2].trim()
-              ..name = exLine[3].trim()
-              ..dealNumber = exLine[4].trim().toInt()
-              ..relationalId = exLine[5].trim().toInt(),
-          );
-
-        case 'investRecord':
-          final List<String> exDate = exLine[1].trim().split('/');
-
-          String date = '';
-
-          if (exDate.length > 1) {
-            date = '${exDate[0]}-${exDate[1].padLeft(2, '0')}-${exDate[2].padLeft(2, '0')}';
-          } else {
-            date = exLine[1].trim();
-          }
-
-          importDataList.add(InvestRecord()
-            ..date = date
-            ..investId = exLine[2].trim().toInt()
-            ..cost = exLine[3].trim().toInt()
-            ..price = exLine[4].trim().toInt());
-      }
     }
-
-    setState(() {
-      importDataListLength = importDataList.length;
-    });
-
-    /////////
 
     return SingleChildScrollView(
       child: SingleChildScrollView(
@@ -245,13 +259,13 @@ class _DataImportAlertState extends State<DataImportAlert> {
         ),
       ),
     );
-
-    //////////
   }
 
   ///
   Future<void> registData() async {
-    if ((csvContentsList.length - 1) != importDataList.length) {
+    final int dataLineCount = csvContentsList.skip(1).where((String line) => line.trim().isNotEmpty).length;
+
+    if (dataLineCount != importDataList.length) {
       getErrorDialog(title: '登録できません。', content: '登録するデータが正しく選択されていません。');
 
       return;
@@ -260,7 +274,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
     switch (csvName) {
       case 'config':
         await ConfigsRepository()
-            .inputConfigList(isar: widget.isar, configList: importDataList as List<app_config.Config>)
+            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {

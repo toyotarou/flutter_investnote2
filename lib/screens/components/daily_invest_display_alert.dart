@@ -176,8 +176,17 @@ class _DailyInvestDisplayAlertState extends ConsumerState<DailyInvestDisplayAler
             list2.add(Container(
               width: context.screenSize.width,
               margin: const EdgeInsets.all(2),
-              decoration:
-                  BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
+              decoration: BoxDecoration(
+                  color: (investGrowthRateDataMap[element3.relationalId] != null)
+                      ? (DateTime.now()
+                                  .difference(
+                                      DateTime.parse(investGrowthRateDataMap[element3.relationalId]!['end']!.date))
+                                  .inDays <=
+                              3
+                          ? Colors.transparent
+                          : Colors.white.withValues(alpha: 0.2))
+                      : Colors.transparent,
+                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
               child: Column(
                 children: <Widget>[
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[

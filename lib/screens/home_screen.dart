@@ -652,7 +652,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
         tapFlag = false;
       }
 
-      bool flag = true;
+      const bool flag = true;
 
       // if (i % 7 == 0 || i % 7 == 6) {
       //   flag = false;
