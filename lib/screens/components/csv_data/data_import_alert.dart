@@ -33,6 +33,8 @@ class _DataImportAlertState extends State<DataImportAlert> {
   List<dynamic> importDataList = <dynamic>[];
   int importDataListLength = 0;
 
+  bool isLoading = false;
+
   ///
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
       ///
       fileName = result.files.single.name;
 
-      csvName = fileName.split('.').first.split('_').first;
+      csvName = fileName.split('.').first.split('_').first.split('(').first;
 
       ///
       final File file = File(result.files.single.path!);
@@ -102,6 +104,8 @@ class _DataImportAlertState extends State<DataImportAlert> {
         return;
     }
 
+    int idCounter = 1;
+
     for (int i = 1; i < csvContentsList.length; i++) {
       if (csvContentsList[i].trim().isEmpty) {
         continue;
@@ -112,12 +116,14 @@ class _DataImportAlertState extends State<DataImportAlert> {
       switch (csvName) {
         case 'config':
           newList.add(Config()
+            ..id = idCounter
             ..configKey = exLine[1].trim()
             ..configValue = exLine[2].trim());
 
         case 'investName':
           newList.add(
             InvestName()
+              ..id = idCounter
               ..kind = exLine[1].trim()
               ..frame = exLine[2].trim()
               ..name = exLine[3].trim()
@@ -137,11 +143,14 @@ class _DataImportAlertState extends State<DataImportAlert> {
           }
 
           newList.add(InvestRecord()
+            ..id = idCounter
             ..date = date
             ..investId = exLine[2].trim().toInt()
             ..cost = exLine[3].trim().toInt()
             ..price = exLine[4].trim().toInt());
       }
+
+      idCounter++;
     }
 
     setState(() {
@@ -183,9 +192,15 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   const SizedBox(width: 20),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: registData,
+                      onPressed: isLoading ? null : registData,
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                      child: const Text('登録'),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Text('登録'),
                     ),
                   ),
                 ],
@@ -271,36 +286,29 @@ class _DataImportAlertState extends State<DataImportAlert> {
       return;
     }
 
-    switch (csvName) {
-      case 'config':
-        await ConfigsRepository()
-            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+    setState(() => isLoading = true);
 
-      case 'investName':
-        await InvestNamesRepository()
-            .inputInvestNameList(isar: widget.isar, investNameList: importDataList as List<InvestName>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+    try {
+      switch (csvName) {
+        case 'config':
+          await ConfigsRepository().deleteAllConfigs(isar: widget.isar);
+          await ConfigsRepository().inputConfigList(isar: widget.isar, configList: importDataList as List<Config>);
 
-      case 'investRecord':
-        await InvestRecordsRepository()
-            .inputInvestRecordList(isar: widget.isar, investRecordList: importDataList as List<InvestRecord>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'investName':
+          await InvestNamesRepository().deleteAllInvestNames(isar: widget.isar);
+          await InvestNamesRepository()
+              .inputInvestNameList(isar: widget.isar, investNameList: importDataList as List<InvestName>);
+
+        case 'investRecord':
+          await InvestRecordsRepository().deleteAllInvestRecords(isar: widget.isar);
+          await InvestRecordsRepository()
+              .inputInvestRecordList(isar: widget.isar, investRecordList: importDataList as List<InvestRecord>);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+        Navigator.pop(context);
+      }
     }
   }
 }

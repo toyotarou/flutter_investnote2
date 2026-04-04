@@ -20,9 +20,8 @@ class ConfigsRepository {
 
   ///
   Future<void> inputConfigList({required Isar isar, required List<Config> configList}) async {
-    for (final Config element in configList) {
-      inputConfig(isar: isar, config: element);
-    }
+    final IsarCollection<Config> configsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => configsCollection.putAll(configList));
   }
 
   ///
@@ -46,5 +45,11 @@ class ConfigsRepository {
   Future<void> deleteConfig({required Isar isar, required int id}) async {
     final IsarCollection<Config> configsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => configsCollection.delete(id));
+  }
+
+  ///
+  Future<void> deleteAllConfigs({required Isar isar}) async {
+    final IsarCollection<Config> configsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => configsCollection.clear());
   }
 }
