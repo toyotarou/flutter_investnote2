@@ -766,7 +766,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                           Text(_calendarDays[i].padLeft(2, '0')),
                           const SizedBox(height: 5),
                           ConstrainedBox(
-                            constraints: BoxConstraints(minHeight: context.screenSize.height / 3),
+                            constraints: BoxConstraints(minHeight: context.screenSize.height / 2.5),
                             child: (DateTime.parse('$generateYmd 00:00:00').isAfter(DateTime.now()) || allSum == 0)
                                 ? Container()
                                 : Column(
@@ -949,6 +949,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                           ),
                                         ],
                                       ),
+                                      if (beforeSumData != null &&
+                                          (stockPrice + shintakuPrice + goldPrice) > 0) ...<Widget>[
+                                        const SizedBox(height: 20),
+                                        Builder(
+                                          builder: (_) {
+                                            final double percent =
+                                                ((stockSum + shintakuSum + goldSum) - beforeSumData.allSum) /
+                                                    (stockPrice + shintakuPrice + goldPrice) *
+                                                    100;
+                                            final String sign = percent >= 0 ? '+' : '';
+                                            return Align(
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: percent >= 0 ? Colors.greenAccent : Colors.redAccent,
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                child: Text(
+                                                  '$sign${percent.toStringAsFixed(2)}%',
+                                                  style: TextStyle(
+                                                    color: percent >= 0 ? Colors.greenAccent : Colors.redAccent,
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ],
                                   ),
                           ),
