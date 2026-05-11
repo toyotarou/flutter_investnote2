@@ -24,6 +24,7 @@ import 'components/invest_total_graph_alert.dart';
 import 'components/parts/back_ground_image.dart';
 import 'components/parts/invest_dialog.dart';
 import 'components/parts/menu_head_icon.dart';
+import 'components/table_data_delete_alert.dart';
 
 class CalendarCellSumData {
   CalendarCellSumData(
@@ -87,6 +88,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   bool _isInitializing = false;
 
+  late final List<String> _ymList;
+  TabController? _tabController;
+
   int firstCost = 0;
   int firstPrice = 0;
 
@@ -126,6 +130,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   void initState() {
     super.initState();
 
+    _ymList = _makeYmList();
+
     goldNotifier.getAllGold();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -143,87 +149,141 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   ///
   @override
+  void dispose() {
+    _tabController?.removeListener(_onTabChanged);
+    super.dispose();
+  }
+
+  ///
+  List<String> _makeYmList() {
+    final DateTime start = DateTime(2024);
+    final DateTime now = DateTime.now();
+    final List<String> list = <String>[];
+    DateTime cursor = start;
+    while (!cursor.isAfter(DateTime(now.year, now.month))) {
+      list.add(cursor.yyyymm);
+      cursor = DateTime(cursor.year, cursor.month + 1);
+    }
+    return list;
+  }
+
+  ///
+  int _getInitialTabIndex() {
+    final String initial = widget.baseYm ?? DateTime.now().yyyymm;
+    final int idx = _ymList.indexOf(initial);
+    return idx >= 0 ? idx : _ymList.length - 1;
+  }
+
+  ///
+  void _onTabChanged() {
+    if (_tabController != null && !_tabController!.indexIsChanging) {
+      calendarNotifier.setCalendarYearMonth(baseYm: _ymList[_tabController!.index]);
+    }
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey.withOpacity(0.3),
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Row(
-          children: <Widget>[
-            Text(calendarState.baseYearMonth),
-            const SizedBox(width: 10),
-            IconButton(
-              onPressed: _goPrevMonth,
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white.withOpacity(0.8), size: 14),
+    return DefaultTabController(
+      length: _ymList.length,
+      initialIndex: _getInitialTabIndex(),
+      child: Builder(
+        builder: (BuildContext tabContext) {
+          final TabController newController = DefaultTabController.of(tabContext);
+          if (newController != _tabController) {
+            _tabController?.removeListener(_onTabChanged);
+            _tabController = newController;
+            _tabController?.addListener(_onTabChanged);
+            calendarNotifier.setCalendarYearMonth(baseYm: _ymList[newController.index]);
+          }
+          return Scaffold(
+            backgroundColor: Colors.blueGrey.withOpacity(0.3),
+            key: _scaffoldKey,
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('invest note'),
+              centerTitle: false,
+              backgroundColor: Colors.transparent,
+              bottom: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                indicatorColor: Colors.blueAccent,
+                padding: EdgeInsets.zero,
+                tabs: _ymList.map((String ym) {
+                  final bool isCurrent = ym == DateTime.now().yyyymm;
+                  return Tab(
+                    child: Text(
+                      ym,
+                      style: TextStyle(fontSize: 12, color: isCurrent ? Colors.greenAccent : Colors.white),
+                    ),
+                  );
+                }).toList(),
+              ),
+              actions: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    final int idx = _ymList.indexOf(DateTime.now().yyyymm);
+                    if (idx >= 0) {
+                      _tabController?.animateTo(idx);
+                    }
+                    _init();
+                  },
+                  icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+                IconButton(
+                  onPressed: () {
+                    totalGraphNotifier.setSelectedStartMonth(month: 0);
+                    totalGraphNotifier.setSelectedEndMonth(month: 0);
+
+                    InvestDialog(
+                      context: context,
+                      widget: InvestTotalGraphAlert(
+                        isar: widget.isar,
+                        investNameList: investNameList,
+                        investRecordMap: investRecordMap,
+                        investRecordList: investRecordList,
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+                IconButton(
+                  onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+                  icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+              ],
             ),
-            IconButton(
-              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarState.baseYearMonth)
-                    ? Colors.grey.withOpacity(0.6)
-                    : Colors.white.withOpacity(0.8),
-                size: 14,
+            body: TabBarView(
+              children: List<Widget>.generate(
+                _ymList.length,
+                (int _) => Builder(builder: (BuildContext _) => _buildBodyContent()),
               ),
             ),
+            endDrawer: _dispDrawer(),
+          );
+        },
+      ),
+    );
+  }
+
+  ///
+  Widget _buildBodyContent() {
+    return Stack(
+      children: <Widget>[
+        const BackGroundImage(),
+        Container(
+          width: context.screenSize.width,
+          height: context.screenSize.height,
+          decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+        ),
+        Column(
+          children: <Widget>[
+            displayMonthSummary(),
+            Expanded(child: _getCalendar()),
+            const SizedBox(height: 50),
           ],
         ),
-        centerTitle: false,
-        backgroundColor: Colors.transparent,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                // ignore: inference_failure_on_instance_creation, always_specify_types
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm)),
-              );
-            },
-            icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20),
-          ),
-          IconButton(
-            onPressed: () {
-              totalGraphNotifier.setSelectedStartMonth(month: 0);
-              totalGraphNotifier.setSelectedEndMonth(month: 0);
-
-              InvestDialog(
-                context: context,
-                widget: InvestTotalGraphAlert(
-                  isar: widget.isar,
-                  investNameList: investNameList,
-                  investRecordMap: investRecordMap,
-                  investRecordList: investRecordList,
-                ),
-              );
-            },
-            icon: Icon(Icons.graphic_eq, color: Colors.white.withOpacity(0.6), size: 20),
-          ),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
-            icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
-          )
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          const BackGroundImage(),
-          Container(
-            width: context.screenSize.width,
-            height: context.screenSize.height,
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
-          ),
-          Column(
-            children: <Widget>[
-              displayMonthSummary(),
-              Expanded(child: _getCalendar()),
-              const SizedBox(height: 50),
-            ],
-          ),
-        ],
-      ),
-      endDrawer: _dispDrawer(),
+      ],
     );
   }
 
@@ -497,31 +557,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              GestureDetector(
+                onTap: () => InvestDialog(
+                  context: context,
+                  widget: TableDataDeleteAlert(isar: widget.isar),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('テーブルデータ削除'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  ///
-  void _goPrevMonth() {
-    Navigator.pushReplacement(
-      context,
-      // ignore: inference_failure_on_instance_creation, always_specify_types
-      MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.prevYearMonth),
-      ),
-    );
-  }
-
-  ///
-  void _goNextMonth() {
-    Navigator.pushReplacement(
-      context,
-      // ignore: inference_failure_on_instance_creation, always_specify_types
-      MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.nextYearMonth),
       ),
     );
   }
