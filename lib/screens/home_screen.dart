@@ -214,7 +214,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   return Tab(
                     child: Text(
                       ym,
-                      style: TextStyle(fontSize: 12, color: isCurrent ? Colors.greenAccent : Colors.white),
+                      style: TextStyle(fontSize: 10, color: isCurrent ? Colors.greenAccent : Colors.white),
                     ),
                   );
                 }).toList(),
@@ -318,38 +318,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     return Container(
       padding: const EdgeInsets.all(10),
       child: DefaultTextStyle(
-        style: const TextStyle(fontSize: 12),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text(firstCostTotal.toString().toCurrency()),
-                  Text(firstPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(firstDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
-                ],
+        style: const TextStyle(fontSize: 10),
+        child: Stack(
+          children: [
+            if (lastPriceTotal > 0)
+              Positioned(
+                bottom: 0,
+                right: 40,
+                child: Builder(
+                  builder: (_) {
+                    final double percent = monthDiffDiff / lastPriceTotal * 100;
+                    final String sign = percent >= 0 ? '+' : '';
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: percent >= 0 ? Colors.greenAccent : Colors.redAccent,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '$sign${percent.toStringAsFixed(2)}%',
+                        style: TextStyle(
+                          color: percent >= 0 ? Colors.greenAccent : Colors.redAccent,
+                          fontSize: 11,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text(lastCostTotal.toString().toCurrency()),
-                  Text(lastPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(lastDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text(monthCostDiff.toString().toCurrency()),
-                  Text(monthPriceDiff.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-                  Text(monthDiffDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
-                ],
-              ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(firstCostTotal.toString().toCurrency()),
+                      Text(firstPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                      Text(firstDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(lastCostTotal.toString().toCurrency()),
+                      Text(lastPriceTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                      Text(lastDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(monthCostDiff.toString().toCurrency()),
+                      Text(monthPriceDiff.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                      Text(monthDiffDiff.toString().toCurrency(), style: const TextStyle(color: Color(0xFFFBB6CE))),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -795,22 +826,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                     stops: const <double>[0.9, 1],
                                                   ),
                                                 ),
-                                                child: const Text('stock'),
+                                                child: const Text('stock', style: TextStyle(fontSize: 9)),
                                               ),
-                                              Text(stockCost.toString().toCurrency()),
+                                              Text(stockCost.toString().toCurrency(),
+                                                  style: const TextStyle(fontSize: 9)),
                                               Text(
                                                 stockPrice.toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.yellowAccent),
+                                                style: const TextStyle(color: Colors.yellowAccent, fontSize: 9),
                                               ),
                                               Text(
                                                 stockSum.toString().toCurrency(),
-                                                style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                                style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 9),
                                               ),
                                               Text(
                                                 (beforeSumData == null)
                                                     ? ''
                                                     : (stockSum - beforeSumData.stockSum).toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.orangeAccent),
+                                                style: const TextStyle(color: Colors.orangeAccent, fontSize: 9),
                                               ),
                                             ],
                                           ),
@@ -840,22 +872,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                     stops: const <double>[0.7, 1],
                                                   ),
                                                 ),
-                                                child: const Text('shintaku'),
+                                                child: const Text('shintaku', style: TextStyle(fontSize: 9)),
                                               ),
-                                              Text(shintakuCost.toString().toCurrency()),
+                                              Text(shintakuCost.toString().toCurrency(),
+                                                  style: const TextStyle(fontSize: 9)),
                                               Text(
                                                 shintakuPrice.toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.yellowAccent),
+                                                style: const TextStyle(color: Colors.yellowAccent, fontSize: 9),
                                               ),
                                               Text(
                                                 shintakuSum.toString().toCurrency(),
-                                                style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                                style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 9),
                                               ),
                                               Text(
                                                 (beforeSumData == null)
                                                     ? ''
                                                     : (shintakuSum - beforeSumData.shintakuSum).toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.orangeAccent),
+                                                style: const TextStyle(color: Colors.orangeAccent, fontSize: 9),
                                               ),
                                             ],
                                           ),
@@ -885,22 +918,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                     stops: const <double>[0.7, 1],
                                                   ),
                                                 ),
-                                                child: const Text('gold'),
+                                                child: const Text('gold', style: TextStyle(fontSize: 9)),
                                               ),
-                                              Text(goldCost.toString().toCurrency()),
+                                              Text(goldCost.toString().toCurrency(),
+                                                  style: const TextStyle(fontSize: 9)),
                                               Text(
                                                 goldPrice.toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.yellowAccent),
+                                                style: const TextStyle(color: Colors.yellowAccent, fontSize: 9),
                                               ),
                                               Text(
                                                 goldSum.toString().toCurrency(),
-                                                style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                                style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 9),
                                               ),
                                               Text(
                                                 (beforeSumData == null)
                                                     ? ''
                                                     : (goldSum - beforeSumData.goldSum).toString().toCurrency(),
-                                                style: const TextStyle(color: Colors.orangeAccent),
+                                                style: const TextStyle(color: Colors.orangeAccent, fontSize: 9),
                                               ),
                                             ],
                                           ),
@@ -926,14 +960,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.end,
                                                 children: <Widget>[
-                                                  Text((stockCost + shintakuCost + goldCost).toString().toCurrency()),
+                                                  Text((stockCost + shintakuCost + goldCost).toString().toCurrency(),
+                                                      style: const TextStyle(fontSize: 9)),
                                                   Text(
                                                     (stockPrice + shintakuPrice + goldPrice).toString().toCurrency(),
-                                                    style: const TextStyle(color: Colors.yellowAccent),
+                                                    style: const TextStyle(color: Colors.yellowAccent, fontSize: 9),
                                                   ),
                                                   Text(
                                                     (stockSum + shintakuSum + goldSum).toString().toCurrency(),
-                                                    style: const TextStyle(color: Color(0xFFFBB6CE)),
+                                                    style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 9),
                                                   ),
                                                   Text(
                                                     (beforeSumData == null)
@@ -941,7 +976,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                                         : ((stockSum + shintakuSum + goldSum) - beforeSumData.allSum)
                                                             .toString()
                                                             .toCurrency(),
-                                                    style: const TextStyle(color: Colors.orangeAccent),
+                                                    style: const TextStyle(color: Colors.orangeAccent, fontSize: 9),
                                                   ),
                                                 ],
                                               ),
