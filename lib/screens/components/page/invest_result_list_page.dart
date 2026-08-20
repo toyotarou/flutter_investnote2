@@ -94,7 +94,7 @@ class _InvestResultListPageState extends State<InvestResultListPage> {
                       child: Row(
                         children: <Widget>[
                           const SizedBox(width: 10),
-                          Icon(FontAwesomeIcons.expand, color: Colors.white.withValues(alpha: 0.4)),
+                          FaIcon(FontAwesomeIcons.expand, color: Colors.white.withValues(alpha: 0.4)),
                           const SizedBox(width: 10),
                           const Text('cost'),
                         ],

@@ -25,6 +25,7 @@ import 'components/parts/back_ground_image.dart';
 import 'components/parts/invest_dialog.dart';
 import 'components/parts/menu_head_icon.dart';
 import 'components/table_data_delete_alert.dart';
+import 'components/yearmonth_percent_display_alert.dart';
 
 class CalendarCellSumData {
   CalendarCellSumData(
@@ -222,6 +223,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               actions: <Widget>[
                 IconButton(
                   onPressed: () {
+                    InvestDialog(
+                      context: context,
+                      widget: YearmonthPercentDisplayAlert(
+                        investRecordList: investRecordList,
+                        investRecordMap: investRecordMap,
+                        configMap: configMap,
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.list, color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+                IconButton(
+                  onPressed: () {
                     final int idx = _ymList.indexOf(DateTime.now().yyyymm);
                     if (idx >= 0) {
                       _tabController?.animateTo(idx);
@@ -320,8 +334,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       child: DefaultTextStyle(
         style: const TextStyle(fontSize: 10),
         child: Stack(
-          children: [
-            if (lastPriceTotal > 0)
+          children: <Widget>[
+            if (lastPriceTotal > 0) ...<Widget>[
               Positioned(
                 bottom: 0,
                 right: 40,
@@ -348,6 +362,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   },
                 ),
               ),
+            ],
             Row(
               children: <Widget>[
                 Expanded(
