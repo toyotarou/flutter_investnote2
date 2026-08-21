@@ -126,6 +126,7 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
 
     final Map<String, double> yearPercentMap = <String, double>{};
     final Map<String, int> yearEndProfitMap = <String, int>{};
+    final Map<String, int> yearProfitDiffMap = <String, int>{};
     yearGroups.forEach((String year, List<String> months) {
       final String latest = months[0];
       final String earliest = months.last;
@@ -136,6 +137,7 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
       final int yProfitDiff = (yEndPrice - yEndCost) - (yStartPrice - yStartCost);
       yearPercentMap[year] = yEndPrice > 0 ? (yProfitDiff / yEndPrice) * 100 : 0.0;
       yearEndProfitMap[year] = yEndPrice - yEndCost;
+      yearProfitDiffMap[year] = yProfitDiff;
     });
 
     final String currentYear = yearmonthList.isNotEmpty ? yearmonthList[0].split('-')[0] : '';
@@ -163,6 +165,7 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
           percent: yearPercentMap[year] ?? 0.0,
           isCurrent: true,
           yearEndProfit: yearEndProfitMap[year] ?? 0,
+          yearProfitDiff: yearProfitDiffMap[year] ?? 0,
         ));
         isFirst = false;
       } else if (month == '12' && year != currentYear) {
@@ -172,6 +175,7 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
           percent: yearPercentMap[year] ?? 0.0,
           isCurrent: false,
           yearEndProfit: yearEndProfitMap[year] ?? 0,
+          yearProfitDiff: yearProfitDiffMap[year] ?? 0,
         ));
       }
 
@@ -203,10 +207,12 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
     required double percent,
     required bool isCurrent,
     required int yearEndProfit,
+    required int yearProfitDiff,
   }) {
     final Color color = percent >= 0 ? Colors.greenAccent : Colors.redAccent;
     final String sign = percent >= 0 ? '+' : '';
     final String profitSign = yearEndProfit >= 0 ? '+' : '';
+    final String diffSign = yearProfitDiff >= 0 ? '+' : '';
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
@@ -217,34 +223,65 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
       ),
       child: Row(
         children: <Widget>[
-          Text(
-            '$year年${isCurrent ? ' (YTD)' : ''}',
-            style: const TextStyle(color: Colors.white60, fontSize: 11),
-          ),
-          const SizedBox(width: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              border: Border.all(color: color),
-              borderRadius: BorderRadius.circular(20),
-            ),
+            width: 5,
+            height: 15,
+            decoration: BoxDecoration(color: Colors.yellowAccent.withValues(alpha: 0.3)),
+            child: const Text(''),
+          ),
+          const SizedBox(width: 5),
+          SizedBox(
+            width: 100,
             child: Text(
-              '$sign${percent.toStringAsFixed(2)}%',
-              style: TextStyle(
-                color: color,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
+              '$year年${isCurrent ? ' (YTD)' : ''}',
+              style: const TextStyle(color: Colors.white, fontSize: 11),
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            '$profitSign${yearEndProfit.toString().toCurrency()}',
-            style: const TextStyle(
-              color: Color(0xFFFBB6CE),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    border: Border.all(color: color),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$sign${percent.toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      const Text('year profit', style: TextStyle(fontSize: 9)),
+                      Text(
+                        '$diffSign${yearProfitDiff.toString().toCurrency()}',
+                        style: const TextStyle(
+                          color: Color(0xFFFBB6CE),
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text('total profit', style: TextStyle(fontSize: 9)),
+                      Text(
+                        '$profitSign${yearEndProfit.toString().toCurrency()}',
+                        style: const TextStyle(
+                          color: Color(0xFFFBB6CE),
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -261,8 +298,6 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
     required int priceDiff,
     required double priceDiffPercent,
   }) {
-    final Color costColor = costDiff >= 0 ? Colors.lightBlueAccent : Colors.orangeAccent;
-    final Color priceColor = priceDiff >= 0 ? Colors.greenAccent : Colors.redAccent;
     final Color badgeColor = priceDiffPercent >= 0 ? Colors.greenAccent : Colors.redAccent;
     final String priceSign = priceDiff >= 0 ? '+' : '';
     final String percentSign = priceDiffPercent >= 0 ? '+' : '';
@@ -278,97 +313,117 @@ class _YearmonthPercentDisplayAlertState extends ConsumerState<YearmonthPercentD
           bottom: BorderSide(color: Colors.white.withOpacity(0.12)),
         ),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // ── 上段1行目：年月 + cost + total + バッジ ──
-          Row(
-            children: <Widget>[
-              SizedBox(
-                width: 65,
-                child: Text(yearmonth, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-              ),
-              const Spacer(),
-              // cost増加
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  const Text('cost', style: TextStyle(color: Colors.white38, fontSize: 9)),
-                  Text(
-                    costDiff.toString().toCurrency(),
-                    style: TextStyle(color: costColor, fontSize: 12),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              // total増加
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  const Text('total', style: TextStyle(color: Colors.white38, fontSize: 9)),
-                  Text(
-                    '$priceSign${priceDiff.toString().toCurrency()}',
-                    style: TextStyle(color: priceColor, fontSize: 12),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 10),
-              // 楕円バッジ（全体比 %）
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  border: Border.all(color: badgeColor),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '$percentSign${priceDiffPercent.toStringAsFixed(2)}%',
-                  style: TextStyle(color: badgeColor, fontSize: 11),
-                ),
-              ),
-              const SizedBox(width: 4),
-            ],
+          SizedBox(
+            width: 80,
+            child: Text(yearmonth, style: const TextStyle(color: Colors.white70, fontSize: 12)),
           ),
-
-          const SizedBox(height: 4),
-
-          // ── 上段2行目：月差額（profit）右寄せ ──
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              const Text('profit', style: TextStyle(color: Colors.white38, fontSize: 9)),
-              const SizedBox(width: 6),
-              Text(
-                '$monthProfitSign${monthProfit.toString().toCurrency()}',
-                style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 12),
-              ),
-              const SizedBox(width: 4),
-            ],
-          ),
-
-          const SizedBox(height: 4),
-
-          // ── 下段：月末累計 ──
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              const Text('累計', style: TextStyle(color: Colors.white24, fontSize: 10)),
-              const SizedBox(width: 8),
-              Text(
-                endCost.toString().toCurrency(),
-                style: const TextStyle(color: Colors.white54, fontSize: 11),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                endPrice.toString().toCurrency(),
-                style: const TextStyle(color: Colors.yellowAccent, fontSize: 11),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                '$profitSign${endProfit.toString().toCurrency()}',
-                style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 11),
-              ),
-              const SizedBox(width: 4),
-            ],
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const SizedBox.shrink(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: badgeColor),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '$percentSign${priceDiffPercent.toStringAsFixed(2)}%',
+                        style: TextStyle(color: badgeColor, fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('cost', style: TextStyle(fontSize: 9)),
+                          Text(
+                            costDiff.toString().toCurrency(),
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('total', style: TextStyle(fontSize: 9)),
+                          Text(
+                            '$priceSign${priceDiff.toString().toCurrency()}',
+                            style: const TextStyle(color: Colors.yellowAccent, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('profit', style: TextStyle(fontSize: 9)),
+                          Text(
+                            '$monthProfitSign${monthProfit.toString().toCurrency()}',
+                            style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('all cost', style: TextStyle(fontSize: 9)),
+                          Text(
+                            endCost.toString().toCurrency(),
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('all total', style: TextStyle(fontSize: 9)),
+                          Text(
+                            endPrice.toString().toCurrency(),
+                            style: const TextStyle(color: Colors.yellowAccent, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          const Text('all profit', style: TextStyle(fontSize: 9)),
+                          Text(
+                            '$profitSign${endProfit.toString().toCurrency()}',
+                            style: const TextStyle(color: Color(0xFFFBB6CE), fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
